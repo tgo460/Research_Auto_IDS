@@ -18,10 +18,11 @@ A research-grade, deployment-ready IDS that fuses CAN bus telemetry with Etherne
 8. [ONNX Edge Deployment](#onnx-edge-deployment)
 9. [Evaluation & Metrics](#evaluation--metrics)
 10. [Explainability (SHAP)](#explainability-shap)
-11. [Runtime CLI Commands](#runtime-cli-commands)
+11. [Complete Command Reference](#complete-command-reference)
 12. [Compliance & Safety Artifacts](#compliance--safety-artifacts)
 13. [Key Configuration Parameters](#key-configuration-parameters)
 14. [Troubleshooting](#troubleshooting)
+15. [Reproducing Results from Scratch](#reproducing-results-from-scratch)
 
 ---
 
@@ -411,29 +412,394 @@ Key features typically driving detection:
 
 ---
 
-## Runtime CLI Commands
+## Complete Command Reference
 
-Production-grade CLI for deployment and benchmarking:
+This section documents **every runnable command** in the project, organized by workflow phase.
+
+---
+
+### Phase 1 — Dataset Setup
 
 ```bash
-# Start the IDS engine
-python run_ids.py --config configs/deployment.example.json
+# Automated dataset preparation: verify downloads, CAN feature engineering, ETH extraction
+python setup_datasets.py
 
-# Run performance benchmark
-python benchmark_ids.py --config configs/deployment.example.json \
-    --output reports/benchmark_ids_report.json
+# Dry-run (preview what would be done)
+python setup_datasets.py --dry-run
 
-# Validate deployment configuration
+# Skip download prompts, run engineering only
+python setup_datasets.py --skip-download
+```
+
+**Requires:** Car-Hacking Dataset and AutoETH Intrusion Dataset downloaded to `datasets/`.
+
+---
+
+### Phase 2 — Model Training
+
+#### Train the Light Model (TinyHybridStudent — TCN+CNN Fusion)
+
+```bash
+python src_replica/train_improved_light_model.py \
+    --data_dir datasets \
+    --output_dir models \
+    --epochs 5 \
+    --batch_size 32 \
+    --lr 0.001
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--data_dir` | `datasets` | Root data directory |
+| `--output_dir` | `models` | Output directory for saved model |
+| `--epochs` | `5` | Number of training epochs |
+| `--batch_size` | `32` | Training batch size |
+| `--lr` | `0.001` | Learning rate |
+| `--max_rows` | `None` | Limit rows per file (for quick testing) |
+| `--full_data` | `False` | Use all available data pairs |
+
+**Output:** `models/student_tiny_improved.pth`
+
+#### Train the Heavy Model (Random Forest — 100 Trees, 2624 Features)
+
+```bash
+python src_replica/train_heavy_model_improved.py \
+    --data_dir datasets \
+    --output_model models/heavy_rf_improved.joblib
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--data_dir` | `datasets` | Root data directory |
+| `--output_model` | `models/heavy_rf_improved.joblib` | Output model path |
+| `--max_rows` | `None` | Limit rows per CAN file for quick testing |
+
+**Output:** `models/heavy_rf_improved.joblib`
+
+#### Export Light Model to ONNX (Edge Deployment)
+
+```bash
+python src_replica/export_onnx_replica.py \
+    --model_path models/student_tiny_improved.pth \
+    --output_path models/student_tiny_improved.onnx \
+    --input_dim 16 \
+    --can_window_size 100
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--model_path` | `models/student_tiny_improved.pth` | Input PyTorch checkpoint |
+| `--output_path` | `models/student_tiny_improved.onnx` | Output ONNX model |
+| `--input_dim` | `16` | Number of CAN features |
+| `--can_window_size` | `100` | CAN window size (standard-enforced) |
+
+**Output:** `models/student_tiny_improved.onnx`
+
+#### Quantize ONNX Model (INT8 for ECU Deployment)
+
+```bash
+python src_replica/quantize_onnx_replica.py \
+    --input models/student_tiny_improved.onnx \
+    --output models/student_tiny_improved.int8.onnx \
+    --report reports/quantization_report.json
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--input` | `models/student_tiny_improved.onnx` | Input ONNX model |
+| `--output` | `models/student_tiny_improved.int8.onnx` | Quantized output model |
+| `--report` | `reports/quantization_report.json` | Speedup comparison report |
+
+**Output:** `models/student_tiny_improved.int8.onnx`, `reports/quantization_report.json`
+
+---
+
+### Phase 3 — Validation & Benchmarking
+
+#### Validate Deployment Configuration
+
+```bash
 python validate_ids.py --config configs/deployment.example.json
+```
 
-# Replay recorded CAN+ETH traffic
-python replay_can_eth.py --config configs/deployment.example.json \
+Validates: model file existence, ONNX SHA256 integrity hash, input tensor shapes (CAN: `[B, 100, 16]`, ETH: `[B, 1, 32, 32]`).
+
+#### Benchmark Performance
+
+```bash
+python benchmark_ids.py \
+    --config configs/deployment.example.json \
+    --output reports/benchmark_ids_report.json \
+    --max_samples 100
+```
+
+Reports: latency (p50/p95/max), FPR, FNR, MCC, CPU%, memory%, deadline miss rate.
+
+**Output:** `reports/benchmark_ids_report.json`
+
+#### Validate Window Size Compliance
+
+```bash
+python scripts/check_window_standard.py --config configs/deployment.example.json
+```
+
+Enforces: CAN window = 100 messages, ETH window = 1 frame.
+
+#### ONNX Model Structure Validation
+
+```bash
+python src_replica/test_onnx_replica.py
+```
+
+Validates model inputs/outputs, runs inference test, reports latency.
+
+---
+
+### Phase 4 — Evaluation
+
+#### Evaluate Light Model Standalone
+
+```bash
+python src_replica/evaluate_improved_replica.py \
+    --data_dir datasets \
+    --model_path models/student_tiny_improved.pth
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--data_dir` | `datasets` | Root data directory |
+| `--model_path` | `models/student_tiny_improved.pth` | Model to evaluate |
+| `--max_rows` | `None` | Limit rows (all by default) |
+
+Reports: accuracy, precision, recall, F1-score, confusion matrix.
+
+#### Evaluate Full Cascade Pipeline (Light → Router → Heavy)
+
+```bash
+python src_replica/cascade_eval_replica.py \
+    --light_model_path models/student_tiny_improved.pth \
+    --data_dir datasets \
+    --heavy_backend rf \
+    --route_fraction 0.3 \
+    --output_dir logs
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--light_model_path` | *(required)* | Light model checkpoint path |
+| `--data_dir` | `data` | Root data directory |
+| `--heavy_backend` | `rf` | Heavy model type: `rf` or `mlp` |
+| `--route_fraction` | `0.3` | Fraction routed to heavy model |
+| `--output_dir` | `logs` | Report output directory |
+| `--synthetic` | `False` | Use synthetic data if real unavailable |
+| `--heavy_n_estimators` | `100` | Random Forest tree count |
+| `--heavy_max_depth` | `None` | Random Forest max depth |
+
+**Output:** `logs/cascade_eval_replica_report.json`
+
+#### Aggregate Final Metrics
+
+```bash
+python evaluate.py \
+    --base-path . \
+    --out-dir reports \
+    --strict-split-check \
+    --split-manifest data/splits/split_v2_domain_balanced.json
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--base-path` | `.` | Project root directory |
+| `--out-dir` | `reports` | Output directory |
+| `--strict-split-check` | `False` | Enable split manifest validation |
+| `--split-manifest` | `data/splits/split_v2_domain_balanced.json` | Split file path |
+
+**Output:** `reports/final_metrics_latest.json`, `reports/final_metrics.json`
+
+---
+
+### Phase 5 — Visualizations
+
+#### Generate Standard Evaluation Plots
+
+```bash
+python src_replica/visualize_evaluation_graphs.py
+```
+
+No arguments needed. Reads from `logs/` and generates:
+
+| Output File | Description |
+|---|---|
+| `reports/visualizations/metric_comparison.png` | Light model vs Cascade performance comparison |
+| `reports/visualizations/confusion_matrices.png` | Per-tier confusion matrices (light, heavy, cascade) |
+| `reports/visualizations/ablation_study_b1.png` | Feature engineering impact analysis |
+
+#### SHAP Feature Importance (Heavy Model)
+
+```bash
+python src_replica/explainability_replica.py \
+    --model_path models/heavy_rf_improved.joblib \
+    --data_dir datasets \
+    --num_samples 100
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--model_path` | `models/heavy_rf_improved.joblib` | Heavy model to explain |
+| `--data_dir` | `datasets` | Root data directory |
+| `--num_samples` | `100` | Background samples for SHAP |
+
+**Output:** `reports/shap_summary_improved.png`
+
+Key features driving detection: `payload_entropy`, `inter_arrival`, `can_id_freq_global`, `id_switch_rate_win`.
+
+---
+
+### Phase 6 — Simulation & Real-Time Inference
+
+#### Real-Time Inference Simulation
+
+```bash
+python src_replica/realtime_inference_replica.py \
+    --limit 100 \
+    --delay 0.05 \
+    --threshold 0.5781 \
+    --use_onnx
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--light_model` | `models/student_tiny_improved.pth` | Light model checkpoint |
+| `--heavy_model` | `models/heavy_rf_improved.joblib` | Heavy model path |
+| `--data_dir` | `datasets` | Root data directory |
+| `--limit` | `50` | Number of packets to simulate |
+| `--delay` | `0.05` | Inter-packet delay in seconds |
+| `--threshold` | `0.5781` | Confidence router threshold |
+| `--use_onnx` | `True` | Use ONNX Runtime for light model |
+| `--no_onnx` | — | Force PyTorch inference (disable ONNX) |
+
+Displays a live table:
+
+```
+ID     | SOURCE   | CONF   | PRED       | LATENCY (ms) | STATUS
+---------------------------------------------------------------------------
+0      | LIGHT    | 0.9999 | MALICIOUS  | 0.66         | CORRECT
+1      | LIGHT    | 0.9988 | MALICIOUS  | 0.43         | CORRECT
+...
+9      | HEAVY    | 0.9694 | MALICIOUS  | 17.89        | CORRECT
+---------------------------------------------------------------------------
+Stream Complete.  Avg Latency: 1.08 ms  |  Routed: 1/30 (3.3%)  |  Accuracy: 100.0%
+```
+
+#### Replay Recorded CAN + ETH Traffic
+
+```bash
+python replay_can_eth.py \
+    --config configs/deployment.example.json \
     --can_csv datasets/can_dos_train.csv \
-    --eth_csv datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv
+    --eth_csv datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv \
+    --max_samples 50
+```
 
-# Full reproducibility pipeline
+#### Run IDS Engine (Deployment Mode)
+
+```bash
+python run_ids.py --config configs/deployment.example.json
+```
+
+Full CLI options for transport modes:
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--config` | *(required)* | Deployment config JSON |
+| `--max_samples` | `None` | Limit samples processed |
+| `--can-mode` | `csv` | CAN source: `csv` or `socketcan` |
+| `--eth-mode` | `csv` | ETH source: `csv` or `pcap` |
+| `--can-channel` | `can0` | SocketCAN interface name |
+| `--can-bustype` | `socketcan` | CAN bus type |
+| `--egress-mode` | `file` | Alert output: `file`, `stdout`, `can`, `someip` |
+| `--someip-host` | — | SOME/IP server host |
+| `--someip-port` | — | SOME/IP server port |
+| `--stdout-alerts` | `False` | Output alerts to stdout |
+
+#### Coordinated Attack Simulation (ETH → CAN)
+
+```bash
+python src_replica/coordinated_attack_replay.py \
+    --config configs/deployment.example.json \
+    --can_csv datasets/can_dos_train.csv \
+    --eth_csv datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv \
+    --max_samples 200 \
+    --attack_stride 50 \
+    --output reports/coordinated_attack_report.json
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--config` | `configs/deployment.example.json` | Deployment config |
+| `--can_csv` | `datasets/can_dos_train.csv` | CAN data source |
+| `--eth_csv` | `datasets/replica_eth_smoke/...` | ETH data source |
+| `--max_samples` | `200` | Number of test samples |
+| `--attack_stride` | `50` | Synthetic attack injection frequency |
+| `--output` | `reports/coordinated_attack_report.json` | Report output path |
+
+**Output:** `reports/coordinated_attack_report.json`
+
+#### Robustness Testing Under Noise
+
+```bash
+python src_replica/robustness_eval_replica.py \
+    --light_model models/student_tiny_improved.pth \
+    --heavy_model models/heavy_rf_improved.joblib \
+    --onnx_model models/student_tiny_improved.onnx \
+    --max_samples 128 \
+    --output reports/robustness_report.json
+```
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--light_model` | `models/student_tiny_improved.pth` | Light model path |
+| `--heavy_model` | `models/heavy_rf_improved.joblib` | Heavy model path |
+| `--onnx_model` | `models/student_tiny_improved.onnx` | ONNX model path |
+| `--can_csv` | `datasets/replica_can_b1_engineered/can_dos_train.csv` | CAN test data |
+| `--eth_csv` | `datasets/replica_eth_smoke/...` | ETH test data |
+| `--eth_npy` | `datasets/eth_driving_01_injected_images-003.npy` | ETH image array |
+| `--max_samples` | `128` | Number of samples to test |
+| `--output` | `reports/robustness_report.json` | Report output path |
+
+Tests noise sensitivity at sigma levels: `0.0`, `0.01`, `0.05`, `0.1`.
+
+**Output:** `reports/robustness_report.json`
+
+---
+
+### One-Shot Reproducibility Pipeline
+
+Run validate → benchmark → evaluate in a single command:
+
+```bash
 python reproduce.py --config configs/repro_full_and_v2.json
 ```
+
+---
+
+### Output Artifacts Summary
+
+| Output File | Generated By | Type |
+|---|---|---|
+| `models/student_tiny_improved.pth` | `train_improved_light_model.py` | PyTorch model |
+| `models/heavy_rf_improved.joblib` | `train_heavy_model_improved.py` | scikit-learn model |
+| `models/student_tiny_improved.onnx` | `export_onnx_replica.py` | ONNX model |
+| `models/student_tiny_improved.int8.onnx` | `quantize_onnx_replica.py` | Quantized ONNX |
+| `reports/benchmark_ids_report.json` | `benchmark_ids.py` | Performance metrics |
+| `reports/final_metrics_latest.json` | `evaluate.py` | Aggregated metrics |
+| `reports/robustness_report.json` | `robustness_eval_replica.py` | Noise robustness |
+| `reports/quantization_report.json` | `quantize_onnx_replica.py` | INT8 speedup comparison |
+| `reports/coordinated_attack_report.json` | `coordinated_attack_replay.py` | Attack sim results |
+| `reports/shap_summary_improved.png` | `explainability_replica.py` | SHAP feature importance |
+| `reports/visualizations/metric_comparison.png` | `visualize_evaluation_graphs.py` | Light vs Cascade |
+| `reports/visualizations/confusion_matrices.png` | `visualize_evaluation_graphs.py` | Confusion matrices |
+| `reports/visualizations/ablation_study_b1.png` | `visualize_evaluation_graphs.py` | Ablation study |
 
 ---
 

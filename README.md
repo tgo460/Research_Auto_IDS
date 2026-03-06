@@ -183,13 +183,14 @@ python -m venv .venv
 # Activate (Linux/macOS)
 # source .venv/bin/activate
 
-# Install dependencies
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-pip install scikit-learn pandas numpy matplotlib seaborn joblib
-pip install onnxruntime shap
+# Install all dependencies
+pip install -r requirements.txt
 
 # (Optional) For ONNX export
 pip install onnx onnxscript
+
+# (Optional) For live PCAP/CAN interfaces
+pip install scapy python-can
 ```
 
 > **Windows Long Path Note**: If `pip install onnx` fails with `[WinError 206]`, install to a shorter path:
@@ -488,6 +489,124 @@ If ONNX Runtime reports shape mismatches:
 - Ensure `export_onnx_replica.py` uses the same window/image dimensions as inference
 - Current expected shapes: CAN `(B, 100, 16)`, ETH `(B, 1, 32, 32)`
 - Re-export: `python src_replica/export_onnx_replica.py`
+
+---
+
+## Reproducing Results from Scratch
+
+This section provides a complete, step-by-step guide for researchers to reproduce
+our results starting from a fresh clone.
+
+### Step 0: Clone and Install
+
+```bash
+git clone https://github.com/tgo460/Research_Auto_IDS.git
+cd Research_Auto_IDS
+
+python -m venv .venv
+# Windows
+.venv\Scripts\Activate.ps1
+# Linux/macOS
+# source .venv/bin/activate
+
+pip install -r requirements.txt
+```
+
+### Step 1: Obtain Datasets
+
+This project uses two publicly available datasets (not included in the repo due to size):
+
+| Dataset | Source | Size | Target Directory |
+|---------|--------|------|------------------|
+| Car-Hacking Dataset (KIA SOUL) | [OCSLAB](https://ocslab.hksecurity.net/Datasets/car-hacking-dataset) | ~1.2 GB | `datasets/Car-Hacking Dataset/` |
+| AutoETH Intrusion Dataset | [Zenodo](https://zenodo.org/records/14643663) | ~2 GB | `datasets/autoeth-intrusion-dataset/` |
+
+After downloading, run the automated setup script:
+
+```bash
+python setup_datasets.py
+```
+
+This will:
+1. Verify datasets are present
+2. Extract CAN training CSVs from the raw dataset files
+3. Engineer 16 CAN features per row → `datasets/replica_can_b1_engineered/`
+4. Extract Ethernet packet CSVs from PCAPs → `datasets/replica_eth_smoke/` (requires `pip install scapy`)
+5. Verify all required files are in place
+
+### Step 2: Train Models
+
+```bash
+# Train the light model (TinyHybridStudent — TCN+CNN fusion)
+python src_replica/train_improved_light_model.py \
+    --data_dir datasets --output_dir models --epochs 5 --batch_size 32 --lr 0.001
+
+# Train the heavy model (Random Forest — 100 trees, 2624 features)
+python src_replica/train_heavy_model_improved.py \
+    --data_dir datasets --output_dir models
+
+# Export light model to ONNX for edge deployment
+python src_replica/export_onnx_replica.py \
+    --model_path models/student_tiny_improved.pth \
+    --output_path models/student_tiny_improved.onnx
+```
+
+### Step 3: Validate & Benchmark
+
+```bash
+# Validate deployment config and model integrity
+python validate_ids.py --config configs/deployment.example.json
+
+# Run performance benchmark
+python benchmark_ids.py --config configs/deployment.example.json \
+    --output reports/benchmark_ids_report.json
+```
+
+### Step 4: Evaluate
+
+```bash
+# Full cascade evaluation (Light → Router → Heavy)
+python src_replica/cascade_eval_replica.py --data_dir datasets
+
+# Aggregate final metrics with split validation
+python evaluate.py --base-path . --out-dir reports --strict-split-check \
+    --split-manifest data/splits/split_v2_domain_balanced.json
+```
+
+### Step 5: Run the Full Reproducibility Pipeline (One Command)
+
+Alternatively, after Steps 0–2, run everything at once:
+
+```bash
+python reproduce.py --config configs/repro_full_and_v2.json
+```
+
+This executes validate → benchmark → evaluate in sequence using the canonical
+configuration in `configs/repro_full_and_v2.json`.
+
+### Expected Results
+
+| Metric | Expected Value | Target |
+|--------|---------------|--------|
+| Detection Accuracy | 100% | > 95% |
+| False Positive Rate | < 5% | < 5% |
+| Average Latency | ~1 ms | < 100 ms |
+| ONNX Inference Latency | ~0.2 ms | < 100 ms |
+| Heavy Model Routing Rate | ~3% | Confidence-based |
+| CAN Window Size | 100 messages | Standard |
+
+Results are written to `reports/` as JSON files and PNG visualizations.
+
+### Reproducibility Checklist
+
+- [ ] Python 3.10+ installed
+- [ ] `requirements.txt` dependencies installed
+- [ ] Car-Hacking Dataset downloaded and placed in `datasets/Car-Hacking Dataset/`
+- [ ] AutoETH Dataset downloaded and placed in `datasets/autoeth-intrusion-dataset/`
+- [ ] `python setup_datasets.py` completed successfully
+- [ ] Models trained (or pre-trained models present in `models/`)
+- [ ] `python reproduce.py` exits with code 0
+- [ ] `reports/final_metrics_latest.json` matches expected values
 
 ---
 

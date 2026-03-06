@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-02-27T06:26:13.625839+00:00",
+  "timestamp_utc": "2026-03-06T06:35:02.748803+00:00",
   "report_type": "benchmark_ids",
   "report_schema_version": "1.0",
   "deployment_config": {
@@ -20,9 +20,9 @@
     "max_samples": 100
   },
   "benchmark_report": {
-    "latency_p50_ms": 0.15497207641601562,
-    "latency_p95_ms": 0.1746296882629394,
-    "latency_max_ms": 0.6730556488037109,
+    "latency_p50_ms": 0.16427040100097656,
+    "latency_p95_ms": 0.3494501113891601,
+    "latency_max_ms": 0.8113384246826172,
     "fpr": 1.0,
     "fnr": 0.0,
     "mcc": 0.0,

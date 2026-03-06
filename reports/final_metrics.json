@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-02-27T06:26:14.038732+00:00",
+  "timestamp_utc": "2026-03-06T06:35:03.275080+00:00",
   "sources": {
     "edge_benchmark_report": "./logs/edge_benchmark_report_latest.json",
     "router_eval_report": "./logs/router_eval_report_latest.json",

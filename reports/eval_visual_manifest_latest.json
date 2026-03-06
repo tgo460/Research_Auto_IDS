@@ -1,0 +1,15 @@
+{
+  "timestamp_utc": "2026-02-18T07:14:39Z",
+  "inputs": {
+    "final_metrics": "reports\\final_metrics_latest.json",
+    "threshold_calibration": "logs\\threshold_calibration_report_latest.json",
+    "teacher_report": "logs\\teacher_train_report_latest.json",
+    "distill_report": "logs\\distill_train_report_latest.json"
+  },
+  "plots": {
+    "scorecard": "reports\\eval_scorecard.png",
+    "threshold_calibration": "reports\\eval_threshold_calibration.png",
+    "confusion_normalized": "reports\\eval_confusion_normalized.png",
+    "teacher_student_summary": "reports\\eval_teacher_student_summary.png"
+  }
+}

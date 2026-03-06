@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Benchmark IDS Report",
+  "type": "object",
+  "required": [
+    "timestamp_utc",
+    "report_type",
+    "report_schema_version",
+    "deployment_config",
+    "benchmark_report"
+  ],
+  "properties": {
+    "timestamp_utc": { "type": "string" },
+    "report_type": { "type": "string", "const": "benchmark_ids" },
+    "report_schema_version": { "type": "string" },
+    "deployment_config": { "type": "object" },
+    "benchmark_report": {
+      "type": "object",
+      "required": [
+        "latency_p50_ms",
+        "latency_p95_ms",
+        "latency_max_ms",
+        "fpr",
+        "fnr",
+        "mcc",
+        "cpu_percent",
+        "memory_mb",
+        "hardware_id",
+        "os",
+        "model_hash"
+      ],
+      "properties": {
+        "latency_p50_ms": { "type": "number" },
+        "latency_p95_ms": { "type": "number" },
+        "latency_max_ms": { "type": "number" },
+        "fpr": { "type": "number" },
+        "fnr": { "type": "number" },
+        "mcc": { "type": "number" },
+        "cpu_percent": { "type": "number" },
+        "memory_mb": { "type": "number" },
+        "power_watts": { "type": ["number", "null"] },
+        "hardware_id": { "type": "string" },
+        "os": { "type": "string" },
+        "model_hash": { "type": "string" },
+        "total_samples": { "type": "integer" },
+        "deadline_ms": { "type": "number" },
+        "deadline_miss_rate": { "type": "number" }
+      }
+    }
+  }
+}

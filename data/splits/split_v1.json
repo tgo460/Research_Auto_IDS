@@ -1,0 +1,37 @@
+{
+  "version": "v1",
+  "description": "Session/scenario-disjoint split for replica research evaluation.",
+  "created_utc": "2026-02-16T07:35:00Z",
+  "modalities": {
+    "eth": {
+      "train": [
+        "eth_driving_01_injected_images-003.npy",
+        "eth_driving_01_original_images-006.npy",
+        "eth_indoors_01_injected_images.npy",
+        "eth_indoors_01_original_images.npy"
+      ],
+      "val": [
+        "eth_driving_02_injected_images-008.npy",
+        "eth_driving_02_original_images-005.npy"
+      ],
+      "test": [
+        "eth_indoors_02_injected_images.npy",
+        "eth_indoors_02_original_images.npy",
+        "eth_single_mpeg_frame_images.npy"
+      ]
+    },
+    "can": {
+      "train": [
+        "can_dos_train.csv",
+        "can_normal_train.csv"
+      ],
+      "val": [
+        "can_fuzzy_train.csv"
+      ],
+      "test": [
+        "can_gear_train.csv",
+        "can_rpm_train.csv"
+      ]
+    }
+  }
+}

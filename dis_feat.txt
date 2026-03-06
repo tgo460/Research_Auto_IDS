@@ -1,0 +1,420 @@
+  0           RESUME                   0
+
+  1           SETUP_ANNOTATIONS
+              LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              0 (math)
+              STORE_NAME               0 (math)
+
+  2           LOAD_CONST               0 (0)
+              LOAD_CONST               2 (('List',))
+              IMPORT_NAME              1 (typing)
+              IMPORT_FROM              2 (List)
+              STORE_NAME               2 (List)
+              POP_TOP
+
+  4           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              3 (numpy)
+              STORE_NAME               4 (np)
+
+  5           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              5 (pandas)
+              STORE_NAME               6 (pd)
+
+  8           BUILD_LIST               0
+              LOAD_CONST               3 (('D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'))
+              LIST_EXTEND              1
+              STORE_NAME               7 (BYTE_COLS)
+              LOAD_NAME                2 (List)
+              LOAD_NAME                8 (str)
+              BINARY_SUBSCR
+              LOAD_NAME                9 (__annotations__)
+              LOAD_CONST               4 ('BYTE_COLS')
+              STORE_SUBSCR
+
+ 11           LOAD_CONST               5 ('ts')
+              LOAD_NAME                6 (pd)
+              LOAD_ATTR               20 (Series)
+              LOAD_CONST               6 ('return')
+              LOAD_NAME                6 (pd)
+              LOAD_ATTR               20 (Series)
+              BUILD_TUPLE              4
+              LOAD_CONST               7 (<code object _safe_timestamp_delta at 0x000001AD726FED80, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 11>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              11 (_safe_timestamp_delta)
+
+ 16           LOAD_CONST               8 ('byte_values')
+              LOAD_NAME                4 (np)
+              LOAD_ATTR               24 (ndarray)
+              LOAD_CONST               6 ('return')
+              LOAD_NAME               13 (float)
+              BUILD_TUPLE              4
+              LOAD_CONST               9 (<code object _row_entropy at 0x000001AD7247DDF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 16>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              14 (_row_entropy)
+
+ 30           LOAD_CONST              13 ((200,))
+              LOAD_CONST              10 ('df_raw')
+              LOAD_NAME                6 (pd)
+              LOAD_ATTR               30 (DataFrame)
+              LOAD_CONST              11 ('window')
+              LOAD_NAME               16 (int)
+              LOAD_CONST               6 ('return')
+              LOAD_NAME                6 (pd)
+              LOAD_ATTR               30 (DataFrame)
+              BUILD_TUPLE              6
+              LOAD_CONST              12 (<code object add_can_engineered_features at 0x000001AD70AD9AE0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 30>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              SET_FUNCTION_ATTRIBUTE   1 (defaults)
+              STORE_NAME              17 (add_can_engineered_features)
+              RETURN_CONST             1 (None)
+
+Disassembly of <code object _safe_timestamp_delta at 0x000001AD726FED80, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 11>:
+ 11           RESUME                   0
+
+ 12           LOAD_GLOBAL              0 (pd)
+              LOAD_ATTR                2 (to_numeric)
+              PUSH_NULL
+              LOAD_FAST                0 (ts)
+              LOAD_CONST               1 ('coerce')
+              LOAD_CONST               2 (('errors',))
+              CALL_KW                  2
+              LOAD_ATTR                5 (ffill + NULL|self)
+              CALL                     0
+              LOAD_ATTR                7 (fillna + NULL|self)
+              LOAD_CONST               3 (0.0)
+              CALL                     1
+              STORE_FAST               1 (ts_num)
+
+ 13           LOAD_FAST                1 (ts_num)
+              LOAD_ATTR                9 (diff + NULL|self)
+              CALL                     0
+              LOAD_ATTR                7 (fillna + NULL|self)
+              LOAD_CONST               3 (0.0)
+              CALL                     1
+              LOAD_ATTR               11 (clip + NULL|self)
+              LOAD_CONST               3 (0.0)
+              LOAD_CONST               4 (('lower',))
+              CALL_KW                  1
+              RETURN_VALUE
+
+Disassembly of <code object _row_entropy at 0x000001AD7247DDF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 16>:
+ 16           RESUME                   0
+
+ 18           LOAD_GLOBAL              0 (np)
+              LOAD_ATTR                2 (histogram)
+              PUSH_NULL
+              LOAD_FAST                0 (byte_values)
+              LOAD_CONST               1 (16)
+              LOAD_CONST               2 ((0, 256))
+              LOAD_CONST               3 (False)
+              LOAD_CONST               4 (('bins', 'range', 'density'))
+              CALL_KW                  4
+              UNPACK_SEQUENCE          2
+              STORE_FAST_STORE_FAST   18 (hist, _)
+
+ 19           LOAD_FAST                1 (hist)
+              LOAD_ATTR                5 (sum + NULL|self)
+              CALL                     0
+              STORE_FAST               3 (total)
+
+ 20           LOAD_FAST                3 (total)
+              LOAD_CONST               5 (0)
+              COMPARE_OP              58 (bool(<=))
+              POP_JUMP_IF_FALSE        1 (to L1)
+
+ 21           RETURN_CONST             6 (0.0)
+
+ 22   L1:     LOAD_FAST_LOAD_FAST     19 (hist, total)
+              BINARY_OP               11 (/)
+              STORE_FAST               4 (probs)
+
+ 23           LOAD_CONST               6 (0.0)
+              STORE_FAST               5 (entropy)
+
+ 24           LOAD_FAST                4 (probs)
+              GET_ITER
+      L2:     FOR_ITER                57 (to L4)
+              STORE_FAST               6 (p)
+
+ 25           LOAD_FAST                6 (p)
+              LOAD_CONST               5 (0)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_TRUE         2 (to L3)
+              JUMP_BACKWARD           11 (to L2)
+
+ 26   L3:     LOAD_FAST                5 (entropy)
+              LOAD_GLOBAL              7 (float + NULL)
+              LOAD_FAST                6 (p)
+              CALL                     1
+              LOAD_GLOBAL              8 (math)
+              LOAD_ATTR               10 (log2)
+              PUSH_NULL
+              LOAD_GLOBAL              7 (float + NULL)
+              LOAD_FAST                6 (p)
+              CALL                     1
+              CALL                     1
+              BINARY_OP                5 (*)
+              BINARY_OP               23 (-=)
+              STORE_FAST               5 (entropy)
+              JUMP_BACKWARD           59 (to L2)
+
+ 24   L4:     END_FOR
+              POP_TOP
+
+ 27           LOAD_FAST                5 (entropy)
+              RETURN_VALUE
+
+Disassembly of <code object add_can_engineered_features at 0x000001AD70AD9AE0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 30>:
+  30           RESUME                   0
+
+  41           LOAD_FAST                0 (df_raw)
+               LOAD_ATTR                1 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST               2 (out)
+
+  44           LOAD_FAST                2 (out)
+               LOAD_CONST               1 ('CAN_ID')
+               BINARY_SUBSCR
+               LOAD_ATTR                3 (astype + NULL|self)
+               LOAD_GLOBAL              4 (int)
+               CALL                     1
+               LOAD_ATTR                7 (value_counts + NULL|self)
+               CALL                     0
+               LOAD_ATTR                9 (to_dict + NULL|self)
+               CALL                     0
+               STORE_FAST               3 (can_id_counts)
+
+  45           LOAD_FAST                2 (out)
+               LOAD_CONST               1 ('CAN_ID')
+               BINARY_SUBSCR
+               LOAD_ATTR                3 (astype + NULL|self)
+               LOAD_GLOBAL              4 (int)
+               CALL                     1
+               LOAD_ATTR               11 (map + NULL|self)
+               LOAD_FAST                3 (can_id_counts)
+               CALL                     1
+               LOAD_ATTR                3 (astype + NULL|self)
+               LOAD_GLOBAL             12 (float)
+               CALL                     1
+               LOAD_FAST                2 (out)
+               LOAD_CONST               2 ('can_id_freq_global')
+               STORE_SUBSCR
+
+  46           LOAD_GLOBAL             15 (max + NULL)
+               LOAD_GLOBAL             13 (float + NULL)
+               LOAD_FAST                2 (out)
+               LOAD_CONST               2 ('can_id_freq_global')
+               BINARY_SUBSCR
+               LOAD_ATTR               15 (max + NULL|self)
+               CALL                     0
+               CALL                     1
+               LOAD_CONST               3 (1.0)
+               CALL                     2
+               STORE_FAST               4 (max_freq)
+
+  47           LOAD_FAST                2 (out)
+               LOAD_CONST               2 ('can_id_freq_global')
+               BINARY_SUBSCR
+               LOAD_FAST                4 (max_freq)
+               BINARY_OP               11 (/)
+               LOAD_FAST                2 (out)
+               LOAD_CONST               2 ('can_id_freq_global')
+               STORE_SUBSCR
+
+  51           LOAD_FAST                2 (out)
+               LOAD_CONST               1 ('CAN_ID')
+               BINARY_SUBSCR
+
+  52           LOAD_ATTR                3 (astype + NULL|self)
+               LOAD_GLOBAL              4 (int)
+               CALL                     1
+
+  53           LOAD_ATTR               17 (rolling + NULL|self)
+               LOAD_FAST                1 (window)
+               LOAD_CONST               4 (1)
+               LOAD_CONST               5 (('window', 'min_periods'))
+               CALL_KW                  2
+
+  54           LOAD_ATTR               19 (apply + NULL|self)
+               LOAD_CONST               6 (<code object <lambda> at 0x000001AD72452EF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 54>)
+               MAKE_FUNCTION
+               LOAD_CONST               7 (False)
+               LOAD_CONST               8 (('raw',))
+               CALL_KW                  2
+
+  50           LOAD_FAST                2 (out)
+               LOAD_CONST               9 ('can_id_freq_win')
+               STORE_SUBSCR
+
+  58           LOAD_FAST                2 (out)
+               LOAD_GLOBAL             20 (BYTE_COLS)
+               BINARY_SUBSCR
+               LOAD_ATTR               23 (to_numpy + NULL|self)
+               LOAD_GLOBAL             24 (np)
+               LOAD_ATTR               26 (float32)
+               LOAD_CONST              10 (('dtype',))
+               CALL_KW                  1
+               STORE_FAST               5 (payload)
+
+  60           LOAD_FAST                5 (payload)
+               GET_ITER
+
+  59           LOAD_FAST_AND_CLEAR      6 (row)
+               SWAP                     2
+       L1:     BUILD_LIST               0
+               SWAP                     2
+
+  60           GET_ITER
+       L2:     FOR_ITER                68 (to L3)
+               STORE_FAST               6 (row)
+               LOAD_GLOBAL             29 (_row_entropy + NULL)
+               LOAD_GLOBAL             24 (np)
+               LOAD_ATTR               30 (clip)
+               PUSH_NULL
+               LOAD_FAST                6 (row)
+               LOAD_CONST              11 (255.0)
+               BINARY_OP                5 (*)
+               LOAD_ATTR                3 (astype + NULL|self)
+               LOAD_GLOBAL             24 (np)
+               LOAD_ATTR               32 (int32)
+               CALL                     1
+               LOAD_CONST              12 (0)
+               LOAD_CONST              13 (255)
+               CALL                     3
+               CALL                     1
+               LIST_APPEND              2
+               JUMP_BACKWARD           70 (to L2)
+       L3:     END_FOR
+               POP_TOP
+
+  59   L4:     SWAP                     2
+               STORE_FAST               6 (row)
+               LOAD_FAST                2 (out)
+               LOAD_CONST              14 ('payload_entropy')
+               STORE_SUBSCR
+
+  62           LOAD_FAST                2 (out)
+               LOAD_CONST              14 ('payload_entropy')
+               BINARY_SUBSCR
+               LOAD_GLOBAL             15 (max + NULL)
+               LOAD_GLOBAL             13 (float + NULL)
+               LOAD_FAST                2 (out)
+               LOAD_CONST              14 ('payload_entropy')
+               BINARY_SUBSCR
+               LOAD_ATTR               15 (max + NULL|self)
+               CALL                     0
+               CALL                     1
+               LOAD_CONST               3 (1.0)
+               CALL                     2
+               BINARY_OP               11 (/)
+               LOAD_FAST                2 (out)
+               LOAD_CONST              14 ('payload_entropy')
+               STORE_SUBSCR
+
+  65           LOAD_GLOBAL             35 (_safe_timestamp_delta + NULL)
+               LOAD_FAST                2 (out)
+               LOAD_CONST              15 ('Timestamp')
+               BINARY_SUBSCR
+               CALL                     1
+               STORE_FAST               7 (inter_arrival)
+
+  66           LOAD_GLOBAL             15 (max + NULL)
+               LOAD_GLOBAL             13 (float + NULL)
+               LOAD_FAST                7 (inter_arrival)
+               LOAD_ATTR               15 (max + NULL|self)
+               CALL                     0
+               CALL                     1
+               LOAD_CONST               3 (1.0)
+               CALL                     2
+               STORE_FAST               8 (ia_max)
+
+  67           LOAD_FAST_LOAD_FAST    120 (inter_arrival, ia_max)
+               BINARY_OP               11 (/)
+               LOAD_FAST                2 (out)
+               LOAD_CONST              16 ('inter_arrival')
+               STORE_SUBSCR
+
+  69           LOAD_FAST                2 (out)
+               LOAD_CONST              16 ('inter_arrival')
+               BINARY_SUBSCR
+               LOAD_ATTR               17 (rolling + NULL|self)
+               LOAD_FAST                1 (window)
+               LOAD_CONST               4 (1)
+               LOAD_CONST               5 (('window', 'min_periods'))
+               CALL_KW                  2
+               LOAD_ATTR               37 (mean + NULL|self)
+               CALL                     0
+
+  68           LOAD_FAST                2 (out)
+               LOAD_CONST              17 ('inter_arrival_roll_mean')
+               STORE_SUBSCR
+
+  73           LOAD_FAST                2 (out)
+               LOAD_CONST               1 ('CAN_ID')
+               BINARY_SUBSCR
+               LOAD_ATTR                3 (astype + NULL|self)
+               LOAD_GLOBAL              4 (int)
+               CALL                     1
+               LOAD_ATTR               39 (diff + NULL|self)
+               CALL                     0
+               LOAD_ATTR               41 (fillna + NULL|self)
+               LOAD_CONST              12 (0)
+               CALL                     1
+               LOAD_CONST              12 (0)
+               COMPARE_OP             103 (!=)
+               LOAD_ATTR                3 (astype + NULL|self)
+               LOAD_GLOBAL             12 (float)
+               CALL                     1
+               STORE_FAST               9 (switches)
+
+  74           LOAD_FAST                9 (switches)
+               LOAD_ATTR               17 (rolling + NULL|self)
+               LOAD_FAST                1 (window)
+               LOAD_CONST               4 (1)
+               LOAD_CONST               5 (('window', 'min_periods'))
+               CALL_KW                  2
+               LOAD_ATTR               37 (mean + NULL|self)
+               CALL                     0
+               LOAD_FAST                2 (out)
+               LOAD_CONST              18 ('id_switch_rate_win')
+               STORE_SUBSCR
+
+  76           LOAD_FAST                2 (out)
+               RETURN_VALUE
+
+  --   L5:     SWAP                     2
+               POP_TOP
+
+  59           SWAP                     2
+               STORE_FAST               6 (row)
+               RERAISE                  0
+ExceptionTable:
+  L1 to L4 -> L5 [2]
+
+Disassembly of <code object <lambda> at 0x000001AD72452EF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_can_replica.py", line 54>:
+ 54           RESUME                   0
+              LOAD_GLOBAL              1 (float + NULL)
+              LOAD_FAST                0 (x)
+              LOAD_ATTR                2 (values)
+              LOAD_FAST                0 (x)
+              LOAD_ATTR                2 (values)
+              LOAD_CONST               1 (-1)
+              BINARY_SUBSCR
+              COMPARE_OP              72 (==)
+              LOAD_ATTR                5 (sum + NULL|self)
+              CALL                     0
+              CALL                     1
+              LOAD_GLOBAL              7 (max + NULL)
+              LOAD_GLOBAL              9 (len + NULL)
+              LOAD_FAST                0 (x)
+              CALL                     1
+              LOAD_CONST               2 (1)
+              CALL                     2
+              BINARY_OP               11 (/)
+              RETURN_VALUE

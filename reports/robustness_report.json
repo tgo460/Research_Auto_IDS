@@ -1,0 +1,40 @@
+{
+  "timestamp_utc": "2026-02-27T06:25:51.300340+00:00",
+  "type": "robustness_eval",
+  "rows": [
+    {
+      "sigma": 0.0,
+      "accuracy": 1.0
+    },
+    {
+      "sigma": 0.01,
+      "accuracy": 1.0
+    },
+    {
+      "sigma": 0.05,
+      "accuracy": 1.0
+    },
+    {
+      "sigma": 0.1,
+      "accuracy": 1.0
+    }
+  ],
+  "degradation_vs_clean": [
+    {
+      "sigma": 0.0,
+      "delta_accuracy": 0.0
+    },
+    {
+      "sigma": 0.01,
+      "delta_accuracy": 0.0
+    },
+    {
+      "sigma": 0.05,
+      "delta_accuracy": 0.0
+    },
+    {
+      "sigma": 0.1,
+      "delta_accuracy": 0.0
+    }
+  ]
+}

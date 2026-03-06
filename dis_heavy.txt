@@ -1,0 +1,796 @@
+  0           RESUME                   0
+
+  1           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (('dataclass',))
+              IMPORT_NAME              0 (dataclasses)
+              IMPORT_FROM              1 (dataclass)
+              STORE_NAME               1 (dataclass)
+              POP_TOP
+
+  2           LOAD_CONST               0 (0)
+              LOAD_CONST               2 (('Dict', 'Optional'))
+              IMPORT_NAME              2 (typing)
+              IMPORT_FROM              3 (Dict)
+              STORE_NAME               3 (Dict)
+              IMPORT_FROM              4 (Optional)
+              STORE_NAME               4 (Optional)
+              POP_TOP
+
+  4           LOAD_CONST               0 (0)
+              LOAD_CONST               3 (None)
+              IMPORT_NAME              5 (numpy)
+              STORE_NAME               6 (np)
+
+  5           LOAD_CONST               0 (0)
+              LOAD_CONST               3 (None)
+              IMPORT_NAME              7 (torch)
+              STORE_NAME               7 (torch)
+
+  6           LOAD_CONST               0 (0)
+              LOAD_CONST               3 (None)
+              IMPORT_NAME              8 (torch.nn)
+              IMPORT_FROM              9 (nn)
+              STORE_NAME               9 (nn)
+              POP_TOP
+
+  7           LOAD_CONST               0 (0)
+              LOAD_CONST               4 (('RandomForestClassifier',))
+              IMPORT_NAME             10 (sklearn.ensemble)
+              IMPORT_FROM             11 (RandomForestClassifier)
+              STORE_NAME              11 (RandomForestClassifier)
+              POP_TOP
+
+  8           LOAD_CONST               0 (0)
+              LOAD_CONST               5 (('DataLoader', 'TensorDataset', 'WeightedRandomSampler'))
+              IMPORT_NAME             12 (torch.utils.data)
+              IMPORT_FROM             13 (DataLoader)
+              STORE_NAME              13 (DataLoader)
+              IMPORT_FROM             14 (TensorDataset)
+              STORE_NAME              14 (TensorDataset)
+              IMPORT_FROM             15 (WeightedRandomSampler)
+              STORE_NAME              15 (WeightedRandomSampler)
+              POP_TOP
+
+ 11           LOAD_BUILD_CLASS
+              PUSH_NULL
+              LOAD_CONST               6 (<code object HeavyTierMLP at 0x000001E8656E65B0, file "src_replica/heavy_infer_replica.py", line 11>)
+              MAKE_FUNCTION
+              LOAD_CONST               7 ('HeavyTierMLP')
+              LOAD_NAME                9 (nn)
+              LOAD_ATTR               32 (Module)
+              CALL                     3
+              STORE_NAME              17 (HeavyTierMLP)
+
+ 28           LOAD_NAME                1 (dataclass)
+
+ 29           LOAD_BUILD_CLASS
+              PUSH_NULL
+              LOAD_CONST               8 (<code object HeavyTrainConfig at 0x000001E865452EF0, file "src_replica/heavy_infer_replica.py", line 28>)
+              MAKE_FUNCTION
+              LOAD_CONST               9 ('HeavyTrainConfig')
+              CALL                     2
+
+ 28           CALL                     0
+
+ 29           STORE_NAME              18 (HeavyTrainConfig)
+
+ 44           NOP
+
+ 40           LOAD_CONST              19 ((None,))
+              LOAD_CONST              10 ('X_train')
+
+ 41           LOAD_NAME                6 (np)
+              LOAD_ATTR               38 (ndarray)
+
+ 40           LOAD_CONST              11 ('y_train')
+
+ 42           LOAD_NAME                6 (np)
+              LOAD_ATTR               38 (ndarray)
+
+ 40           LOAD_CONST              12 ('config')
+
+ 43           LOAD_NAME               18 (HeavyTrainConfig)
+
+ 40           LOAD_CONST              13 ('sample_weights')
+
+ 44           LOAD_NAME                4 (Optional)
+              LOAD_NAME                6 (np)
+              LOAD_ATTR               38 (ndarray)
+              BINARY_SUBSCR
+
+ 40           LOAD_CONST              14 ('return')
+
+ 45           LOAD_NAME               20 (object)
+
+ 40           BUILD_TUPLE             10
+              LOAD_CONST              15 (<code object train_heavy_model at 0x000001E863ABC5D0, file "src_replica/heavy_infer_replica.py", line 40>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              SET_FUNCTION_ATTRIBUTE   1 (defaults)
+              STORE_NAME              21 (train_heavy_model)
+
+ 99           LOAD_CONST              16 ('model')
+
+100           LOAD_NAME               20 (object)
+
+ 99           LOAD_CONST              17 ('X')
+
+101           LOAD_NAME                6 (np)
+              LOAD_ATTR               38 (ndarray)
+
+ 99           LOAD_CONST              14 ('return')
+
+102           LOAD_NAME                3 (Dict)
+              LOAD_NAME               22 (str)
+              LOAD_NAME                6 (np)
+              LOAD_ATTR               38 (ndarray)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+
+ 99           BUILD_TUPLE              6
+              LOAD_CONST              18 (<code object predict_heavy at 0x000001E863A93C40, file "src_replica/heavy_infer_replica.py", line 99>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              23 (predict_heavy)
+              RETURN_CONST             3 (None)
+
+Disassembly of <code object HeavyTierMLP at 0x000001E8656E65B0, file "src_replica/heavy_infer_replica.py", line 11>:
+  --           MAKE_CELL                0 (__class__)
+
+  11           RESUME                   0
+               LOAD_NAME                0 (__name__)
+               STORE_NAME               1 (__module__)
+               LOAD_CONST               0 ('HeavyTierMLP')
+               STORE_NAME               2 (__qualname__)
+               LOAD_CONST               1 (11)
+               STORE_NAME               3 (__firstlineno__)
+
+  12           LOAD_CONST               8 ((64,))
+               LOAD_CONST               2 ('input_dim')
+               LOAD_NAME                4 (int)
+               BUILD_TUPLE              2
+               LOAD_FAST                0 (__class__)
+               BUILD_TUPLE              1
+               LOAD_CONST               3 (<code object __init__ at 0x000001E863A87620, file "src_replica/heavy_infer_replica.py", line 12>)
+               MAKE_FUNCTION
+               SET_FUNCTION_ATTRIBUTE   8 (closure)
+               SET_FUNCTION_ATTRIBUTE   4 (annotations)
+               SET_FUNCTION_ATTRIBUTE   1 (defaults)
+               STORE_NAME               5 (__init__)
+
+  24           LOAD_CONST               4 ('x')
+               LOAD_NAME                6 (torch)
+               LOAD_ATTR               14 (Tensor)
+               LOAD_CONST               5 ('return')
+               LOAD_NAME                6 (torch)
+               LOAD_ATTR               14 (Tensor)
+               BUILD_TUPLE              4
+               LOAD_CONST               6 (<code object forward at 0x000001E8656C9110, file "src_replica/heavy_infer_replica.py", line 24>)
+               MAKE_FUNCTION
+               SET_FUNCTION_ATTRIBUTE   4 (annotations)
+               STORE_NAME               8 (forward)
+               LOAD_CONST               7 (('net',))
+               STORE_NAME               9 (__static_attributes__)
+               LOAD_FAST                0 (__class__)
+               COPY                     1
+               STORE_NAME              10 (__classcell__)
+               RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x000001E863A87620, file "src_replica/heavy_infer_replica.py", line 12>:
+  --           COPY_FREE_VARS           1
+
+  12           RESUME                   0
+
+  13           LOAD_GLOBAL              0 (super)
+               LOAD_DEREF               2 (__class__)
+               LOAD_FAST                0 (self)
+               LOAD_SUPER_ATTR          5 (__init__ + NULL|self)
+               CALL                     0
+               POP_TOP
+
+  14           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR                6 (Sequential)
+               PUSH_NULL
+
+  15           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR                8 (Linear)
+               PUSH_NULL
+               LOAD_FAST                1 (input_dim)
+               LOAD_CONST               1 (128)
+               CALL                     2
+
+  16           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               10 (ReLU)
+               PUSH_NULL
+               LOAD_CONST               2 (True)
+               LOAD_CONST               3 (('inplace',))
+               CALL_KW                  1
+
+  17           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               12 (Dropout)
+               PUSH_NULL
+               LOAD_CONST               4 (0.2)
+               CALL                     1
+
+  18           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR                8 (Linear)
+               PUSH_NULL
+               LOAD_CONST               1 (128)
+               LOAD_CONST               5 (64)
+               CALL                     2
+
+  19           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               10 (ReLU)
+               PUSH_NULL
+               LOAD_CONST               2 (True)
+               LOAD_CONST               3 (('inplace',))
+               CALL_KW                  1
+
+  20           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               12 (Dropout)
+               PUSH_NULL
+               LOAD_CONST               4 (0.2)
+               CALL                     1
+
+  21           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR                8 (Linear)
+               PUSH_NULL
+               LOAD_CONST               5 (64)
+               LOAD_CONST               6 (2)
+               CALL                     2
+
+  14           CALL                     7
+               LOAD_FAST                0 (self)
+               STORE_ATTR               7 (net)
+               RETURN_CONST             0 (None)
+
+Disassembly of <code object forward at 0x000001E8656C9110, file "src_replica/heavy_infer_replica.py", line 24>:
+ 24           RESUME                   0
+
+ 25           LOAD_FAST                0 (self)
+              LOAD_ATTR                1 (net + NULL|self)
+              LOAD_FAST                1 (x)
+              CALL                     1
+              RETURN_VALUE
+
+Disassembly of <code object HeavyTrainConfig at 0x000001E865452EF0, file "src_replica/heavy_infer_replica.py", line 28>:
+ 28           RESUME                   0
+              LOAD_NAME                0 (__name__)
+              STORE_NAME               1 (__module__)
+              LOAD_CONST               0 ('HeavyTrainConfig')
+              STORE_NAME               2 (__qualname__)
+              LOAD_CONST               1 (28)
+              STORE_NAME               3 (__firstlineno__)
+              SETUP_ANNOTATIONS
+
+ 30           LOAD_CONST               2 (12)
+              STORE_NAME               4 (epochs)
+              LOAD_NAME                5 (int)
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST               3 ('epochs')
+              STORE_SUBSCR
+
+ 31           LOAD_CONST               4 (0.001)
+              STORE_NAME               7 (lr)
+              LOAD_NAME                8 (float)
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST               5 ('lr')
+              STORE_SUBSCR
+
+ 32           LOAD_CONST               6 (64)
+              STORE_NAME               9 (batch_size)
+              LOAD_NAME                5 (int)
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST               7 ('batch_size')
+              STORE_SUBSCR
+
+ 33           LOAD_CONST               8 (0.0001)
+              STORE_NAME              10 (weight_decay)
+              LOAD_NAME                8 (float)
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST               9 ('weight_decay')
+              STORE_SUBSCR
+
+ 34           LOAD_CONST              10 (True)
+              STORE_NAME              11 (class_weighting)
+              LOAD_NAME               12 (bool)
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST              11 ('class_weighting')
+              STORE_SUBSCR
+
+ 35           LOAD_CONST              12 ('mlp')
+              STORE_NAME              13 (backend)
+              LOAD_NAME               14 (str)
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST              13 ('backend')
+              STORE_SUBSCR
+
+ 36           LOAD_CONST              14 (300)
+              STORE_NAME              15 (rf_n_estimators)
+              LOAD_NAME                5 (int)
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST              15 ('rf_n_estimators')
+              STORE_SUBSCR
+
+ 37           LOAD_CONST              16 (None)
+              STORE_NAME              16 (rf_max_depth)
+              LOAD_NAME               17 (Optional)
+              LOAD_NAME                5 (int)
+              BINARY_SUBSCR
+              LOAD_NAME                6 (__annotations__)
+              LOAD_CONST              17 ('rf_max_depth')
+              STORE_SUBSCR
+              LOAD_CONST              18 (())
+              STORE_NAME              18 (__static_attributes__)
+              RETURN_CONST            16 (None)
+
+Disassembly of <code object train_heavy_model at 0x000001E863ABC5D0, file "src_replica/heavy_infer_replica.py", line 40>:
+ 40            RESUME                   0
+
+ 46            LOAD_FAST                2 (config)
+               LOAD_ATTR                0 (backend)
+               LOAD_ATTR                3 (lower + NULL|self)
+               CALL                     0
+               LOAD_CONST               1 ('rf')
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_FALSE       79 (to L3)
+
+ 47            LOAD_GLOBAL              5 (RandomForestClassifier + NULL)
+
+ 48            LOAD_GLOBAL              7 (int + NULL)
+               LOAD_FAST                2 (config)
+               LOAD_ATTR                8 (rf_n_estimators)
+               CALL                     1
+
+ 49            LOAD_FAST                2 (config)
+               LOAD_ATTR               10 (rf_max_depth)
+
+ 50            LOAD_CONST               2 (42)
+
+ 51            LOAD_CONST               3 (-1)
+
+ 52            LOAD_FAST                2 (config)
+               LOAD_ATTR               12 (class_weighting)
+               TO_BOOL
+               POP_JUMP_IF_FALSE        2 (to L1)
+               LOAD_CONST               4 ('balanced_subsample')
+               JUMP_FORWARD             1 (to L2)
+       L1:     LOAD_CONST               0 (None)
+
+ 47    L2:     LOAD_CONST               5 (('n_estimators', 'max_depth', 'random_state', 'n_jobs', 'class_weight'))
+               CALL_KW                  5
+               STORE_FAST               4 (model)
+
+ 54            LOAD_FAST                4 (model)
+               LOAD_ATTR               15 (fit + NULL|self)
+               LOAD_FAST_LOAD_FAST      1 (X_train, y_train)
+               LOAD_FAST                3 (sample_weights)
+               LOAD_CONST               6 (('sample_weight',))
+               CALL_KW                  3
+               POP_TOP
+
+ 55            LOAD_FAST                4 (model)
+               RETURN_VALUE
+
+ 57    L3:     LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               18 (device)
+               PUSH_NULL
+               LOAD_CONST               7 ('cpu')
+               CALL                     1
+               STORE_FAST               5 (device)
+
+ 58            LOAD_GLOBAL             21 (HeavyTierMLP + NULL)
+               LOAD_FAST                0 (X_train)
+               LOAD_ATTR               22 (shape)
+               LOAD_CONST               8 (1)
+               BINARY_SUBSCR
+               LOAD_CONST               9 (('input_dim',))
+               CALL_KW                  1
+               LOAD_ATTR               25 (to + NULL|self)
+               LOAD_FAST                5 (device)
+               CALL                     1
+               STORE_FAST               4 (model)
+
+ 59            LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               26 (optim)
+               LOAD_ATTR               29 (AdamW + NULL|self)
+               LOAD_FAST                4 (model)
+               LOAD_ATTR               31 (parameters + NULL|self)
+               CALL                     0
+               LOAD_FAST                2 (config)
+               LOAD_ATTR               32 (lr)
+               LOAD_FAST                2 (config)
+               LOAD_ATTR               34 (weight_decay)
+               LOAD_CONST              10 (('lr', 'weight_decay'))
+               CALL_KW                  3
+               STORE_FAST               6 (opt)
+
+ 60            LOAD_CONST               0 (None)
+               STORE_FAST               7 (class_weights)
+
+ 61            LOAD_FAST                2 (config)
+               LOAD_ATTR               12 (class_weighting)
+               TO_BOOL
+               POP_JUMP_IF_FALSE      182 (to L4)
+
+ 62            LOAD_GLOBAL             36 (np)
+               LOAD_ATTR               38 (bincount)
+               PUSH_NULL
+               LOAD_FAST                1 (y_train)
+               LOAD_ATTR               41 (astype + NULL|self)
+               LOAD_GLOBAL             36 (np)
+               LOAD_ATTR               42 (int64)
+               CALL                     1
+               LOAD_CONST              11 (2)
+               LOAD_CONST              12 (('minlength',))
+               CALL_KW                  2
+               STORE_FAST               8 (counts)
+
+ 63            LOAD_GLOBAL             45 (max + NULL)
+               LOAD_GLOBAL              7 (int + NULL)
+               LOAD_FAST                8 (counts)
+               LOAD_ATTR               47 (sum + NULL|self)
+               CALL                     0
+               CALL                     1
+               LOAD_CONST               8 (1)
+               CALL                     2
+               STORE_FAST               9 (total)
+
+ 64            LOAD_FAST                9 (total)
+               LOAD_CONST              13 (2.0)
+               LOAD_GLOBAL             45 (max + NULL)
+               LOAD_GLOBAL              7 (int + NULL)
+               LOAD_FAST                8 (counts)
+               LOAD_CONST              14 (0)
+               BINARY_SUBSCR
+               CALL                     1
+               LOAD_CONST               8 (1)
+               CALL                     2
+               BINARY_OP                5 (*)
+               BINARY_OP               11 (/)
+               STORE_FAST              10 (w0)
+
+ 65            LOAD_FAST                9 (total)
+               LOAD_CONST              13 (2.0)
+               LOAD_GLOBAL             45 (max + NULL)
+               LOAD_GLOBAL              7 (int + NULL)
+               LOAD_FAST                8 (counts)
+               LOAD_CONST               8 (1)
+               BINARY_SUBSCR
+               CALL                     1
+               LOAD_CONST               8 (1)
+               CALL                     2
+               BINARY_OP                5 (*)
+               BINARY_OP               11 (/)
+               STORE_FAST              11 (w1)
+
+ 66            LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               48 (tensor)
+               PUSH_NULL
+               LOAD_FAST_LOAD_FAST    171 (w0, w1)
+               BUILD_LIST               2
+               LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               50 (float32)
+               LOAD_FAST                5 (device)
+               LOAD_CONST              15 (('dtype', 'device'))
+               CALL_KW                  3
+               STORE_FAST               7 (class_weights)
+
+ 67    L4:     LOAD_GLOBAL             52 (nn)
+               LOAD_ATTR               54 (CrossEntropyLoss)
+               PUSH_NULL
+               LOAD_FAST                7 (class_weights)
+               LOAD_CONST              16 (('weight',))
+               CALL_KW                  1
+               STORE_FAST              12 (criterion)
+
+ 69            LOAD_GLOBAL             57 (TensorDataset + NULL)
+
+ 70            LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               48 (tensor)
+               PUSH_NULL
+               LOAD_FAST                0 (X_train)
+               LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               50 (float32)
+               LOAD_CONST              17 (('dtype',))
+               CALL_KW                  2
+
+ 71            LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               48 (tensor)
+               PUSH_NULL
+               LOAD_FAST                1 (y_train)
+               LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               58 (long)
+               LOAD_CONST              17 (('dtype',))
+               CALL_KW                  2
+
+ 69            CALL                     2
+               STORE_FAST              13 (ds)
+
+ 73            LOAD_FAST                3 (sample_weights)
+               POP_JUMP_IF_NONE       145 (to L5)
+
+ 74            LOAD_GLOBAL             36 (np)
+               LOAD_ATTR               60 (asarray)
+               PUSH_NULL
+               LOAD_FAST                3 (sample_weights)
+               LOAD_GLOBAL             36 (np)
+               LOAD_ATTR               62 (float64)
+               LOAD_CONST              17 (('dtype',))
+               CALL_KW                  2
+               STORE_FAST              14 (sw)
+
+ 75            LOAD_GLOBAL             36 (np)
+               LOAD_ATTR               64 (clip)
+               PUSH_NULL
+               LOAD_FAST               14 (sw)
+               LOAD_CONST              18 (1e-06)
+               LOAD_CONST               0 (None)
+               LOAD_CONST              19 (('a_min', 'a_max'))
+               CALL_KW                  3
+               STORE_FAST              14 (sw)
+
+ 76            LOAD_GLOBAL             67 (WeightedRandomSampler + NULL)
+
+ 77            LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               48 (tensor)
+               PUSH_NULL
+               LOAD_FAST               14 (sw)
+               LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               68 (double)
+               LOAD_CONST              17 (('dtype',))
+               CALL_KW                  2
+
+ 78            LOAD_GLOBAL              7 (int + NULL)
+               LOAD_FAST               14 (sw)
+               LOAD_ATTR               22 (shape)
+               LOAD_CONST              14 (0)
+               BINARY_SUBSCR
+               CALL                     1
+
+ 79            LOAD_CONST              20 (True)
+
+ 76            LOAD_CONST              21 (('weights', 'num_samples', 'replacement'))
+               CALL_KW                  3
+               STORE_FAST              15 (sampler)
+
+ 81            LOAD_GLOBAL             71 (DataLoader + NULL)
+               LOAD_FAST_LOAD_FAST    210 (ds, config)
+               LOAD_ATTR               72 (batch_size)
+               LOAD_FAST               15 (sampler)
+               LOAD_CONST              14 (0)
+               LOAD_CONST              22 (('batch_size', 'sampler', 'num_workers'))
+               CALL_KW                  4
+               STORE_FAST              16 (dl)
+               JUMP_FORWARD            21 (to L6)
+
+ 83    L5:     LOAD_GLOBAL             71 (DataLoader + NULL)
+               LOAD_FAST_LOAD_FAST    210 (ds, config)
+               LOAD_ATTR               72 (batch_size)
+               LOAD_CONST              20 (True)
+               LOAD_CONST              14 (0)
+               LOAD_CONST              23 (('batch_size', 'shuffle', 'num_workers'))
+               CALL_KW                  4
+               STORE_FAST              16 (dl)
+
+ 85    L6:     LOAD_FAST                4 (model)
+               LOAD_ATTR               75 (train + NULL|self)
+               CALL                     0
+               POP_TOP
+
+ 86            LOAD_GLOBAL             77 (range + NULL)
+               LOAD_FAST                2 (config)
+               LOAD_ATTR               78 (epochs)
+               CALL                     1
+               GET_ITER
+       L7:     FOR_ITER               114 (to L10)
+               STORE_FAST              17 (_)
+
+ 87            LOAD_FAST               16 (dl)
+               GET_ITER
+       L8:     FOR_ITER               105 (to L9)
+               UNPACK_SEQUENCE          2
+               STORE_FAST              18 (xb)
+               STORE_FAST              19 (yb)
+
+ 88            LOAD_FAST               18 (xb)
+               LOAD_ATTR               25 (to + NULL|self)
+               LOAD_FAST                5 (device)
+               CALL                     1
+               STORE_FAST              18 (xb)
+
+ 89            LOAD_FAST               19 (yb)
+               LOAD_ATTR               25 (to + NULL|self)
+               LOAD_FAST                5 (device)
+               CALL                     1
+               STORE_FAST              19 (yb)
+
+ 90            LOAD_FAST                6 (opt)
+               LOAD_ATTR               81 (zero_grad + NULL|self)
+               CALL                     0
+               POP_TOP
+
+ 91            LOAD_FAST                4 (model)
+               PUSH_NULL
+               LOAD_FAST               18 (xb)
+               CALL                     1
+               STORE_FAST              20 (logits)
+
+ 92            LOAD_FAST               12 (criterion)
+               PUSH_NULL
+               LOAD_FAST               20 (logits)
+               LOAD_FAST               19 (yb)
+               CALL                     2
+               STORE_FAST              21 (loss)
+
+ 93            LOAD_FAST               21 (loss)
+               LOAD_ATTR               83 (backward + NULL|self)
+               CALL                     0
+               POP_TOP
+
+ 94            LOAD_FAST                6 (opt)
+               LOAD_ATTR               85 (step + NULL|self)
+               CALL                     0
+               POP_TOP
+               JUMP_BACKWARD          107 (to L8)
+
+ 87    L9:     END_FOR
+               POP_TOP
+               JUMP_BACKWARD          116 (to L7)
+
+ 86   L10:     END_FOR
+               POP_TOP
+
+ 95            LOAD_FAST                4 (model)
+               LOAD_ATTR               87 (eval + NULL|self)
+               CALL                     0
+               POP_TOP
+
+ 96            LOAD_FAST                4 (model)
+               RETURN_VALUE
+
+Disassembly of <code object predict_heavy at 0x000001E863A93C40, file "src_replica/heavy_infer_replica.py", line 99>:
+  99           RESUME                   0
+
+ 103           LOAD_GLOBAL              1 (hasattr + NULL)
+               LOAD_FAST                0 (model)
+               LOAD_CONST               1 ('predict_proba')
+               CALL                     2
+               TO_BOOL
+               POP_JUMP_IF_FALSE      125 (to L2)
+
+ 104           LOAD_FAST                0 (model)
+               LOAD_ATTR                3 (predict_proba + NULL|self)
+               LOAD_FAST                1 (X)
+               CALL                     1
+               LOAD_ATTR                5 (astype + NULL|self)
+               LOAD_GLOBAL              6 (np)
+               LOAD_ATTR                8 (float32)
+               CALL                     1
+               STORE_FAST               2 (probs)
+
+ 105           LOAD_FAST                2 (probs)
+               LOAD_ATTR               10 (shape)
+               LOAD_CONST               2 (1)
+               BINARY_SUBSCR
+               LOAD_CONST               2 (1)
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_FALSE       35 (to L1)
+
+ 106           LOAD_FAST                2 (probs)
+               LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               BUILD_SLICE              2
+               LOAD_CONST               3 (0)
+               BUILD_TUPLE              2
+               BINARY_SUBSCR
+               STORE_FAST               3 (p1)
+
+ 107           LOAD_GLOBAL              6 (np)
+               LOAD_ATTR               12 (stack)
+               PUSH_NULL
+               LOAD_CONST               4 (1.0)
+               LOAD_FAST                3 (p1)
+               BINARY_OP               10 (-)
+               LOAD_FAST                3 (p1)
+               BUILD_LIST               2
+               LOAD_CONST               2 (1)
+               LOAD_CONST               5 (('axis',))
+               CALL_KW                  2
+               STORE_FAST               2 (probs)
+
+ 108   L1:     LOAD_GLOBAL              6 (np)
+               LOAD_ATTR               14 (argmax)
+               PUSH_NULL
+               LOAD_FAST                2 (probs)
+               LOAD_CONST               2 (1)
+               LOAD_CONST               5 (('axis',))
+               CALL_KW                  2
+               STORE_FAST               4 (pred)
+
+ 109           LOAD_FAST_LOAD_FAST     66 (pred, probs)
+               LOAD_CONST               6 (('pred', 'probs'))
+               BUILD_CONST_KEY_MAP      2
+               RETURN_VALUE
+
+ 111   L2:     LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               18 (device)
+               PUSH_NULL
+               LOAD_CONST               7 ('cpu')
+               CALL                     1
+               STORE_FAST               5 (device)
+
+ 112           LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               20 (no_grad)
+               PUSH_NULL
+               CALL                     0
+               BEFORE_WITH
+       L3:     POP_TOP
+
+ 113           LOAD_FAST                0 (model)
+               PUSH_NULL
+               LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               22 (tensor)
+               PUSH_NULL
+               LOAD_FAST                1 (X)
+               LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR                8 (float32)
+               LOAD_CONST               8 (('dtype',))
+               CALL_KW                  2
+               LOAD_ATTR               25 (to + NULL|self)
+               LOAD_FAST                5 (device)
+               CALL                     1
+               CALL                     1
+               STORE_FAST               6 (logits)
+
+ 114           LOAD_GLOBAL             16 (torch)
+               LOAD_ATTR               26 (softmax)
+               PUSH_NULL
+               LOAD_FAST                6 (logits)
+               LOAD_CONST               2 (1)
+               LOAD_CONST               9 (('dim',))
+               CALL_KW                  2
+               LOAD_ATTR               29 (cpu + NULL|self)
+               CALL                     0
+               LOAD_ATTR               31 (numpy + NULL|self)
+               CALL                     0
+               STORE_FAST               2 (probs)
+
+ 115           LOAD_GLOBAL              6 (np)
+               LOAD_ATTR               14 (argmax)
+               PUSH_NULL
+               LOAD_FAST                2 (probs)
+               LOAD_CONST               2 (1)
+               LOAD_CONST               5 (('axis',))
+               CALL_KW                  2
+               STORE_FAST               4 (pred)
+
+ 112   L4:     LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               CALL                     2
+               POP_TOP
+
+ 116   L5:     LOAD_FAST_CHECK          4 (pred)
+               LOAD_FAST_CHECK          2 (probs)
+               LOAD_CONST               6 (('pred', 'probs'))
+               BUILD_CONST_KEY_MAP      2
+               RETURN_VALUE
+
+ 112   L6:     PUSH_EXC_INFO
+               WITH_EXCEPT_START
+               TO_BOOL
+               POP_JUMP_IF_TRUE         1 (to L7)
+               RERAISE                  2
+       L7:     POP_TOP
+       L8:     POP_EXCEPT
+               POP_TOP
+               POP_TOP
+               JUMP_BACKWARD_NO_INTERRUPT 19 (to L5)
+
+  --   L9:     COPY                     3
+               POP_EXCEPT
+               RERAISE                  1
+ExceptionTable:
+  L3 to L4 -> L6 [1] lasti
+  L6 to L8 -> L9 [3] lasti

@@ -1,0 +1,20 @@
+{
+  "timestamp_utc": "2026-02-27T06:24:06.879300+00:00",
+  "runtime_contract_valid": true,
+  "malformed_rejections": [
+    {
+      "case": "bad_can_rank",
+      "error": "CAN tensor must be rank-3 (B,L,C), got (16,)"
+    },
+    {
+      "case": "bad_can_window",
+      "error": "CAN window size must be 100, got 32"
+    },
+    {
+      "case": "bad_eth_rank",
+      "error": "ETH tensor must be rank-4/5, got (32, 32)"
+    }
+  ],
+  "unexpected_pass_cases": [],
+  "all_malformed_rejected": true
+}

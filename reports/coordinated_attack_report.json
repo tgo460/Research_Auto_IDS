@@ -1,0 +1,13 @@
+{
+  "timestamp_utc": "2026-02-27T06:24:34.241411+00:00",
+  "type": "coordinated_attack_replay",
+  "samples": 20,
+  "attack_samples": 1,
+  "normal_samples": 19,
+  "detection_rate": 1.0,
+  "fpr": 1.0,
+  "latency_ms": {
+    "mean": 0.18451213836669922,
+    "p95": 0.2135276794433597
+  }
+}

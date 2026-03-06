@@ -1,0 +1,1034 @@
+  0           RESUME                   0
+
+  1           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              0 (os)
+              STORE_NAME               0 (os)
+
+  2           LOAD_CONST               0 (0)
+              LOAD_CONST               2 (('asdict', 'dataclass'))
+              IMPORT_NAME              1 (dataclasses)
+              IMPORT_FROM              2 (asdict)
+              STORE_NAME               2 (asdict)
+              IMPORT_FROM              3 (dataclass)
+              STORE_NAME               3 (dataclass)
+              POP_TOP
+
+  3           LOAD_CONST               0 (0)
+              LOAD_CONST               3 (('Dict', 'List', 'Optional', 'Tuple'))
+              IMPORT_NAME              4 (typing)
+              IMPORT_FROM              5 (Dict)
+              STORE_NAME               5 (Dict)
+              IMPORT_FROM              6 (List)
+              STORE_NAME               6 (List)
+              IMPORT_FROM              7 (Optional)
+              STORE_NAME               7 (Optional)
+              IMPORT_FROM              8 (Tuple)
+              STORE_NAME               8 (Tuple)
+              POP_TOP
+
+  5           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              9 (numpy)
+              STORE_NAME              10 (np)
+
+  6           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME             11 (pandas)
+              STORE_NAME              12 (pd)
+
+  9           LOAD_NAME                3 (dataclass)
+
+ 10           LOAD_BUILD_CLASS
+              PUSH_NULL
+              LOAD_CONST               4 (<code object AlignmentResult at 0x0000022FB5A86B50, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 9>)
+              MAKE_FUNCTION
+              LOAD_CONST               5 ('AlignmentResult')
+              CALL                     2
+
+  9           CALL                     0
+
+ 10           STORE_NAME              13 (AlignmentResult)
+
+ 25           LOAD_CONST               6 ('values')
+              LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+              LOAD_CONST               7 ('return')
+              LOAD_NAME               15 (float)
+              BUILD_TUPLE              4
+              LOAD_CONST               8 (<code object _infer_epoch_scale at 0x0000022FB5A821F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 25>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              16 (_infer_epoch_scale)
+
+ 40           LOAD_CONST               9 ('can_df')
+              LOAD_NAME               12 (pd)
+              LOAD_ATTR               34 (DataFrame)
+              LOAD_CONST               7 ('return')
+              LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+              BUILD_TUPLE              4
+              LOAD_CONST              10 (<code object normalize_can_timestamps at 0x0000022FB61F92E0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 40>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              18 (normalize_can_timestamps)
+
+ 50           LOAD_CONST              11 ('eth_df')
+              LOAD_NAME               12 (pd)
+              LOAD_ATTR               34 (DataFrame)
+              LOAD_CONST               7 ('return')
+              LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+              BUILD_TUPLE              4
+              LOAD_CONST              12 (<code object normalize_eth_timestamps at 0x0000022FB6A9FBD0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 50>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              19 (normalize_eth_timestamps)
+
+ 59           LOAD_CONST              13 ('ts_seconds')
+
+ 60           LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+
+ 59           LOAD_CONST              14 ('window_size')
+
+ 61           LOAD_NAME               20 (int)
+
+ 59           LOAD_CONST              15 ('overlap')
+
+ 62           LOAD_NAME               20 (int)
+
+ 59           LOAD_CONST               7 ('return')
+
+ 63           LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+
+ 59           BUILD_TUPLE              8
+              LOAD_CONST              16 (<code object make_window_end_timestamps at 0x0000022FB5A3DDF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 59>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              21 (make_window_end_timestamps)
+
+ 73           LOAD_CONST              17 ('can_ts')
+              LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+              LOAD_CONST              18 ('eth_ts')
+              LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+              LOAD_CONST              19 ('mode')
+              LOAD_NAME               22 (str)
+              LOAD_CONST               7 ('return')
+              LOAD_NAME                8 (Tuple)
+              LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+              LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              8
+              LOAD_CONST              20 (<code object apply_time_mode at 0x0000022FB5A87560, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 73>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              23 (apply_time_mode)
+
+ 83           LOAD_CONST              21 ('can_windows_ts')
+
+ 84           LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+
+ 83           LOAD_CONST              22 ('eth_windows_ts')
+
+ 85           LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+
+ 83           LOAD_CONST              23 ('tolerance_ms')
+
+ 86           LOAD_NAME               15 (float)
+
+ 83           LOAD_CONST               7 ('return')
+
+ 87           LOAD_NAME               12 (pd)
+              LOAD_ATTR               34 (DataFrame)
+
+ 83           BUILD_TUPLE              8
+              LOAD_CONST              24 (<code object nearest_align at 0x0000022FB6A98300, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 83>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              24 (nearest_align)
+
+125           LOAD_CONST              25 ('pair_name')
+
+126           LOAD_NAME               22 (str)
+
+125           LOAD_CONST              21 ('can_windows_ts')
+
+127           LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+
+125           LOAD_CONST              22 ('eth_windows_ts')
+
+128           LOAD_NAME               10 (np)
+              LOAD_ATTR               28 (ndarray)
+
+125           LOAD_CONST              26 ('pairs_df')
+
+129           LOAD_NAME               12 (pd)
+              LOAD_ATTR               34 (DataFrame)
+
+125           LOAD_CONST              23 ('tolerance_ms')
+
+130           LOAD_NAME               15 (float)
+
+125           LOAD_CONST              27 ('time_mode')
+
+131           LOAD_NAME               22 (str)
+
+125           LOAD_CONST               7 ('return')
+
+132           LOAD_NAME               13 (AlignmentResult)
+
+125           BUILD_TUPLE             14
+              LOAD_CONST              28 (<code object build_alignment_report at 0x0000022FB61FF1F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 125>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              25 (build_alignment_report)
+
+170           NOP
+
+162           LOAD_CONST              38 (('relative_session',))
+              LOAD_CONST              29 ('can_csv_path')
+
+163           LOAD_NAME               22 (str)
+
+162           LOAD_CONST              30 ('eth_csv_path')
+
+164           LOAD_NAME               22 (str)
+
+162           LOAD_CONST              31 ('can_window_size')
+
+165           LOAD_NAME               20 (int)
+
+162           LOAD_CONST              32 ('can_overlap')
+
+166           LOAD_NAME               20 (int)
+
+162           LOAD_CONST              33 ('eth_window_size')
+
+167           LOAD_NAME               20 (int)
+
+162           LOAD_CONST              34 ('eth_overlap')
+
+168           LOAD_NAME               20 (int)
+
+162           LOAD_CONST              23 ('tolerance_ms')
+
+169           LOAD_NAME               15 (float)
+
+162           LOAD_CONST              27 ('time_mode')
+
+170           LOAD_NAME               22 (str)
+
+162           LOAD_CONST               7 ('return')
+
+171           LOAD_NAME                8 (Tuple)
+              LOAD_NAME               12 (pd)
+              LOAD_ATTR               34 (DataFrame)
+              LOAD_NAME               13 (AlignmentResult)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+
+162           BUILD_TUPLE             18
+              LOAD_CONST              35 (<code object correlate_can_eth at 0x0000022FB6AE2140, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 162>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              SET_FUNCTION_ATTRIBUTE   1 (defaults)
+              STORE_NAME              26 (correlate_can_eth)
+
+196           LOAD_CONST              36 ('result')
+              LOAD_NAME               13 (AlignmentResult)
+              LOAD_CONST               7 ('return')
+              LOAD_NAME                5 (Dict)
+              LOAD_NAME               22 (str)
+              LOAD_NAME               27 (object)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              4
+              LOAD_CONST              37 (<code object report_to_dict at 0x0000022FB5CC3D70, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 196>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              28 (report_to_dict)
+              RETURN_CONST             1 (None)
+
+Disassembly of <code object AlignmentResult at 0x0000022FB5A86B50, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 9>:
+  9           RESUME                   0
+              LOAD_NAME                0 (__name__)
+              STORE_NAME               1 (__module__)
+              LOAD_CONST               0 ('AlignmentResult')
+              STORE_NAME               2 (__qualname__)
+              LOAD_CONST               1 (9)
+              STORE_NAME               3 (__firstlineno__)
+              SETUP_ANNOTATIONS
+
+ 11           LOAD_NAME                4 (str)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               2 ('pair_name')
+              STORE_SUBSCR
+
+ 12           LOAD_NAME                6 (int)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               3 ('can_windows')
+              STORE_SUBSCR
+
+ 13           LOAD_NAME                6 (int)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               4 ('eth_windows')
+              STORE_SUBSCR
+
+ 14           LOAD_NAME                6 (int)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               5 ('matched')
+              STORE_SUBSCR
+
+ 15           LOAD_NAME                6 (int)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               6 ('unmatched_can')
+              STORE_SUBSCR
+
+ 16           LOAD_NAME                6 (int)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               7 ('unmatched_eth_est')
+              STORE_SUBSCR
+
+ 17           LOAD_NAME                7 (float)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               8 ('matched_rate_can')
+              STORE_SUBSCR
+
+ 18           LOAD_NAME                7 (float)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               9 ('unmatched_rate_can')
+              STORE_SUBSCR
+
+ 19           LOAD_NAME                8 (Optional)
+              LOAD_NAME                7 (float)
+              BINARY_SUBSCR
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST              10 ('median_delta_ms')
+              STORE_SUBSCR
+
+ 20           LOAD_NAME                8 (Optional)
+              LOAD_NAME                7 (float)
+              BINARY_SUBSCR
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST              11 ('p95_delta_ms')
+              STORE_SUBSCR
+
+ 21           LOAD_NAME                7 (float)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST              12 ('tolerance_ms')
+              STORE_SUBSCR
+
+ 22           LOAD_NAME                4 (str)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST              13 ('time_mode')
+              STORE_SUBSCR
+              LOAD_CONST              14 (())
+              STORE_NAME               9 (__static_attributes__)
+              RETURN_CONST            15 (None)
+
+Disassembly of <code object _infer_epoch_scale at 0x0000022FB5A821F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 25>:
+ 25           RESUME                   0
+
+ 27           LOAD_FAST                0 (values)
+              LOAD_GLOBAL              0 (np)
+              LOAD_ATTR                2 (isfinite)
+              PUSH_NULL
+              LOAD_FAST                0 (values)
+              CALL                     1
+              BINARY_SUBSCR
+              STORE_FAST               1 (finite)
+
+ 28           LOAD_FAST                1 (finite)
+              LOAD_ATTR                4 (size)
+              LOAD_CONST               1 (0)
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE        1 (to L1)
+
+ 29           RETURN_CONST             2 (1.0)
+
+ 30   L1:     LOAD_GLOBAL              7 (float + NULL)
+              LOAD_GLOBAL              0 (np)
+              LOAD_ATTR                8 (median)
+              PUSH_NULL
+              LOAD_GLOBAL              0 (np)
+              LOAD_ATTR               10 (abs)
+              PUSH_NULL
+              LOAD_FAST                1 (finite)
+              CALL                     1
+              CALL                     1
+              CALL                     1
+              STORE_FAST               2 (med)
+
+ 31           LOAD_FAST                2 (med)
+              LOAD_CONST               3 (1e+17)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_FALSE        1 (to L2)
+
+ 32           RETURN_CONST             4 (1000000000.0)
+
+ 33   L2:     LOAD_FAST                2 (med)
+              LOAD_CONST               5 (100000000000000.0)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_FALSE        1 (to L3)
+
+ 34           RETURN_CONST             6 (1000000.0)
+
+ 35   L3:     LOAD_FAST                2 (med)
+              LOAD_CONST               7 (100000000000.0)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_FALSE        1 (to L4)
+
+ 36           RETURN_CONST             8 (1000.0)
+
+ 37   L4:     RETURN_CONST             2 (1.0)
+
+Disassembly of <code object normalize_can_timestamps at 0x0000022FB61F92E0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 40>:
+ 40           RESUME                   0
+
+ 41           LOAD_CONST               1 ('Timestamp')
+              LOAD_FAST                0 (can_df)
+              LOAD_ATTR                0 (columns)
+              CONTAINS_OP              0
+              POP_JUMP_IF_FALSE       81 (to L1)
+
+ 42           LOAD_GLOBAL              2 (pd)
+              LOAD_ATTR                4 (to_numeric)
+              PUSH_NULL
+              LOAD_FAST                0 (can_df)
+              LOAD_CONST               1 ('Timestamp')
+              BINARY_SUBSCR
+              LOAD_CONST               2 ('coerce')
+              LOAD_CONST               3 (('errors',))
+              CALL_KW                  2
+              LOAD_ATTR                7 (ffill + NULL|self)
+              CALL                     0
+              LOAD_ATTR                9 (fillna + NULL|self)
+              LOAD_CONST               4 (0.0)
+              CALL                     1
+              LOAD_ATTR               11 (to_numpy + NULL|self)
+              LOAD_GLOBAL             12 (np)
+              LOAD_ATTR               14 (float64)
+              LOAD_CONST               5 (('dtype',))
+              CALL_KW                  1
+              STORE_FAST               1 (ts)
+              JUMP_FORWARD            47 (to L2)
+
+ 45   L1:     LOAD_GLOBAL             12 (np)
+              LOAD_ATTR               16 (arange)
+              PUSH_NULL
+              LOAD_GLOBAL             19 (len + NULL)
+              LOAD_FAST                0 (can_df)
+              CALL                     1
+              LOAD_GLOBAL             12 (np)
+              LOAD_ATTR               14 (float64)
+              LOAD_CONST               5 (('dtype',))
+              CALL_KW                  2
+              LOAD_CONST               6 (0.001)
+              BINARY_OP                5 (*)
+              STORE_FAST               1 (ts)
+
+ 46   L2:     LOAD_GLOBAL             21 (_infer_epoch_scale + NULL)
+              LOAD_FAST                1 (ts)
+              CALL                     1
+              STORE_FAST               2 (scale)
+
+ 47           LOAD_FAST_LOAD_FAST     18 (ts, scale)
+              BINARY_OP               11 (/)
+              RETURN_VALUE
+
+Disassembly of <code object normalize_eth_timestamps at 0x0000022FB6A9FBD0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 50>:
+ 50           RESUME                   0
+
+ 51           LOAD_GLOBAL              0 (pd)
+              LOAD_ATTR                2 (to_numeric)
+              PUSH_NULL
+              LOAD_FAST                0 (eth_df)
+              LOAD_CONST               1 ('timestamp_sec')
+              BINARY_SUBSCR
+              LOAD_CONST               2 ('coerce')
+              LOAD_CONST               3 (('errors',))
+              CALL_KW                  2
+              LOAD_ATTR                5 (fillna + NULL|self)
+              LOAD_CONST               4 (0.0)
+              CALL                     1
+              LOAD_ATTR                7 (to_numpy + NULL|self)
+              LOAD_GLOBAL              8 (np)
+              LOAD_ATTR               10 (float64)
+              LOAD_CONST               5 (('dtype',))
+              CALL_KW                  1
+              STORE_FAST               1 (sec_like)
+
+ 52           LOAD_GLOBAL              0 (pd)
+              LOAD_ATTR                2 (to_numeric)
+              PUSH_NULL
+              LOAD_FAST                0 (eth_df)
+              LOAD_ATTR               13 (get + NULL|self)
+              LOAD_CONST               6 ('timestamp_usec')
+              LOAD_CONST               4 (0.0)
+              CALL                     2
+              LOAD_CONST               2 ('coerce')
+              LOAD_CONST               3 (('errors',))
+              CALL_KW                  2
+              LOAD_ATTR                5 (fillna + NULL|self)
+              LOAD_CONST               4 (0.0)
+              CALL                     1
+              LOAD_ATTR                7 (to_numpy + NULL|self)
+              LOAD_GLOBAL              8 (np)
+              LOAD_ATTR               10 (float64)
+              LOAD_CONST               5 (('dtype',))
+              CALL_KW                  1
+              STORE_FAST               2 (usec_like)
+
+ 53           LOAD_GLOBAL             15 (_infer_epoch_scale + NULL)
+              LOAD_FAST                1 (sec_like)
+              CALL                     1
+              STORE_FAST               3 (scale)
+
+ 54           LOAD_FAST_LOAD_FAST     19 (sec_like, scale)
+              BINARY_OP               11 (/)
+              STORE_FAST               4 (sec_base)
+
+ 56           LOAD_FAST_LOAD_FAST     66 (sec_base, usec_like)
+              LOAD_CONST               7 (1000000.0)
+              BINARY_OP               11 (/)
+              BINARY_OP                0 (+)
+              RETURN_VALUE
+
+Disassembly of <code object make_window_end_timestamps at 0x0000022FB5A3DDF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 59>:
+ 59           RESUME                   0
+
+ 64           LOAD_FAST                1 (window_size)
+              LOAD_CONST               1 (0)
+              COMPARE_OP              58 (bool(<=))
+              POP_JUMP_IF_FALSE       11 (to L1)
+
+ 65           LOAD_GLOBAL              1 (ValueError + NULL)
+              LOAD_CONST               2 ('window_size must be > 0')
+              CALL                     1
+              RAISE_VARARGS            1
+
+ 66   L1:     LOAD_GLOBAL              3 (max + NULL)
+              LOAD_CONST               3 (1)
+              LOAD_FAST_LOAD_FAST     18 (window_size, overlap)
+              BINARY_OP               10 (-)
+              CALL                     2
+              STORE_FAST               3 (step)
+
+ 67           LOAD_FAST                0 (ts_seconds)
+              LOAD_ATTR                4 (size)
+              LOAD_FAST                1 (window_size)
+              COMPARE_OP              18 (bool(<))
+              POP_JUMP_IF_FALSE       35 (to L2)
+
+ 68           LOAD_GLOBAL              6 (np)
+              LOAD_ATTR                8 (array)
+              PUSH_NULL
+              BUILD_LIST               0
+              LOAD_GLOBAL              6 (np)
+              LOAD_ATTR               10 (float64)
+              LOAD_CONST               4 (('dtype',))
+              CALL_KW                  2
+              RETURN_VALUE
+
+ 69   L2:     LOAD_GLOBAL              6 (np)
+              LOAD_ATTR               12 (arange)
+              PUSH_NULL
+              LOAD_FAST                1 (window_size)
+              LOAD_CONST               3 (1)
+              BINARY_OP               10 (-)
+              LOAD_FAST                0 (ts_seconds)
+              LOAD_ATTR                4 (size)
+              LOAD_FAST                3 (step)
+              CALL                     3
+              STORE_FAST               4 (end_idx)
+
+ 70           LOAD_FAST_LOAD_FAST      4 (ts_seconds, end_idx)
+              BINARY_SUBSCR
+              RETURN_VALUE
+
+Disassembly of <code object apply_time_mode at 0x0000022FB5A87560, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 73>:
+ 73           RESUME                   0
+
+ 74           LOAD_FAST                2 (mode)
+              LOAD_CONST               1 ('absolute')
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE        3 (to L1)
+
+ 75           LOAD_FAST_LOAD_FAST      1 (can_ts, eth_ts)
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+ 76   L1:     LOAD_FAST                2 (mode)
+              LOAD_CONST               2 ('relative_session')
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE       56 (to L6)
+
+ 77           LOAD_FAST                0 (can_ts)
+              LOAD_ATTR                0 (size)
+              TO_BOOL
+              POP_JUMP_IF_FALSE        5 (to L2)
+              LOAD_FAST                0 (can_ts)
+              LOAD_CONST               3 (0)
+              BINARY_SUBSCR
+              JUMP_FORWARD             1 (to L3)
+      L2:     LOAD_CONST               4 (0.0)
+      L3:     STORE_FAST               3 (can0)
+
+ 78           LOAD_FAST                1 (eth_ts)
+              LOAD_ATTR                0 (size)
+              TO_BOOL
+              POP_JUMP_IF_FALSE        5 (to L4)
+              LOAD_FAST                1 (eth_ts)
+              LOAD_CONST               3 (0)
+              BINARY_SUBSCR
+              JUMP_FORWARD             1 (to L5)
+      L4:     LOAD_CONST               4 (0.0)
+      L5:     STORE_FAST               4 (eth0)
+
+ 79           LOAD_FAST_LOAD_FAST      3 (can_ts, can0)
+              BINARY_OP               10 (-)
+              LOAD_FAST_LOAD_FAST     20 (eth_ts, eth0)
+              BINARY_OP               10 (-)
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+ 80   L6:     LOAD_GLOBAL              3 (ValueError + NULL)
+              LOAD_CONST               5 ('time_mode must be one of: absolute, relative_session')
+              CALL                     1
+              RAISE_VARARGS            1
+
+Disassembly of <code object nearest_align at 0x0000022FB6A98300, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 83>:
+  --           MAKE_CELL               12 (eth_sorted_ts)
+               MAKE_CELL               13 (t_can)
+
+  83           RESUME                   0
+
+  88           LOAD_FAST                0 (can_windows_ts)
+               LOAD_ATTR                0 (size)
+               LOAD_CONST               1 (0)
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_TRUE        16 (to L1)
+               LOAD_FAST                1 (eth_windows_ts)
+               LOAD_ATTR                0 (size)
+               LOAD_CONST               1 (0)
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_FALSE       22 (to L2)
+
+  89   L1:     LOAD_GLOBAL              2 (pd)
+               LOAD_ATTR                4 (DataFrame)
+               PUSH_NULL
+               BUILD_LIST               0
+               LOAD_CONST               2 (('can_window_idx', 'eth_window_idx', 'can_ts', 'eth_ts', 'delta_ms'))
+               LIST_EXTEND              1
+               LOAD_CONST               3 (('columns',))
+               CALL_KW                  1
+               RETURN_VALUE
+
+  91   L2:     BUILD_LIST               0
+               STORE_FAST               3 (rows)
+
+  92           LOAD_FAST                2 (tolerance_ms)
+               LOAD_CONST               4 (1000.0)
+               BINARY_OP               11 (/)
+               STORE_FAST               4 (tol_s)
+
+  94           LOAD_GLOBAL              6 (np)
+               LOAD_ATTR                8 (argsort)
+               PUSH_NULL
+               LOAD_FAST                1 (eth_windows_ts)
+               CALL                     1
+               STORE_FAST               5 (eth_sorted_idx)
+
+  95           LOAD_FAST_LOAD_FAST     21 (eth_windows_ts, eth_sorted_idx)
+               BINARY_SUBSCR
+               STORE_DEREF             12 (eth_sorted_ts)
+
+  97           LOAD_GLOBAL             11 (enumerate + NULL)
+               LOAD_FAST                0 (can_windows_ts)
+               CALL                     1
+               GET_ITER
+       L3:     FOR_ITER               215 (to L8)
+               UNPACK_SEQUENCE          2
+               STORE_FAST               6 (i)
+               STORE_DEREF             13 (t_can)
+
+  98           LOAD_GLOBAL              6 (np)
+               LOAD_ATTR               12 (searchsorted)
+               PUSH_NULL
+               LOAD_DEREF              12 (eth_sorted_ts)
+               LOAD_DEREF              13 (t_can)
+               CALL                     2
+               STORE_FAST               7 (pos)
+
+  99           BUILD_LIST               0
+               STORE_FAST               8 (candidates)
+
+ 100           LOAD_FAST                7 (pos)
+               LOAD_DEREF              12 (eth_sorted_ts)
+               LOAD_ATTR                0 (size)
+               COMPARE_OP              18 (bool(<))
+               POP_JUMP_IF_FALSE       17 (to L4)
+
+ 101           LOAD_FAST                8 (candidates)
+               LOAD_ATTR               15 (append + NULL|self)
+               LOAD_FAST                7 (pos)
+               CALL                     1
+               POP_TOP
+
+ 102   L4:     LOAD_FAST                7 (pos)
+               LOAD_CONST               1 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       20 (to L5)
+
+ 103           LOAD_FAST                8 (candidates)
+               LOAD_ATTR               15 (append + NULL|self)
+               LOAD_FAST                7 (pos)
+               LOAD_CONST               5 (1)
+               BINARY_OP               10 (-)
+               CALL                     1
+               POP_TOP
+
+ 105   L5:     LOAD_FAST                8 (candidates)
+               TO_BOOL
+               POP_JUMP_IF_TRUE         2 (to L6)
+
+ 106           JUMP_BACKWARD           99 (to L3)
+
+ 108   L6:     LOAD_GLOBAL             17 (min + NULL)
+               LOAD_FAST                8 (candidates)
+               LOAD_FAST               12 (eth_sorted_ts)
+               LOAD_FAST               13 (t_can)
+               BUILD_TUPLE              2
+               LOAD_CONST               6 (<code object <lambda> at 0x0000022FB5C89200, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 108>)
+               MAKE_FUNCTION
+               SET_FUNCTION_ATTRIBUTE   8 (closure)
+               LOAD_CONST               7 (('key',))
+               CALL_KW                  2
+               STORE_FAST               9 (best_pos)
+
+ 109           LOAD_GLOBAL             19 (abs + NULL)
+               LOAD_DEREF              12 (eth_sorted_ts)
+               LOAD_FAST                9 (best_pos)
+               BINARY_SUBSCR
+               LOAD_DEREF              13 (t_can)
+               BINARY_OP               10 (-)
+               CALL                     1
+               STORE_FAST              10 (delta_s)
+
+ 110           LOAD_FAST_LOAD_FAST    164 (delta_s, tol_s)
+               COMPARE_OP              58 (bool(<=))
+               POP_JUMP_IF_TRUE         2 (to L7)
+               JUMP_BACKWARD          138 (to L3)
+
+ 111   L7:     LOAD_GLOBAL             21 (int + NULL)
+               LOAD_FAST_LOAD_FAST     89 (eth_sorted_idx, best_pos)
+               BINARY_SUBSCR
+               CALL                     1
+               STORE_FAST              11 (eth_idx)
+
+ 112           LOAD_FAST                3 (rows)
+               LOAD_ATTR               15 (append + NULL|self)
+
+ 114           LOAD_GLOBAL             21 (int + NULL)
+               LOAD_FAST                6 (i)
+               CALL                     1
+
+ 115           LOAD_FAST               11 (eth_idx)
+
+ 116           LOAD_GLOBAL             23 (float + NULL)
+               LOAD_DEREF              13 (t_can)
+               CALL                     1
+
+ 117           LOAD_GLOBAL             23 (float + NULL)
+               LOAD_FAST_LOAD_FAST     27 (eth_windows_ts, eth_idx)
+               BINARY_SUBSCR
+               CALL                     1
+
+ 118           LOAD_GLOBAL             23 (float + NULL)
+               LOAD_FAST               10 (delta_s)
+               LOAD_CONST               4 (1000.0)
+               BINARY_OP                5 (*)
+               CALL                     1
+
+ 113           LOAD_CONST               2 (('can_window_idx', 'eth_window_idx', 'can_ts', 'eth_ts', 'delta_ms'))
+               BUILD_CONST_KEY_MAP      5
+
+ 112           CALL                     1
+               POP_TOP
+               JUMP_BACKWARD          217 (to L3)
+
+  97   L8:     END_FOR
+               POP_TOP
+
+ 122           LOAD_GLOBAL              2 (pd)
+               LOAD_ATTR                4 (DataFrame)
+               PUSH_NULL
+               LOAD_FAST                3 (rows)
+               CALL                     1
+               RETURN_VALUE
+
+Disassembly of <code object <lambda> at 0x0000022FB5C89200, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 108>:
+  --           COPY_FREE_VARS           2
+
+ 108           RESUME                   0
+               LOAD_GLOBAL              1 (abs + NULL)
+               LOAD_DEREF               1 (eth_sorted_ts)
+               LOAD_FAST                0 (p)
+               BINARY_SUBSCR
+               LOAD_DEREF               2 (t_can)
+               BINARY_OP               10 (-)
+               CALL                     1
+               RETURN_VALUE
+
+Disassembly of <code object build_alignment_report at 0x0000022FB61FF1F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 125>:
+125            RESUME                   0
+
+133            LOAD_GLOBAL              1 (int + NULL)
+               LOAD_GLOBAL              3 (len + NULL)
+               LOAD_FAST                3 (pairs_df)
+               CALL                     1
+               CALL                     1
+               STORE_FAST               6 (matched)
+
+134            LOAD_GLOBAL              1 (int + NULL)
+               LOAD_GLOBAL              3 (len + NULL)
+               LOAD_FAST                1 (can_windows_ts)
+               CALL                     1
+               CALL                     1
+               STORE_FAST               7 (can_total)
+
+135            LOAD_GLOBAL              1 (int + NULL)
+               LOAD_GLOBAL              3 (len + NULL)
+               LOAD_FAST                2 (eth_windows_ts)
+               CALL                     1
+               CALL                     1
+               STORE_FAST               8 (eth_total)
+
+136            LOAD_GLOBAL              5 (max + NULL)
+               LOAD_CONST               1 (0)
+               LOAD_FAST_LOAD_FAST    118 (can_total, matched)
+               BINARY_OP               10 (-)
+               CALL                     2
+               STORE_FAST               9 (unmatched_can)
+
+137            LOAD_FAST                6 (matched)
+               LOAD_CONST               1 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       28 (to L1)
+               LOAD_GLOBAL              1 (int + NULL)
+               LOAD_FAST                3 (pairs_df)
+               LOAD_CONST               2 ('eth_window_idx')
+               BINARY_SUBSCR
+               LOAD_ATTR                7 (nunique + NULL|self)
+               CALL                     0
+               CALL                     1
+               JUMP_FORWARD             1 (to L2)
+       L1:     LOAD_CONST               1 (0)
+       L2:     STORE_FAST              10 (matched_eth_unique)
+
+138            LOAD_GLOBAL              5 (max + NULL)
+               LOAD_CONST               1 (0)
+               LOAD_FAST_LOAD_FAST    138 (eth_total, matched_eth_unique)
+               BINARY_OP               10 (-)
+               CALL                     2
+               STORE_FAST              11 (unmatched_eth_est)
+
+140            LOAD_FAST                6 (matched)
+               LOAD_CONST               1 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       28 (to L3)
+               LOAD_GLOBAL              9 (float + NULL)
+               LOAD_FAST                3 (pairs_df)
+               LOAD_CONST               3 ('delta_ms')
+               BINARY_SUBSCR
+               LOAD_ATTR               11 (median + NULL|self)
+               CALL                     0
+               CALL                     1
+               JUMP_FORWARD             1 (to L4)
+       L3:     LOAD_CONST               0 (None)
+       L4:     STORE_FAST              12 (median_delta)
+
+141            LOAD_FAST                6 (matched)
+               LOAD_CONST               1 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       35 (to L5)
+               LOAD_GLOBAL              9 (float + NULL)
+               LOAD_GLOBAL             12 (np)
+               LOAD_ATTR               14 (percentile)
+               PUSH_NULL
+               LOAD_FAST                3 (pairs_df)
+               LOAD_CONST               3 ('delta_ms')
+               BINARY_SUBSCR
+               LOAD_CONST               4 (95)
+               CALL                     2
+               CALL                     1
+               JUMP_FORWARD             1 (to L6)
+       L5:     LOAD_CONST               0 (None)
+       L6:     STORE_FAST              13 (p95_delta)
+
+143            LOAD_FAST                7 (can_total)
+               LOAD_CONST               1 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       13 (to L7)
+               LOAD_GLOBAL              9 (float + NULL)
+               LOAD_FAST_LOAD_FAST    103 (matched, can_total)
+               BINARY_OP               11 (/)
+               CALL                     1
+               JUMP_FORWARD             1 (to L8)
+       L7:     LOAD_CONST               5 (0.0)
+       L8:     STORE_FAST              14 (matched_rate_can)
+
+144            LOAD_FAST                7 (can_total)
+               LOAD_CONST               1 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       13 (to L9)
+               LOAD_GLOBAL              9 (float + NULL)
+               LOAD_FAST_LOAD_FAST    151 (unmatched_can, can_total)
+               BINARY_OP               11 (/)
+               CALL                     1
+               JUMP_FORWARD             1 (to L10)
+       L9:     LOAD_CONST               5 (0.0)
+      L10:     STORE_FAST              15 (unmatched_rate_can)
+
+146            LOAD_GLOBAL             17 (AlignmentResult + NULL)
+
+147            LOAD_FAST                0 (pair_name)
+
+148            LOAD_FAST                7 (can_total)
+
+149            LOAD_FAST                8 (eth_total)
+
+150            LOAD_FAST                6 (matched)
+
+151            LOAD_FAST                9 (unmatched_can)
+
+152            LOAD_FAST               11 (unmatched_eth_est)
+
+153            LOAD_FAST               14 (matched_rate_can)
+
+154            LOAD_FAST               15 (unmatched_rate_can)
+
+155            LOAD_FAST               12 (median_delta)
+
+156            LOAD_FAST               13 (p95_delta)
+
+157            LOAD_GLOBAL              9 (float + NULL)
+               LOAD_FAST                4 (tolerance_ms)
+               CALL                     1
+
+158            LOAD_FAST                5 (time_mode)
+
+146            LOAD_CONST               6 (('pair_name', 'can_windows', 'eth_windows', 'matched', 'unmatched_can', 'unmatched_eth_est', 'matched_rate_can', 'unmatched_rate_can', 'median_delta_ms', 'p95_delta_ms', 'tolerance_ms', 'time_mode'))
+               CALL_KW                 12
+               RETURN_VALUE
+
+Disassembly of <code object correlate_can_eth at 0x0000022FB6AE2140, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 162>:
+162           RESUME                   0
+
+172           LOAD_GLOBAL              0 (pd)
+              LOAD_ATTR                2 (read_csv)
+              PUSH_NULL
+              LOAD_FAST                0 (can_csv_path)
+              CALL                     1
+              STORE_FAST               8 (can_df)
+
+173           LOAD_GLOBAL              0 (pd)
+              LOAD_ATTR                2 (read_csv)
+              PUSH_NULL
+              LOAD_FAST                1 (eth_csv_path)
+              CALL                     1
+              STORE_FAST               9 (eth_df)
+
+175           LOAD_GLOBAL              5 (normalize_can_timestamps + NULL)
+              LOAD_FAST                8 (can_df)
+              CALL                     1
+              STORE_FAST              10 (can_ts)
+
+176           LOAD_GLOBAL              7 (normalize_eth_timestamps + NULL)
+              LOAD_FAST                9 (eth_df)
+              CALL                     1
+              STORE_FAST              11 (eth_ts)
+
+177           LOAD_GLOBAL              9 (apply_time_mode + NULL)
+              LOAD_FAST_LOAD_FAST    171 (can_ts, eth_ts)
+              LOAD_FAST                7 (time_mode)
+              LOAD_CONST               1 (('mode',))
+              CALL_KW                  3
+              UNPACK_SEQUENCE          2
+              STORE_FAST_STORE_FAST  171 (can_ts, eth_ts)
+
+179           LOAD_GLOBAL             11 (make_window_end_timestamps + NULL)
+              LOAD_FAST_LOAD_FAST    162 (can_ts, can_window_size)
+              LOAD_FAST                3 (can_overlap)
+              CALL                     3
+              STORE_FAST              12 (can_win_ts)
+
+180           LOAD_GLOBAL             11 (make_window_end_timestamps + NULL)
+              LOAD_FAST_LOAD_FAST    180 (eth_ts, eth_window_size)
+              LOAD_FAST                5 (eth_overlap)
+              CALL                     3
+              STORE_FAST              13 (eth_win_ts)
+
+182           LOAD_GLOBAL             13 (nearest_align + NULL)
+              LOAD_FAST_LOAD_FAST    205 (can_win_ts, eth_win_ts)
+              LOAD_FAST                6 (tolerance_ms)
+              LOAD_CONST               2 (('tolerance_ms',))
+              CALL_KW                  3
+              STORE_FAST              14 (pairs_df)
+
+184           LOAD_GLOBAL             14 (os)
+              LOAD_ATTR               16 (path)
+              LOAD_ATTR               19 (basename + NULL|self)
+              LOAD_FAST                0 (can_csv_path)
+              CALL                     1
+              FORMAT_SIMPLE
+              LOAD_CONST               3 ('__')
+              LOAD_GLOBAL             14 (os)
+              LOAD_ATTR               16 (path)
+              LOAD_ATTR               19 (basename + NULL|self)
+              LOAD_FAST                1 (eth_csv_path)
+              CALL                     1
+              FORMAT_SIMPLE
+              BUILD_STRING             3
+              STORE_FAST              15 (pair_name)
+
+185           LOAD_GLOBAL             21 (build_alignment_report + NULL)
+
+186           LOAD_FAST               15 (pair_name)
+
+187           LOAD_FAST               12 (can_win_ts)
+
+188           LOAD_FAST               13 (eth_win_ts)
+
+189           LOAD_FAST               14 (pairs_df)
+
+190           LOAD_FAST                6 (tolerance_ms)
+
+191           LOAD_FAST                7 (time_mode)
+
+185           LOAD_CONST               4 (('pair_name', 'can_windows_ts', 'eth_windows_ts', 'pairs_df', 'tolerance_ms', 'time_mode'))
+              CALL_KW                  6
+              STORE_FAST              16 (report)
+
+193           LOAD_FAST               14 (pairs_df)
+              LOAD_FAST               16 (report)
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+Disassembly of <code object report_to_dict at 0x0000022FB5CC3D70, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\correlation_replica.py", line 196>:
+196           RESUME                   0
+
+197           LOAD_GLOBAL              1 (asdict + NULL)
+              LOAD_FAST                0 (result)
+              CALL                     1
+              RETURN_VALUE

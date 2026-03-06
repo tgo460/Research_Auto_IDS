@@ -1,0 +1,3278 @@
+  0           RESUME                   0
+
+  1           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              0 (argparse)
+              STORE_NAME               0 (argparse)
+
+  2           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              1 (json)
+              STORE_NAME               1 (json)
+
+  3           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              2 (os)
+              STORE_NAME               2 (os)
+
+  4           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              3 (sys)
+              STORE_NAME               3 (sys)
+
+  5           LOAD_CONST               0 (0)
+              LOAD_CONST               2 (('datetime', 'timezone'))
+              IMPORT_NAME              4 (datetime)
+              IMPORT_FROM              4 (datetime)
+              STORE_NAME               4 (datetime)
+              IMPORT_FROM              5 (timezone)
+              STORE_NAME               5 (timezone)
+              POP_TOP
+
+  6           LOAD_CONST               0 (0)
+              LOAD_CONST               3 (('Dict', 'List', 'Tuple'))
+              IMPORT_NAME              6 (typing)
+              IMPORT_FROM              7 (Dict)
+              STORE_NAME               7 (Dict)
+              IMPORT_FROM              8 (List)
+              STORE_NAME               8 (List)
+              IMPORT_FROM              9 (Tuple)
+              STORE_NAME               9 (Tuple)
+              POP_TOP
+
+  8           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME             10 (numpy)
+              STORE_NAME              11 (np)
+
+  9           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME             12 (torch)
+              STORE_NAME              12 (torch)
+
+ 10           LOAD_CONST               0 (0)
+              LOAD_CONST               4 (('average_precision_score', 'confusion_matrix', 'f1_score', 'precision_score', 'recall_score'))
+              IMPORT_NAME             13 (sklearn.metrics)
+              IMPORT_FROM             14 (average_precision_score)
+              STORE_NAME              14 (average_precision_score)
+              IMPORT_FROM             15 (confusion_matrix)
+              STORE_NAME              15 (confusion_matrix)
+              IMPORT_FROM             16 (f1_score)
+              STORE_NAME              16 (f1_score)
+              IMPORT_FROM             17 (precision_score)
+              STORE_NAME              17 (precision_score)
+              IMPORT_FROM             18 (recall_score)
+              STORE_NAME              18 (recall_score)
+              POP_TOP
+
+ 11           LOAD_CONST               0 (0)
+              LOAD_CONST               5 (('ConcatDataset', 'DataLoader', 'random_split'))
+              IMPORT_NAME             19 (torch.utils.data)
+              IMPORT_FROM             20 (ConcatDataset)
+              STORE_NAME              20 (ConcatDataset)
+              IMPORT_FROM             21 (DataLoader)
+              STORE_NAME              21 (DataLoader)
+              IMPORT_FROM             22 (random_split)
+              STORE_NAME              22 (random_split)
+              POP_TOP
+
+ 13           LOAD_NAME                2 (os)
+              LOAD_ATTR               46 (path)
+              LOAD_ATTR               49 (dirname + NULL|self)
+              LOAD_NAME                2 (os)
+              LOAD_ATTR               46 (path)
+              LOAD_ATTR               51 (abspath + NULL|self)
+              LOAD_NAME               26 (__file__)
+              CALL                     1
+              CALL                     1
+              STORE_NAME              27 (BASE_PATH)
+
+ 14           LOAD_NAME                3 (sys)
+              LOAD_ATTR               46 (path)
+              LOAD_ATTR               57 (append + NULL|self)
+              LOAD_NAME                2 (os)
+              LOAD_ATTR               46 (path)
+              LOAD_ATTR               59 (join + NULL|self)
+              LOAD_NAME               27 (BASE_PATH)
+              LOAD_CONST               6 ('src_replica')
+              CALL                     2
+              CALL                     1
+              POP_TOP
+
+ 16           LOAD_CONST               0 (0)
+              LOAD_CONST               7 (('TinyHybridStudent',))
+              IMPORT_NAME             30 (architecture_replica)
+              IMPORT_FROM             31 (TinyHybridStudent)
+              STORE_NAME              31 (TinyHybridStudent)
+              POP_TOP
+
+ 17           LOAD_CONST               0 (0)
+              LOAD_CONST               8 (('CorrelatedHybridVehicleDataset',))
+              IMPORT_NAME             32 (dataloader_correlated_replica)
+              IMPORT_FROM             33 (CorrelatedHybridVehicleDataset)
+              STORE_NAME              33 (CorrelatedHybridVehicleDataset)
+              POP_TOP
+
+ 18           LOAD_CONST               0 (0)
+              LOAD_CONST               9 (('HeavyTrainConfig', 'predict_heavy', 'train_heavy_model'))
+              IMPORT_NAME             34 (heavy_infer_replica)
+              IMPORT_FROM             35 (HeavyTrainConfig)
+              STORE_NAME              35 (HeavyTrainConfig)
+              IMPORT_FROM             36 (predict_heavy)
+              STORE_NAME              36 (predict_heavy)
+              IMPORT_FROM             37 (train_heavy_model)
+              STORE_NAME              37 (train_heavy_model)
+              POP_TOP
+
+ 19           LOAD_CONST               0 (0)
+              LOAD_CONST              10 (('ConfidenceRouter', 'RouterConfig'))
+              IMPORT_NAME             38 (router_replica)
+              IMPORT_FROM             39 (ConfidenceRouter)
+              STORE_NAME              39 (ConfidenceRouter)
+              IMPORT_FROM             40 (RouterConfig)
+              STORE_NAME              40 (RouterConfig)
+              POP_TOP
+
+ 20           LOAD_CONST               0 (0)
+              LOAD_CONST              11 (('build_datasets_from_manifest', 'build_loss', 'build_train_loader', 'compute_label_counts', 'load_config', 'set_seed'))
+              IMPORT_NAME             41 (train)
+              IMPORT_FROM             42 (build_datasets_from_manifest)
+              STORE_NAME              42 (build_datasets_from_manifest)
+              IMPORT_FROM             43 (build_loss)
+              STORE_NAME              43 (build_loss)
+              IMPORT_FROM             44 (build_train_loader)
+              STORE_NAME              44 (build_train_loader)
+              IMPORT_FROM             45 (compute_label_counts)
+              STORE_NAME              45 (compute_label_counts)
+              IMPORT_FROM             46 (load_config)
+              STORE_NAME              46 (load_config)
+              IMPORT_FROM             47 (set_seed)
+              STORE_NAME              47 (set_seed)
+              POP_TOP
+
+ 30           LOAD_CONST              12 ('base_path')
+              LOAD_NAME               48 (str)
+              LOAD_CONST              13 ('tcfg')
+              LOAD_NAME                7 (Dict)
+              LOAD_CONST              14 ('default_threshold')
+              LOAD_NAME               49 (float)
+              LOAD_CONST              15 ('return')
+              LOAD_NAME                9 (Tuple)
+              LOAD_NAME               49 (float)
+              LOAD_NAME               48 (str)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              8
+              LOAD_CONST              16 (<code object resolve_decision_threshold_from_report at 0x00000142D6A4F6F0, file "cascade_eval_replica.py", line 30>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              50 (resolve_decision_threshold_from_report)
+
+ 44           LOAD_CONST              17 ('base')
+              LOAD_NAME               48 (str)
+              LOAD_CONST              15 ('return')
+              LOAD_NAME               20 (ConcatDataset)
+              BUILD_TUPLE              4
+              LOAD_CONST              18 (<code object build_mixed_dataset at 0x00000142D6AC87D0, file "cascade_eval_replica.py", line 44>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              51 (build_mixed_dataset)
+
+114           LOAD_CONST              19 ('y_true')
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_CONST              20 ('y_pred')
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_CONST              15 ('return')
+              LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               49 (float)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              6
+              LOAD_CONST              21 (<code object as_metrics at 0x00000142D5CB6B50, file "cascade_eval_replica.py", line 114>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              53 (as_metrics)
+
+124           LOAD_CONST              19 ('y_true')
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_CONST              20 ('y_pred')
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_CONST              15 ('return')
+              LOAD_NAME               49 (float)
+              BUILD_TUPLE              6
+              LOAD_CONST              22 (<code object binary_fpr at 0x00000142D5F20030, file "cascade_eval_replica.py", line 124>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              54 (binary_fpr)
+
+131           LOAD_CONST              19 ('y_true')
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_CONST              23 ('attack_score')
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_CONST              24 ('target_fpr')
+              LOAD_NAME               49 (float)
+              LOAD_CONST              15 ('return')
+              LOAD_NAME                9 (Tuple)
+              LOAD_NAME               49 (float)
+              LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               49 (float)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              8
+              LOAD_CONST              25 (<code object tune_decision_threshold at 0x00000142D6AC8460, file "cascade_eval_replica.py", line 131>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              55 (tune_decision_threshold)
+
+147           LOAD_CONST              26 ('model')
+              LOAD_NAME               31 (TinyHybridStudent)
+              LOAD_CONST              27 ('loader')
+              LOAD_NAME               21 (DataLoader)
+              LOAD_CONST              28 ('decision_threshold')
+              LOAD_NAME               49 (float)
+              LOAD_CONST              15 ('return')
+              LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              8
+              LOAD_CONST              29 (<code object extract_light_outputs at 0x00000142D6AC9200, file "cascade_eval_replica.py", line 147>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              56 (extract_light_outputs)
+
+187           LOAD_CONST              30 ('train_out')
+
+188           LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+
+187           LOAD_CONST              28 ('decision_threshold')
+
+189           LOAD_NAME               49 (float)
+
+187           LOAD_CONST              31 ('route_fraction')
+
+190           LOAD_NAME               49 (float)
+
+187           LOAD_CONST              15 ('return')
+
+191           LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+
+187           BUILD_TUPLE              8
+              LOAD_CONST              32 (<code object select_heavy_train_subset at 0x00000142D6AA9CE0, file "cascade_eval_replica.py", line 187>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              57 (select_heavy_train_subset)
+
+252           NOP
+
+253           NOP
+
+254           NOP
+
+255           NOP
+
+245           LOAD_CONST              49 ((0.0, None, 'global', None))
+              LOAD_CONST              19 ('y_true')
+
+246           LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+
+245           LOAD_CONST              33 ('light_pred')
+
+247           LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+
+245           LOAD_CONST              34 ('heavy_attack_score')
+
+248           LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+
+245           LOAD_CONST              35 ('light_attack_score')
+
+249           LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+
+245           LOAD_CONST              36 ('conf')
+
+250           LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+
+245           LOAD_CONST              37 ('fpr_budget')
+
+251           LOAD_NAME               49 (float)
+
+245           LOAD_CONST              38 ('min_routed_fraction')
+
+252           LOAD_NAME               49 (float)
+
+245           LOAD_CONST              39 ('heavy_thresholds')
+
+253           LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_CONST               1 (None)
+              BINARY_OP                7 (|)
+
+245           LOAD_CONST              40 ('objective_mode')
+
+254           LOAD_NAME               48 (str)
+
+245           LOAD_CONST              41 ('routed_fpr_budget')
+
+255           LOAD_NAME               49 (float)
+              LOAD_CONST               1 (None)
+              BINARY_OP                7 (|)
+
+245           LOAD_CONST              15 ('return')
+
+256           LOAD_NAME                9 (Tuple)
+              LOAD_NAME               49 (float)
+              LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               49 (float)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              LOAD_NAME               11 (np)
+              LOAD_ATTR              104 (ndarray)
+              BUILD_TUPLE              4
+              BINARY_SUBSCR
+
+245           BUILD_TUPLE             22
+              LOAD_CONST              42 (<code object pick_best_threshold at 0x00000142D6AA9470, file "cascade_eval_replica.py", line 245>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              SET_FUNCTION_ATTRIBUTE   1 (defaults)
+              STORE_NAME              58 (pick_best_threshold)
+
+361           LOAD_CONST              50 ((1e-12,))
+              LOAD_CONST              43 ('light_metrics')
+              LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               49 (float)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              LOAD_CONST              44 ('cascade_metrics')
+              LOAD_NAME                7 (Dict)
+              LOAD_NAME               48 (str)
+              LOAD_NAME               49 (float)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              LOAD_CONST              45 ('eps')
+              LOAD_NAME               49 (float)
+              LOAD_CONST              15 ('return')
+              LOAD_NAME               59 (bool)
+              BUILD_TUPLE              8
+              LOAD_CONST              46 (<code object should_fallback_to_light at 0x00000142D5C6EBF0, file "cascade_eval_replica.py", line 361>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              SET_FUNCTION_ATTRIBUTE   1 (defaults)
+              STORE_NAME              60 (should_fallback_to_light)
+
+370           LOAD_CONST              47 (<code object main at 0x00000142D6AB3060, file "cascade_eval_replica.py", line 370>)
+              MAKE_FUNCTION
+              STORE_NAME              61 (main)
+
+573           LOAD_NAME               62 (__name__)
+              LOAD_CONST              48 ('__main__')
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE        8 (to L1)
+
+574           LOAD_NAME               61 (main)
+              PUSH_NULL
+              CALL                     0
+              POP_TOP
+              RETURN_CONST             1 (None)
+
+573   L1:     RETURN_CONST             1 (None)
+
+Disassembly of <code object resolve_decision_threshold_from_report at 0x00000142D6A4F6F0, file "cascade_eval_replica.py", line 30>:
+  30            RESUME                   0
+
+  31            LOAD_GLOBAL              1 (str + NULL)
+                LOAD_FAST                1 (tcfg)
+                LOAD_ATTR                3 (get + NULL|self)
+                LOAD_CONST               1 ('decision_threshold_policy')
+                LOAD_CONST               2 ('fixed')
+                CALL                     2
+                CALL                     1
+                LOAD_ATTR                5 (lower + NULL|self)
+                CALL                     0
+                STORE_FAST               3 (policy)
+
+  32            LOAD_FAST                3 (policy)
+                LOAD_CONST               3 ('from_calibration')
+                COMPARE_OP             119 (bool(!=))
+                POP_JUMP_IF_FALSE        4 (to L1)
+
+  33            LOAD_FAST                2 (default_threshold)
+                LOAD_CONST               4 ('config')
+                BUILD_TUPLE              2
+                RETURN_VALUE
+
+  34    L1:     LOAD_GLOBAL              1 (str + NULL)
+                LOAD_FAST                1 (tcfg)
+                LOAD_ATTR                3 (get + NULL|self)
+                LOAD_CONST               5 ('decision_threshold_report')
+                LOAD_CONST               6 ('logs/threshold_calibration_report_latest.json')
+                CALL                     2
+                CALL                     1
+                STORE_FAST               4 (report_rel)
+
+  35            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR                8 (path)
+                LOAD_ATTR               11 (isabs + NULL|self)
+                LOAD_FAST                4 (report_rel)
+                CALL                     1
+                TO_BOOL
+                POP_JUMP_IF_FALSE        2 (to L2)
+                LOAD_FAST                4 (report_rel)
+                JUMP_FORWARD            30 (to L3)
+        L2:     LOAD_GLOBAL              6 (os)
+                LOAD_ATTR                8 (path)
+                LOAD_ATTR               13 (join + NULL|self)
+                LOAD_FAST_LOAD_FAST      4 (base_path, report_rel)
+                CALL                     2
+        L3:     STORE_FAST               5 (report_path)
+
+  36            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR                8 (path)
+                LOAD_ATTR               15 (exists + NULL|self)
+                LOAD_FAST                5 (report_path)
+                CALL                     1
+                TO_BOOL
+                POP_JUMP_IF_TRUE         4 (to L4)
+
+  37            LOAD_FAST                2 (default_threshold)
+                LOAD_CONST               7 ('config_missing_report')
+                BUILD_TUPLE              2
+                RETURN_VALUE
+
+  38    L4:     LOAD_GLOBAL             17 (open + NULL)
+                LOAD_FAST                5 (report_path)
+                LOAD_CONST               8 ('r')
+                LOAD_CONST               9 ('utf-8')
+                LOAD_CONST              10 (('encoding',))
+                CALL_KW                  3
+                BEFORE_WITH
+        L5:     STORE_FAST               6 (f)
+
+  39            LOAD_GLOBAL             18 (json)
+                LOAD_ATTR               20 (load)
+                PUSH_NULL
+                LOAD_FAST                6 (f)
+                CALL                     1
+                STORE_FAST               7 (rep)
+
+  38    L6:     LOAD_CONST               0 (None)
+                LOAD_CONST               0 (None)
+                LOAD_CONST               0 (None)
+                CALL                     2
+                POP_TOP
+
+  40    L7:     LOAD_GLOBAL             23 (float + NULL)
+                LOAD_FAST_CHECK          7 (rep)
+                LOAD_ATTR                3 (get + NULL|self)
+                LOAD_CONST              11 ('best_under_target')
+                BUILD_MAP                0
+                CALL                     2
+                LOAD_ATTR                3 (get + NULL|self)
+                LOAD_CONST              12 ('threshold')
+                LOAD_FAST                2 (default_threshold)
+                CALL                     2
+                CALL                     1
+                STORE_FAST               8 (thr)
+
+  41            LOAD_FAST                8 (thr)
+                LOAD_CONST              13 ('calibration_report')
+                BUILD_TUPLE              2
+                RETURN_VALUE
+
+  38    L8:     PUSH_EXC_INFO
+                WITH_EXCEPT_START
+                TO_BOOL
+                POP_JUMP_IF_TRUE         1 (to L9)
+                RERAISE                  2
+        L9:     POP_TOP
+       L10:     POP_EXCEPT
+                POP_TOP
+                POP_TOP
+                JUMP_BACKWARD_NO_INTERRUPT 61 (to L7)
+
+  --   L11:     COPY                     3
+                POP_EXCEPT
+                RERAISE                  1
+ExceptionTable:
+  L5 to L6 -> L8 [1] lasti
+  L8 to L10 -> L11 [3] lasti
+
+Disassembly of <code object build_mixed_dataset at 0x00000142D6AC87D0, file "cascade_eval_replica.py", line 44>:
+ 44           RESUME                   0
+
+ 45           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST               2 ('replica_can_b1_baseline')
+              LOAD_CONST               3 ('can_dos_train.csv')
+              CALL                     4
+              STORE_FAST               1 (can_attack_csv)
+
+ 46           BUILD_LIST               0
+              LOAD_CONST               4 (('CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'))
+              LIST_EXTEND              1
+              STORE_FAST               2 (can_features)
+
+ 48           LOAD_GLOBAL              7 (CorrelatedHybridVehicleDataset + NULL)
+
+ 49           LOAD_FAST                1 (can_attack_csv)
+
+ 50           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST               5 ('replica_eth_smoke')
+              LOAD_CONST               6 ('eth_driving_01_injected_replica_packets.csv')
+              CALL                     4
+
+ 51           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST               7 ('eth_driving_01_injected_images-003.npy')
+              CALL                     3
+
+ 52           LOAD_FAST                2 (can_features)
+
+ 53           LOAD_CONST               8 (10)
+
+ 54           LOAD_CONST               9 (5)
+
+ 55           LOAD_CONST              10 (20)
+
+ 56           LOAD_CONST               8 (10)
+
+ 57           LOAD_CONST              11 (100.0)
+
+ 58           LOAD_CONST              12 ('relative_session')
+
+ 59           LOAD_CONST              13 (20000)
+
+ 60           LOAD_CONST              14 (200000)
+
+ 61           LOAD_CONST              15 ('eth_only')
+
+ 48           LOAD_CONST              16 (('can_csv_path', 'eth_packet_csv_path', 'eth_npy_path', 'can_features', 'can_window_size', 'can_overlap', 'eth_window_size', 'eth_overlap', 'tolerance_ms', 'time_mode', 'can_max_rows', 'eth_max_frames', 'label_policy'))
+              CALL_KW                 13
+              STORE_FAST               3 (ds_attack_1)
+
+ 64           LOAD_GLOBAL              7 (CorrelatedHybridVehicleDataset + NULL)
+
+ 65           LOAD_FAST                1 (can_attack_csv)
+
+ 66           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST               5 ('replica_eth_smoke')
+              LOAD_CONST              17 ('eth_driving_02_injected_replica_packets.csv')
+              CALL                     4
+
+ 67           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST              18 ('eth_driving_02_injected_images-008.npy')
+              CALL                     3
+
+ 68           LOAD_FAST                2 (can_features)
+
+ 69           LOAD_CONST               8 (10)
+
+ 70           LOAD_CONST               9 (5)
+
+ 71           LOAD_CONST              10 (20)
+
+ 72           LOAD_CONST               8 (10)
+
+ 73           LOAD_CONST              11 (100.0)
+
+ 74           LOAD_CONST              12 ('relative_session')
+
+ 75           LOAD_CONST              13 (20000)
+
+ 76           LOAD_CONST              14 (200000)
+
+ 77           LOAD_CONST              15 ('eth_only')
+
+ 64           LOAD_CONST              16 (('can_csv_path', 'eth_packet_csv_path', 'eth_npy_path', 'can_features', 'can_window_size', 'can_overlap', 'eth_window_size', 'eth_overlap', 'tolerance_ms', 'time_mode', 'can_max_rows', 'eth_max_frames', 'label_policy'))
+              CALL_KW                 13
+              STORE_FAST               4 (ds_attack_2)
+
+ 80           LOAD_GLOBAL              7 (CorrelatedHybridVehicleDataset + NULL)
+
+ 81           LOAD_FAST                1 (can_attack_csv)
+
+ 82           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST               5 ('replica_eth_smoke')
+              LOAD_CONST              19 ('eth_driving_01_original_replica_packets.csv')
+              CALL                     4
+
+ 83           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST              20 ('eth_driving_01_original_images-006.npy')
+              CALL                     3
+
+ 84           LOAD_FAST                2 (can_features)
+
+ 85           LOAD_CONST               8 (10)
+
+ 86           LOAD_CONST               9 (5)
+
+ 87           LOAD_CONST              10 (20)
+
+ 88           LOAD_CONST               8 (10)
+
+ 89           LOAD_CONST              11 (100.0)
+
+ 90           LOAD_CONST              12 ('relative_session')
+
+ 91           LOAD_CONST              13 (20000)
+
+ 92           LOAD_CONST              14 (200000)
+
+ 93           LOAD_CONST              15 ('eth_only')
+
+ 80           LOAD_CONST              16 (('can_csv_path', 'eth_packet_csv_path', 'eth_npy_path', 'can_features', 'can_window_size', 'can_overlap', 'eth_window_size', 'eth_overlap', 'tolerance_ms', 'time_mode', 'can_max_rows', 'eth_max_frames', 'label_policy'))
+              CALL_KW                 13
+              STORE_FAST               5 (ds_normal_1)
+
+ 96           LOAD_GLOBAL              7 (CorrelatedHybridVehicleDataset + NULL)
+
+ 97           LOAD_FAST                1 (can_attack_csv)
+
+ 98           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST               5 ('replica_eth_smoke')
+              LOAD_CONST              21 ('eth_driving_02_original_replica_packets.csv')
+              CALL                     4
+
+ 99           LOAD_GLOBAL              0 (os)
+              LOAD_ATTR                2 (path)
+              LOAD_ATTR                5 (join + NULL|self)
+              LOAD_FAST                0 (base)
+              LOAD_CONST               1 ('datasets')
+              LOAD_CONST              22 ('eth_driving_02_original_images-005.npy')
+              CALL                     3
+
+100           LOAD_FAST                2 (can_features)
+
+101           LOAD_CONST               8 (10)
+
+102           LOAD_CONST               9 (5)
+
+103           LOAD_CONST              10 (20)
+
+104           LOAD_CONST               8 (10)
+
+105           LOAD_CONST              11 (100.0)
+
+106           LOAD_CONST              12 ('relative_session')
+
+107           LOAD_CONST              13 (20000)
+
+108           LOAD_CONST              14 (200000)
+
+109           LOAD_CONST              15 ('eth_only')
+
+ 96           LOAD_CONST              16 (('can_csv_path', 'eth_packet_csv_path', 'eth_npy_path', 'can_features', 'can_window_size', 'can_overlap', 'eth_window_size', 'eth_overlap', 'tolerance_ms', 'time_mode', 'can_max_rows', 'eth_max_frames', 'label_policy'))
+              CALL_KW                 13
+              STORE_FAST               6 (ds_normal_2)
+
+111           LOAD_GLOBAL              9 (ConcatDataset + NULL)
+              LOAD_FAST_LOAD_FAST     52 (ds_attack_1, ds_attack_2)
+              LOAD_FAST_LOAD_FAST     86 (ds_normal_1, ds_normal_2)
+              BUILD_LIST               4
+              CALL                     1
+              RETURN_VALUE
+
+Disassembly of <code object as_metrics at 0x00000142D5CB6B50, file "cascade_eval_replica.py", line 114>:
+114           RESUME                   0
+
+115           LOAD_FAST                0 (y_true)
+              LOAD_ATTR                0 (size)
+              LOAD_CONST               1 (0)
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE        6 (to L1)
+
+116           LOAD_CONST               2 (0.0)
+              LOAD_CONST               2 (0.0)
+              LOAD_CONST               2 (0.0)
+              LOAD_CONST               3 (('f1', 'precision', 'recall'))
+              BUILD_CONST_KEY_MAP      3
+              RETURN_VALUE
+
+118   L1:     LOAD_GLOBAL              3 (float + NULL)
+              LOAD_GLOBAL              5 (f1_score + NULL)
+              LOAD_FAST_LOAD_FAST      1 (y_true, y_pred)
+              LOAD_CONST               1 (0)
+              LOAD_CONST               4 (('zero_division',))
+              CALL_KW                  3
+              CALL                     1
+
+119           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_GLOBAL              7 (precision_score + NULL)
+              LOAD_FAST_LOAD_FAST      1 (y_true, y_pred)
+              LOAD_CONST               1 (0)
+              LOAD_CONST               4 (('zero_division',))
+              CALL_KW                  3
+              CALL                     1
+
+120           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_GLOBAL              9 (recall_score + NULL)
+              LOAD_FAST_LOAD_FAST      1 (y_true, y_pred)
+              LOAD_CONST               1 (0)
+              LOAD_CONST               4 (('zero_division',))
+              CALL_KW                  3
+              CALL                     1
+
+117           LOAD_CONST               3 (('f1', 'precision', 'recall'))
+              BUILD_CONST_KEY_MAP      3
+              RETURN_VALUE
+
+Disassembly of <code object binary_fpr at 0x00000142D5F20030, file "cascade_eval_replica.py", line 124>:
+124           RESUME                   0
+
+125           LOAD_GLOBAL              1 (confusion_matrix + NULL)
+              LOAD_FAST_LOAD_FAST      1 (y_true, y_pred)
+              LOAD_CONST               1 (0)
+              LOAD_CONST               2 (1)
+              BUILD_LIST               2
+              LOAD_CONST               3 (('labels',))
+              CALL_KW                  3
+              STORE_FAST               2 (cm)
+
+126           LOAD_FAST                2 (cm)
+              LOAD_CONST               4 ((0, 0))
+              BINARY_SUBSCR
+              LOAD_FAST                2 (cm)
+              LOAD_CONST               5 ((0, 1))
+              BINARY_SUBSCR
+              STORE_FAST_STORE_FAST   67 (fp, tn)
+
+127           LOAD_FAST_LOAD_FAST     52 (tn, fp)
+              BINARY_OP                0 (+)
+              STORE_FAST               5 (den)
+
+128           LOAD_FAST                5 (den)
+              LOAD_CONST               1 (0)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_FALSE       13 (to L1)
+              LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST_LOAD_FAST     69 (fp, den)
+              BINARY_OP               11 (/)
+              CALL                     1
+              RETURN_VALUE
+      L1:     LOAD_CONST               6 (0.0)
+              RETURN_VALUE
+
+Disassembly of <code object tune_decision_threshold at 0x00000142D6AC8460, file "cascade_eval_replica.py", line 131>:
+131           RESUME                   0
+
+132           LOAD_CONST               0 (None)
+              STORE_FAST               3 (best)
+
+133           LOAD_GLOBAL              0 (np)
+              LOAD_ATTR                2 (linspace)
+              PUSH_NULL
+              LOAD_CONST               1 (0.0)
+              LOAD_CONST               2 (1.0)
+              LOAD_CONST               3 (1001)
+              CALL                     3
+              GET_ITER
+      L1:     FOR_ITER               126 (to L5)
+              STORE_FAST               4 (thr)
+
+134           LOAD_FAST_LOAD_FAST     20 (attack_score, thr)
+              COMPARE_OP             172 (>=)
+              LOAD_ATTR                5 (astype + NULL|self)
+              LOAD_GLOBAL              0 (np)
+              LOAD_ATTR                6 (int64)
+              CALL                     1
+              STORE_FAST               5 (pred)
+
+135           LOAD_GLOBAL              9 (binary_fpr + NULL)
+              LOAD_FAST_LOAD_FAST      5 (y_true, pred)
+              CALL                     2
+              STORE_FAST               6 (fpr)
+
+136           LOAD_GLOBAL             11 (as_metrics + NULL)
+              LOAD_FAST_LOAD_FAST      5 (y_true, pred)
+              CALL                     2
+              STORE_FAST               7 (m)
+
+137           LOAD_GLOBAL             13 (float + NULL)
+              LOAD_FAST                4 (thr)
+              CALL                     1
+              LOAD_FAST                6 (fpr)
+              LOAD_CONST               4 (('threshold', 'fpr'))
+              BUILD_CONST_KEY_MAP      2
+              LOAD_FAST                7 (m)
+              DICT_UPDATE              1
+              STORE_FAST               8 (row)
+
+138           LOAD_FAST_LOAD_FAST     98 (fpr, target_fpr)
+              COMPARE_OP              58 (bool(<=))
+              POP_JUMP_IF_TRUE         2 (to L2)
+              JUMP_BACKWARD           81 (to L1)
+
+139   L2:     LOAD_FAST                3 (best)
+              POP_JUMP_IF_NONE        40 (to L4)
+              LOAD_FAST                8 (row)
+              LOAD_CONST               5 ('recall')
+              BINARY_SUBSCR
+              LOAD_FAST                3 (best)
+              LOAD_CONST               5 ('recall')
+              BINARY_SUBSCR
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_TRUE        28 (to L4)
+              LOAD_FAST                8 (row)
+              LOAD_CONST               5 ('recall')
+              BINARY_SUBSCR
+              LOAD_FAST                3 (best)
+              LOAD_CONST               5 ('recall')
+              BINARY_SUBSCR
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_TRUE         2 (to L3)
+              JUMP_BACKWARD          110 (to L1)
+      L3:     LOAD_FAST                8 (row)
+              LOAD_CONST               6 ('f1')
+              BINARY_SUBSCR
+              LOAD_FAST                3 (best)
+              LOAD_CONST               6 ('f1')
+              BINARY_SUBSCR
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_TRUE         2 (to L4)
+              JUMP_BACKWARD          124 (to L1)
+
+140   L4:     LOAD_FAST                8 (row)
+              STORE_FAST               3 (best)
+              JUMP_BACKWARD          128 (to L1)
+
+133   L5:     END_FOR
+              POP_TOP
+
+141           LOAD_FAST                3 (best)
+              POP_JUMP_IF_NOT_NONE    11 (to L6)
+
+142           LOAD_CONST               2 (1.0)
+              LOAD_CONST               2 (1.0)
+              LOAD_CONST               1 (0.0)
+              LOAD_CONST               1 (0.0)
+              LOAD_CONST               1 (0.0)
+              LOAD_CONST               1 (0.0)
+              LOAD_CONST               7 (False)
+              LOAD_CONST               8 (('threshold', 'fpr', 'f1', 'precision', 'recall', 'feasible'))
+              BUILD_CONST_KEY_MAP      6
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+143   L6:     LOAD_CONST               9 (True)
+              LOAD_FAST                3 (best)
+              LOAD_CONST              10 ('feasible')
+              STORE_SUBSCR
+
+144           LOAD_GLOBAL             13 (float + NULL)
+              LOAD_FAST                3 (best)
+              LOAD_CONST              11 ('threshold')
+              BINARY_SUBSCR
+              CALL                     1
+              LOAD_FAST                3 (best)
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+Disassembly of <code object extract_light_outputs at 0x00000142D6AC9200, file "cascade_eval_replica.py", line 147>:
+ 147           RESUME                   0
+
+ 148           LOAD_GLOBAL              0 (torch)
+               LOAD_ATTR                2 (device)
+               PUSH_NULL
+               LOAD_CONST               1 ('cpu')
+               CALL                     1
+               STORE_FAST               3 (device)
+
+ 149           BUILD_LIST               0
+               STORE_FAST               4 (feats)
+
+ 150           BUILD_LIST               0
+               STORE_FAST               5 (y_true)
+
+ 151           BUILD_LIST               0
+               STORE_FAST               6 (light_pred)
+
+ 152           BUILD_LIST               0
+               STORE_FAST               7 (conf)
+
+ 153           BUILD_LIST               0
+               STORE_FAST               8 (attack_score)
+
+ 154           LOAD_GLOBAL              0 (torch)
+               LOAD_ATTR                4 (no_grad)
+               PUSH_NULL
+               CALL                     0
+               BEFORE_WITH
+       L1:     POP_TOP
+
+ 155           LOAD_FAST                1 (loader)
+               GET_ITER
+       L2:     EXTENDED_ARG             1
+               FOR_ITER               473 (to L3)
+               STORE_FAST               9 (batch)
+
+ 156           LOAD_FAST                0 (model)
+               LOAD_ATTR                7 (forward_diagnostics + NULL|self)
+               LOAD_FAST                9 (batch)
+               LOAD_CONST               2 ('can')
+               BINARY_SUBSCR
+               LOAD_ATTR                9 (to + NULL|self)
+               LOAD_FAST                3 (device)
+               CALL                     1
+               LOAD_FAST                9 (batch)
+               LOAD_CONST               3 ('eth')
+               BINARY_SUBSCR
+               LOAD_ATTR                9 (to + NULL|self)
+               LOAD_FAST                3 (device)
+               CALL                     1
+               CALL                     2
+               STORE_FAST              10 (out)
+
+ 157           LOAD_FAST               10 (out)
+               LOAD_CONST               4 ('fused_logits')
+               BINARY_SUBSCR
+               STORE_FAST              11 (fused_logits)
+
+ 158           LOAD_GLOBAL              0 (torch)
+               LOAD_ATTR               10 (softmax)
+               PUSH_NULL
+               LOAD_FAST               11 (fused_logits)
+               LOAD_CONST               5 (1)
+               LOAD_CONST               6 (('dim',))
+               CALL_KW                  2
+               STORE_FAST              12 (probs)
+
+ 159           LOAD_FAST               12 (probs)
+               LOAD_ATTR               13 (max + NULL|self)
+               LOAD_CONST               5 (1)
+               LOAD_CONST               6 (('dim',))
+               CALL_KW                  1
+               UNPACK_SEQUENCE          2
+               STORE_FAST_STORE_FAST  222 (c, _)
+
+ 160           LOAD_FAST               12 (probs)
+               LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               BUILD_SLICE              2
+               LOAD_CONST               5 (1)
+               BUILD_TUPLE              2
+               BINARY_SUBSCR
+               LOAD_FAST                2 (decision_threshold)
+               COMPARE_OP             172 (>=)
+               LOAD_ATTR               15 (long + NULL|self)
+               CALL                     0
+               STORE_FAST              15 (p)
+
+ 163           LOAD_GLOBAL              0 (torch)
+               LOAD_ATTR               16 (cat)
+               PUSH_NULL
+
+ 165           LOAD_FAST               10 (out)
+               LOAD_CONST               7 ('can_feat')
+               BINARY_SUBSCR
+
+ 166           LOAD_FAST               10 (out)
+               LOAD_CONST               8 ('eth_feat')
+               BINARY_SUBSCR
+
+ 167           LOAD_FAST               12 (probs)
+               LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               BUILD_SLICE              2
+               LOAD_CONST               5 (1)
+               LOAD_CONST               9 (2)
+               BUILD_SLICE              2
+               BUILD_TUPLE              2
+               BINARY_SUBSCR
+
+ 168           LOAD_FAST               13 (c)
+               LOAD_ATTR               19 (unsqueeze + NULL|self)
+               LOAD_CONST               5 (1)
+               CALL                     1
+
+ 164           BUILD_LIST               4
+
+ 170           LOAD_CONST               5 (1)
+
+ 163           LOAD_CONST               6 (('dim',))
+               CALL_KW                  2
+
+ 171           LOAD_ATTR               21 (cpu + NULL|self)
+               CALL                     0
+               LOAD_ATTR               23 (numpy + NULL|self)
+               CALL                     0
+
+ 163           STORE_FAST              16 (feat)
+
+ 172           LOAD_FAST                4 (feats)
+               LOAD_ATTR               25 (append + NULL|self)
+               LOAD_FAST               16 (feat)
+               CALL                     1
+               POP_TOP
+
+ 173           LOAD_FAST                5 (y_true)
+               LOAD_ATTR               27 (extend + NULL|self)
+               LOAD_FAST                9 (batch)
+               LOAD_CONST              10 ('label')
+               BINARY_SUBSCR
+               LOAD_ATTR               21 (cpu + NULL|self)
+               CALL                     0
+               LOAD_ATTR               23 (numpy + NULL|self)
+               CALL                     0
+               LOAD_ATTR               29 (tolist + NULL|self)
+               CALL                     0
+               CALL                     1
+               POP_TOP
+
+ 174           LOAD_FAST                6 (light_pred)
+               LOAD_ATTR               27 (extend + NULL|self)
+               LOAD_FAST               15 (p)
+               LOAD_ATTR               21 (cpu + NULL|self)
+               CALL                     0
+               LOAD_ATTR               23 (numpy + NULL|self)
+               CALL                     0
+               LOAD_ATTR               29 (tolist + NULL|self)
+               CALL                     0
+               CALL                     1
+               POP_TOP
+
+ 175           LOAD_FAST                7 (conf)
+               LOAD_ATTR               27 (extend + NULL|self)
+               LOAD_FAST               13 (c)
+               LOAD_ATTR               21 (cpu + NULL|self)
+               CALL                     0
+               LOAD_ATTR               23 (numpy + NULL|self)
+               CALL                     0
+               LOAD_ATTR               29 (tolist + NULL|self)
+               CALL                     0
+               CALL                     1
+               POP_TOP
+
+ 176           LOAD_FAST                8 (attack_score)
+               LOAD_ATTR               27 (extend + NULL|self)
+               LOAD_FAST               12 (probs)
+               LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               BUILD_SLICE              2
+               LOAD_CONST               5 (1)
+               BUILD_TUPLE              2
+               BINARY_SUBSCR
+               LOAD_ATTR               21 (cpu + NULL|self)
+               CALL                     0
+               LOAD_ATTR               23 (numpy + NULL|self)
+               CALL                     0
+               LOAD_ATTR               29 (tolist + NULL|self)
+               CALL                     0
+               CALL                     1
+               POP_TOP
+               EXTENDED_ARG             1
+               JUMP_BACKWARD          476 (to L2)
+
+ 155   L3:     END_FOR
+               POP_TOP
+
+ 154   L4:     LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               LOAD_CONST               0 (None)
+               CALL                     2
+               POP_TOP
+
+ 179   L5:     LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               32 (vstack)
+               PUSH_NULL
+               LOAD_FAST                4 (feats)
+               CALL                     1
+               LOAD_ATTR               35 (astype + NULL|self)
+               LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               36 (float32)
+               CALL                     1
+
+ 180           LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               38 (array)
+               PUSH_NULL
+               LOAD_FAST                5 (y_true)
+               LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               40 (int64)
+               LOAD_CONST              11 (('dtype',))
+               CALL_KW                  2
+
+ 181           LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               38 (array)
+               PUSH_NULL
+               LOAD_FAST                6 (light_pred)
+               LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               40 (int64)
+               LOAD_CONST              11 (('dtype',))
+               CALL_KW                  2
+
+ 182           LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               38 (array)
+               PUSH_NULL
+               LOAD_FAST                7 (conf)
+               LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               36 (float32)
+               LOAD_CONST              11 (('dtype',))
+               CALL_KW                  2
+
+ 183           LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               38 (array)
+               PUSH_NULL
+               LOAD_FAST                8 (attack_score)
+               LOAD_GLOBAL             30 (np)
+               LOAD_ATTR               36 (float32)
+               LOAD_CONST              11 (('dtype',))
+               CALL_KW                  2
+
+ 178           LOAD_CONST              12 (('X', 'y', 'light_pred', 'conf', 'attack_score'))
+               BUILD_CONST_KEY_MAP      5
+               RETURN_VALUE
+
+ 154   L6:     PUSH_EXC_INFO
+               WITH_EXCEPT_START
+               TO_BOOL
+               POP_JUMP_IF_TRUE         1 (to L7)
+               RERAISE                  2
+       L7:     POP_TOP
+       L8:     POP_EXCEPT
+               POP_TOP
+               POP_TOP
+               JUMP_BACKWARD_NO_INTERRUPT 203 (to L5)
+
+  --   L9:     COPY                     3
+               POP_EXCEPT
+               RERAISE                  1
+ExceptionTable:
+  L1 to L4 -> L6 [1] lasti
+  L6 to L8 -> L9 [3] lasti
+
+Disassembly of <code object select_heavy_train_subset at 0x00000142D6AA9CE0, file "cascade_eval_replica.py", line 187>:
+187           RESUME                   0
+
+192           LOAD_FAST                0 (train_out)
+              LOAD_CONST               1 ('conf')
+              BINARY_SUBSCR
+              STORE_FAST               3 (conf)
+
+193           LOAD_FAST                0 (train_out)
+              LOAD_CONST               2 ('y')
+              BINARY_SUBSCR
+              STORE_FAST               4 (y)
+
+194           LOAD_FAST                0 (train_out)
+              LOAD_CONST               3 ('attack_score')
+              BINARY_SUBSCR
+              STORE_FAST               5 (attack_score)
+
+195           LOAD_FAST_LOAD_FAST     81 (attack_score, decision_threshold)
+              COMPARE_OP             172 (>=)
+              LOAD_ATTR                1 (astype + NULL|self)
+              LOAD_GLOBAL              2 (np)
+              LOAD_ATTR                4 (int64)
+              CALL                     1
+              STORE_FAST               6 (light_pred)
+
+197           LOAD_GLOBAL              7 (float + NULL)
+              LOAD_GLOBAL              2 (np)
+              LOAD_ATTR                8 (quantile)
+              PUSH_NULL
+              LOAD_FAST                3 (conf)
+              LOAD_GLOBAL             11 (min + NULL)
+              LOAD_GLOBAL             13 (max + NULL)
+              LOAD_FAST                2 (route_fraction)
+              LOAD_CONST               4 (0.001)
+              CALL                     2
+              LOAD_CONST               5 (0.99)
+              CALL                     2
+              CALL                     2
+              CALL                     1
+              STORE_FAST               7 (route_thr)
+
+198           LOAD_FAST_LOAD_FAST     55 (conf, route_thr)
+              COMPARE_OP              42 (<=)
+              STORE_FAST               8 (route_mask)
+
+199           LOAD_FAST_LOAD_FAST    100 (light_pred, y)
+              COMPARE_OP             103 (!=)
+              STORE_FAST               9 (hard_err_mask)
+
+200           LOAD_FAST_LOAD_FAST    137 (route_mask, hard_err_mask)
+              BINARY_OP                7 (|)
+              STORE_FAST              10 (keep_mask)
+
+201           LOAD_FAST               10 (keep_mask)
+              LOAD_ATTR               15 (any + NULL|self)
+              CALL                     0
+              TO_BOOL
+              POP_JUMP_IF_TRUE        25 (to L1)
+
+202           LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               16 (ones_like)
+              PUSH_NULL
+              LOAD_FAST                4 (y)
+              LOAD_GLOBAL             18 (bool)
+              LOAD_CONST               6 (('dtype',))
+              CALL_KW                  2
+              STORE_FAST              10 (keep_mask)
+
+204   L1:     LOAD_FAST                0 (train_out)
+              LOAD_CONST               7 ('X')
+              BINARY_SUBSCR
+              LOAD_FAST               10 (keep_mask)
+              BINARY_SUBSCR
+              STORE_FAST              11 (x_sel)
+
+205           LOAD_FAST_LOAD_FAST     74 (y, keep_mask)
+              BINARY_SUBSCR
+              STORE_FAST              12 (y_sel)
+
+206           LOAD_FAST_LOAD_FAST    154 (hard_err_mask, keep_mask)
+              BINARY_SUBSCR
+              STORE_FAST              13 (hard_sel)
+
+208           LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               20 (where)
+              PUSH_NULL
+              LOAD_FAST               12 (y_sel)
+              LOAD_CONST               8 (1)
+              COMPARE_OP              72 (==)
+              CALL                     1
+              LOAD_CONST               9 (0)
+              BINARY_SUBSCR
+              STORE_FAST              14 (idx_pos)
+
+209           LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               20 (where)
+              PUSH_NULL
+              LOAD_FAST               12 (y_sel)
+              LOAD_CONST               9 (0)
+              COMPARE_OP              72 (==)
+              CALL                     1
+              LOAD_CONST               9 (0)
+              BINARY_SUBSCR
+              STORE_FAST              15 (idx_neg)
+
+210           LOAD_FAST               14 (idx_pos)
+              LOAD_ATTR               22 (size)
+              LOAD_CONST               9 (0)
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_TRUE        16 (to L2)
+              LOAD_FAST               15 (idx_neg)
+              LOAD_ATTR               22 (size)
+              LOAD_CONST               9 (0)
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE      124 (to L3)
+
+212   L2:     LOAD_FAST               11 (x_sel)
+
+213           LOAD_FAST               12 (y_sel)
+
+214           LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               24 (ones)
+              PUSH_NULL
+              LOAD_FAST               12 (y_sel)
+              LOAD_ATTR               26 (shape)
+              LOAD_CONST               9 (0)
+              BINARY_SUBSCR
+              LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               28 (float64)
+              LOAD_CONST               6 (('dtype',))
+              CALL_KW                  2
+
+215           LOAD_FAST                7 (route_thr)
+
+216           LOAD_GLOBAL             31 (int + NULL)
+              LOAD_FAST                8 (route_mask)
+              LOAD_ATTR               33 (sum + NULL|self)
+              CALL                     0
+              CALL                     1
+
+217           LOAD_GLOBAL             31 (int + NULL)
+              LOAD_FAST                9 (hard_err_mask)
+              LOAD_ATTR               33 (sum + NULL|self)
+              CALL                     0
+              CALL                     1
+
+218           LOAD_GLOBAL             31 (int + NULL)
+              LOAD_FAST               12 (y_sel)
+              LOAD_ATTR               26 (shape)
+              LOAD_CONST               9 (0)
+              BINARY_SUBSCR
+              CALL                     1
+
+211           LOAD_CONST              10 (('X', 'y', 'sample_weights', 'route_threshold', 'routed_count', 'hard_error_count', 'balanced_count'))
+              BUILD_CONST_KEY_MAP      7
+              RETURN_VALUE
+
+221   L3:     LOAD_GLOBAL             31 (int + NULL)
+              LOAD_GLOBAL             13 (max + NULL)
+              LOAD_FAST               14 (idx_pos)
+              LOAD_ATTR               22 (size)
+              LOAD_FAST               15 (idx_neg)
+              LOAD_ATTR               22 (size)
+              CALL                     2
+              CALL                     1
+              STORE_FAST              16 (target)
+
+222           LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               34 (random)
+              LOAD_ATTR               37 (RandomState + NULL|self)
+              LOAD_CONST              11 (42)
+              CALL                     1
+              STORE_FAST              17 (rs)
+
+223           LOAD_FAST               17 (rs)
+              LOAD_ATTR               39 (choice + NULL|self)
+              LOAD_FAST               14 (idx_pos)
+              LOAD_FAST               16 (target)
+              LOAD_FAST               14 (idx_pos)
+              LOAD_ATTR               22 (size)
+              LOAD_FAST               16 (target)
+              COMPARE_OP               2 (<)
+              LOAD_CONST              12 (('size', 'replace'))
+              CALL_KW                  3
+              STORE_FAST              18 (pos_pick)
+
+224           LOAD_FAST               17 (rs)
+              LOAD_ATTR               39 (choice + NULL|self)
+              LOAD_FAST               15 (idx_neg)
+              LOAD_FAST               16 (target)
+              LOAD_FAST               15 (idx_neg)
+              LOAD_ATTR               22 (size)
+              LOAD_FAST               16 (target)
+              COMPARE_OP               2 (<)
+              LOAD_CONST              12 (('size', 'replace'))
+              CALL_KW                  3
+              STORE_FAST              19 (neg_pick)
+
+225           LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               40 (concatenate)
+              PUSH_NULL
+              LOAD_FAST               18 (pos_pick)
+              LOAD_FAST               19 (neg_pick)
+              BUILD_LIST               2
+              CALL                     1
+              STORE_FAST              20 (idx_bal)
+
+226           LOAD_FAST               17 (rs)
+              LOAD_ATTR               43 (shuffle + NULL|self)
+              LOAD_FAST               20 (idx_bal)
+              CALL                     1
+              POP_TOP
+
+228           LOAD_FAST               11 (x_sel)
+              LOAD_FAST               20 (idx_bal)
+              BINARY_SUBSCR
+              STORE_FAST              21 (x_bal)
+
+229           LOAD_FAST               12 (y_sel)
+              LOAD_FAST               20 (idx_bal)
+              BINARY_SUBSCR
+              STORE_FAST              22 (y_bal)
+
+230           LOAD_FAST               13 (hard_sel)
+              LOAD_FAST               20 (idx_bal)
+              BINARY_SUBSCR
+              STORE_FAST              23 (hard_bal)
+
+231           LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               24 (ones)
+              PUSH_NULL
+              LOAD_FAST               22 (y_bal)
+              LOAD_ATTR               26 (shape)
+              LOAD_CONST               9 (0)
+              BINARY_SUBSCR
+              LOAD_GLOBAL              2 (np)
+              LOAD_ATTR               28 (float64)
+              LOAD_CONST               6 (('dtype',))
+              CALL_KW                  2
+              STORE_FAST              24 (sample_weights)
+
+232           LOAD_CONST              13 (2.0)
+              LOAD_FAST               24 (sample_weights)
+              LOAD_FAST               23 (hard_bal)
+              STORE_SUBSCR
+
+235           LOAD_FAST               21 (x_bal)
+
+236           LOAD_FAST               22 (y_bal)
+
+237           LOAD_FAST               24 (sample_weights)
+
+238           LOAD_FAST                7 (route_thr)
+
+239           LOAD_GLOBAL             31 (int + NULL)
+              LOAD_FAST                8 (route_mask)
+              LOAD_ATTR               33 (sum + NULL|self)
+              CALL                     0
+              CALL                     1
+
+240           LOAD_GLOBAL             31 (int + NULL)
+              LOAD_FAST                9 (hard_err_mask)
+              LOAD_ATTR               33 (sum + NULL|self)
+              CALL                     0
+              CALL                     1
+
+241           LOAD_GLOBAL             31 (int + NULL)
+              LOAD_FAST               22 (y_bal)
+              LOAD_ATTR               26 (shape)
+              LOAD_CONST               9 (0)
+              BINARY_SUBSCR
+              CALL                     1
+
+234           LOAD_CONST              10 (('X', 'y', 'sample_weights', 'route_threshold', 'routed_count', 'hard_error_count', 'balanced_count'))
+              BUILD_CONST_KEY_MAP      7
+              RETURN_VALUE
+
+Disassembly of <code object pick_best_threshold at 0x00000142D6AA9470, file "cascade_eval_replica.py", line 245>:
+245            RESUME                   0
+
+257            LOAD_CONST               1 (0.5)
+               STORE_FAST              10 (best_thr)
+
+258            LOAD_CONST               1 (0.5)
+               STORE_FAST              11 (best_heavy_thr)
+
+259            LOAD_CONST               2 (-1.0)
+               STORE_FAST              12 (best_recall)
+
+260            LOAD_CONST               2 (-1.0)
+               STORE_FAST              13 (best_f1)
+
+261            LOAD_CONST               2 (-1.0)
+               STORE_FAST              14 (best_route_recall)
+
+262            LOAD_CONST               2 (-1.0)
+               STORE_FAST              15 (best_route_f1)
+
+263            BUILD_MAP                0
+               STORE_FAST              16 (best_metrics)
+
+264            LOAD_FAST                1 (light_pred)
+               LOAD_ATTR                1 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST              17 (best_pred)
+
+265            LOAD_FAST                3 (light_attack_score)
+               LOAD_ATTR                1 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST              18 (best_score)
+
+266            LOAD_FAST                7 (heavy_thresholds)
+               POP_JUMP_IF_NOT_NONE    37 (to L1)
+
+267            LOAD_GLOBAL              2 (np)
+               LOAD_ATTR                4 (array)
+               PUSH_NULL
+               BUILD_LIST               0
+               LOAD_CONST               3 ((0.4, 0.45, 0.5, 0.55, 0.6))
+               LIST_EXTEND              1
+               LOAD_GLOBAL              2 (np)
+               LOAD_ATTR                6 (float32)
+               LOAD_CONST               4 (('dtype',))
+               CALL_KW                  2
+               STORE_FAST               7 (heavy_thresholds)
+
+270    L1:     LOAD_GLOBAL              2 (np)
+               LOAD_ATTR                4 (array)
+               PUSH_NULL
+               BUILD_LIST               0
+               LOAD_CONST               5 ((0.001, 0.0025, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.75, 0.9))
+               LIST_EXTEND              1
+               CALL                     1
+               STORE_FAST              19 (quantiles)
+
+274            LOAD_GLOBAL              2 (np)
+               LOAD_ATTR                8 (quantile)
+               PUSH_NULL
+               LOAD_FAST                4 (conf)
+               LOAD_FAST               19 (quantiles)
+               CALL                     2
+               STORE_FAST              20 (thr_values)
+
+275            LOAD_FAST               20 (thr_values)
+               GET_ITER
+       L2:     EXTENDED_ARG             2
+               FOR_ITER               663 (to L23)
+               STORE_FAST              21 (thr)
+
+276            LOAD_GLOBAL             11 (ConfidenceRouter + NULL)
+               LOAD_GLOBAL             13 (RouterConfig + NULL)
+               LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST               21 (thr)
+               CALL                     1
+               LOAD_CONST               6 (('threshold',))
+               CALL_KW                  1
+               CALL                     1
+               STORE_FAST              22 (router)
+
+277            LOAD_FAST               22 (router)
+               LOAD_ATTR               17 (route_from_confidence + NULL|self)
+               LOAD_GLOBAL             18 (torch)
+               LOAD_ATTR               20 (tensor)
+               PUSH_NULL
+               LOAD_FAST                4 (conf)
+               CALL                     1
+               CALL                     1
+               LOAD_ATTR               23 (cpu + NULL|self)
+               CALL                     0
+               LOAD_ATTR               25 (numpy + NULL|self)
+               CALL                     0
+               LOAD_ATTR               27 (astype + NULL|self)
+               LOAD_GLOBAL             28 (bool)
+               CALL                     1
+               STORE_FAST              23 (route_mask)
+
+278            LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST               23 (route_mask)
+               LOAD_ATTR               31 (mean + NULL|self)
+               CALL                     0
+               CALL                     1
+               STORE_FAST              24 (routed_fraction)
+
+279            LOAD_FAST               24 (routed_fraction)
+               LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST                6 (min_routed_fraction)
+               CALL                     1
+               COMPARE_OP              18 (bool(<))
+               POP_JUMP_IF_FALSE        2 (to L3)
+
+280            JUMP_BACKWARD          157 (to L2)
+
+281    L3:     LOAD_FAST                7 (heavy_thresholds)
+               GET_ITER
+       L4:     EXTENDED_ARG             1
+               FOR_ITER               499 (to L22)
+               STORE_FAST              25 (heavy_thr)
+
+282            LOAD_FAST                1 (light_pred)
+               LOAD_ATTR                1 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST              26 (pred)
+
+283            LOAD_FAST                3 (light_attack_score)
+               LOAD_ATTR                1 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST              27 (score)
+
+284            LOAD_FAST                2 (heavy_attack_score)
+               LOAD_FAST               23 (route_mask)
+               BINARY_SUBSCR
+               LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST               25 (heavy_thr)
+               CALL                     1
+               COMPARE_OP             172 (>=)
+               LOAD_ATTR               27 (astype + NULL|self)
+               LOAD_GLOBAL              2 (np)
+               LOAD_ATTR               32 (int64)
+               CALL                     1
+               LOAD_FAST               26 (pred)
+               LOAD_FAST               23 (route_mask)
+               STORE_SUBSCR
+
+285            LOAD_FAST                2 (heavy_attack_score)
+               LOAD_FAST               23 (route_mask)
+               BINARY_SUBSCR
+               LOAD_FAST               27 (score)
+               LOAD_FAST               23 (route_mask)
+               STORE_SUBSCR
+
+287            LOAD_GLOBAL             35 (binary_fpr + NULL)
+               LOAD_FAST                0 (y_true)
+               LOAD_FAST               26 (pred)
+               CALL                     2
+               STORE_FAST              28 (fpr)
+
+288            LOAD_GLOBAL             37 (as_metrics + NULL)
+               LOAD_FAST                0 (y_true)
+               LOAD_FAST               26 (pred)
+               CALL                     2
+               STORE_FAST              29 (m)
+
+289            LOAD_FAST                0 (y_true)
+               LOAD_FAST               23 (route_mask)
+               BINARY_SUBSCR
+               STORE_FAST              30 (route_y)
+
+290            LOAD_FAST               26 (pred)
+               LOAD_FAST               23 (route_mask)
+               BINARY_SUBSCR
+               STORE_FAST              31 (route_p)
+
+291            LOAD_FAST               30 (route_y)
+               LOAD_ATTR               38 (size)
+               LOAD_CONST               7 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       12 (to L5)
+               LOAD_GLOBAL             37 (as_metrics + NULL)
+               LOAD_FAST               30 (route_y)
+               LOAD_FAST               31 (route_p)
+               CALL                     2
+               JUMP_FORWARD             5 (to L6)
+       L5:     LOAD_CONST               8 (0.0)
+               LOAD_CONST               8 (0.0)
+               LOAD_CONST               8 (0.0)
+               LOAD_CONST               9 (('f1', 'precision', 'recall'))
+               BUILD_CONST_KEY_MAP      3
+       L6:     STORE_FAST              32 (route_m)
+
+292            LOAD_FAST               30 (route_y)
+               LOAD_ATTR               38 (size)
+               LOAD_CONST               7 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       12 (to L7)
+               LOAD_GLOBAL             35 (binary_fpr + NULL)
+               LOAD_FAST               30 (route_y)
+               LOAD_FAST               31 (route_p)
+               CALL                     2
+               JUMP_FORWARD             1 (to L8)
+       L7:     LOAD_CONST               8 (0.0)
+       L8:     STORE_FAST              33 (route_fpr)
+
+294            LOAD_FAST                8 (objective_mode)
+               LOAD_CONST              10 ('routed_slice')
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_FALSE      185 (to L18)
+
+295            LOAD_FAST                9 (routed_fpr_budget)
+               POP_JUMP_IF_NONE        11 (to L9)
+               LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST                9 (routed_fpr_budget)
+               CALL                     1
+               JUMP_FORWARD             1 (to L10)
+       L9:     LOAD_FAST                5 (fpr_budget)
+      L10:     STORE_FAST              34 (route_budget)
+
+296            LOAD_FAST               28 (fpr)
+               LOAD_FAST                5 (fpr_budget)
+               COMPARE_OP              58 (bool(<=))
+               POP_JUMP_IF_FALSE      160 (to L17)
+               LOAD_FAST               33 (route_fpr)
+               LOAD_FAST               34 (route_budget)
+               COMPARE_OP              58 (bool(<=))
+               POP_JUMP_IF_FALSE      151 (to L16)
+
+297            LOAD_FAST               32 (route_m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               LOAD_FAST               14 (best_route_recall)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_TRUE        45 (to L12)
+
+298            LOAD_FAST               32 (route_m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               LOAD_FAST               14 (best_route_recall)
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_FALSE        9 (to L11)
+               LOAD_FAST               32 (route_m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+               LOAD_FAST               15 (best_route_f1)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_TRUE        27 (to L12)
+
+300   L11:     LOAD_FAST               32 (route_m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               LOAD_FAST               14 (best_route_recall)
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_FALSE      112 (to L15)
+
+301            LOAD_FAST               32 (route_m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+               LOAD_FAST               15 (best_route_f1)
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_FALSE      100 (to L14)
+
+302            LOAD_FAST               29 (m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+               LOAD_FAST               13 (best_f1)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       88 (to L13)
+
+305   L12:     LOAD_FAST               32 (route_m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               STORE_FAST              14 (best_route_recall)
+
+306            LOAD_FAST               32 (route_m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+               STORE_FAST              15 (best_route_f1)
+
+307            LOAD_FAST               29 (m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               STORE_FAST              12 (best_recall)
+
+308            LOAD_FAST               29 (m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+               STORE_FAST              13 (best_f1)
+
+309            LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST               21 (thr)
+               CALL                     1
+               STORE_FAST              10 (best_thr)
+
+310            LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST               25 (heavy_thr)
+               CALL                     1
+               STORE_FAST              11 (best_heavy_thr)
+
+312            LOAD_CONST              13 ('fpr')
+               LOAD_FAST               28 (fpr)
+
+311            BUILD_MAP                1
+
+313            LOAD_FAST               29 (m)
+
+311            DICT_UPDATE              1
+
+314            LOAD_FAST               24 (routed_fraction)
+
+315            LOAD_FAST               33 (route_fpr)
+
+316            LOAD_FAST               32 (route_m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+
+317            LOAD_FAST               32 (route_m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+
+318            LOAD_GLOBAL             41 (int + NULL)
+               LOAD_FAST               30 (route_y)
+               LOAD_ATTR               38 (size)
+               CALL                     1
+
+311            LOAD_CONST              14 (('routed_fraction', 'routed_fpr', 'routed_recall', 'routed_f1', 'routed_count'))
+               BUILD_CONST_KEY_MAP      5
+               DICT_UPDATE              1
+               STORE_FAST              16 (best_metrics)
+
+320            LOAD_FAST               26 (pred)
+               STORE_FAST              17 (best_pred)
+
+321            LOAD_FAST               27 (score)
+               STORE_FAST              18 (best_score)
+               EXTENDED_ARG             1
+               JUMP_BACKWARD          367 (to L4)
+
+302   L13:     EXTENDED_ARG             1
+               JUMP_BACKWARD          370 (to L4)
+
+301   L14:     EXTENDED_ARG             1
+               JUMP_BACKWARD          373 (to L4)
+
+300   L15:     EXTENDED_ARG             1
+               JUMP_BACKWARD          376 (to L4)
+
+296   L16:     EXTENDED_ARG             1
+               JUMP_BACKWARD          379 (to L4)
+      L17:     EXTENDED_ARG             1
+               JUMP_BACKWARD          382 (to L4)
+
+323   L18:     LOAD_FAST               28 (fpr)
+               LOAD_FAST                5 (fpr_budget)
+               COMPARE_OP              58 (bool(<=))
+               POP_JUMP_IF_TRUE         3 (to L19)
+               EXTENDED_ARG             1
+               JUMP_BACKWARD          391 (to L4)
+
+324   L19:     LOAD_FAST               29 (m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               LOAD_FAST               12 (best_recall)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_TRUE        24 (to L21)
+               LOAD_FAST               29 (m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               LOAD_FAST               12 (best_recall)
+               COMPARE_OP              88 (bool(==))
+               POP_JUMP_IF_TRUE         3 (to L20)
+               EXTENDED_ARG             1
+               JUMP_BACKWARD          412 (to L4)
+      L20:     LOAD_FAST               29 (m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+               LOAD_FAST               13 (best_f1)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_TRUE         3 (to L21)
+               EXTENDED_ARG             1
+               JUMP_BACKWARD          424 (to L4)
+
+326   L21:     LOAD_FAST               29 (m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+               STORE_FAST              12 (best_recall)
+
+327            LOAD_FAST               29 (m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+               STORE_FAST              13 (best_f1)
+
+328            LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST               21 (thr)
+               CALL                     1
+               STORE_FAST              10 (best_thr)
+
+329            LOAD_GLOBAL             15 (float + NULL)
+               LOAD_FAST               25 (heavy_thr)
+               CALL                     1
+               STORE_FAST              11 (best_heavy_thr)
+
+331            LOAD_CONST              13 ('fpr')
+               LOAD_FAST               28 (fpr)
+
+330            BUILD_MAP                1
+
+332            LOAD_FAST               29 (m)
+
+330            DICT_UPDATE              1
+
+333            LOAD_FAST               24 (routed_fraction)
+
+334            LOAD_FAST               33 (route_fpr)
+
+335            LOAD_FAST               32 (route_m)
+               LOAD_CONST              11 ('recall')
+               BINARY_SUBSCR
+
+336            LOAD_FAST               32 (route_m)
+               LOAD_CONST              12 ('f1')
+               BINARY_SUBSCR
+
+337            LOAD_GLOBAL             41 (int + NULL)
+               LOAD_FAST               30 (route_y)
+               LOAD_ATTR               38 (size)
+               CALL                     1
+
+330            LOAD_CONST              14 (('routed_fraction', 'routed_fpr', 'routed_recall', 'routed_f1', 'routed_count'))
+               BUILD_CONST_KEY_MAP      5
+               DICT_UPDATE              1
+               STORE_FAST              16 (best_metrics)
+
+339            LOAD_FAST               26 (pred)
+               STORE_FAST              17 (best_pred)
+
+340            LOAD_FAST               27 (score)
+               STORE_FAST              18 (best_score)
+               EXTENDED_ARG             1
+               JUMP_BACKWARD          502 (to L4)
+
+281   L22:     END_FOR
+               POP_TOP
+               EXTENDED_ARG             2
+               JUMP_BACKWARD          666 (to L2)
+
+275   L23:     END_FOR
+               POP_TOP
+
+343            LOAD_FAST               13 (best_f1)
+               LOAD_CONST               7 (0)
+               COMPARE_OP              18 (bool(<))
+               POP_JUMP_IF_FALSE       97 (to L24)
+
+344            LOAD_GLOBAL             15 (float + NULL)
+               LOAD_GLOBAL              2 (np)
+               LOAD_ATTR               42 (min)
+               PUSH_NULL
+               LOAD_FAST                4 (conf)
+               CALL                     1
+               CALL                     1
+               STORE_FAST              10 (best_thr)
+
+345            LOAD_FAST                1 (light_pred)
+               LOAD_ATTR                1 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST              17 (best_pred)
+
+347            LOAD_CONST              13 ('fpr')
+               LOAD_GLOBAL             35 (binary_fpr + NULL)
+               LOAD_FAST                0 (y_true)
+               LOAD_FAST               17 (best_pred)
+               CALL                     2
+
+346            BUILD_MAP                1
+
+348            LOAD_GLOBAL             37 (as_metrics + NULL)
+               LOAD_FAST                0 (y_true)
+               LOAD_FAST               17 (best_pred)
+               CALL                     2
+
+346            DICT_UPDATE              1
+
+349            LOAD_CONST               8 (0.0)
+
+350            LOAD_CONST               8 (0.0)
+
+351            LOAD_CONST               8 (0.0)
+
+352            LOAD_CONST               8 (0.0)
+
+353            LOAD_CONST               7 (0)
+
+346            LOAD_CONST              14 (('routed_fraction', 'routed_fpr', 'routed_recall', 'routed_f1', 'routed_count'))
+               BUILD_CONST_KEY_MAP      5
+               DICT_UPDATE              1
+               STORE_FAST              16 (best_metrics)
+
+355            LOAD_FAST                3 (light_attack_score)
+               LOAD_ATTR                1 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST              18 (best_score)
+
+357   L24:     LOAD_FAST               11 (best_heavy_thr)
+               LOAD_FAST               16 (best_metrics)
+               LOAD_CONST              15 ('heavy_decision_threshold')
+               STORE_SUBSCR
+
+358            LOAD_FAST               10 (best_thr)
+               LOAD_FAST               16 (best_metrics)
+               LOAD_FAST               17 (best_pred)
+               LOAD_FAST               18 (best_score)
+               BUILD_TUPLE              4
+               RETURN_VALUE
+
+Disassembly of <code object should_fallback_to_light at 0x00000142D5C6EBF0, file "cascade_eval_replica.py", line 361>:
+361           RESUME                   0
+
+363           LOAD_GLOBAL              1 (float + NULL)
+              LOAD_FAST                1 (cascade_metrics)
+              LOAD_ATTR                3 (get + NULL|self)
+              LOAD_CONST               1 ('recall')
+              LOAD_CONST               2 (0.0)
+              CALL                     2
+              CALL                     1
+              LOAD_FAST                2 (eps)
+              BINARY_OP                0 (+)
+              LOAD_GLOBAL              1 (float + NULL)
+              LOAD_FAST                0 (light_metrics)
+              LOAD_ATTR                3 (get + NULL|self)
+              LOAD_CONST               1 ('recall')
+              LOAD_CONST               2 (0.0)
+              CALL                     2
+              CALL                     1
+              COMPARE_OP              18 (bool(<))
+              POP_JUMP_IF_FALSE        1 (to L1)
+
+364           RETURN_CONST             3 (True)
+
+365   L1:     LOAD_GLOBAL              1 (float + NULL)
+              LOAD_FAST                1 (cascade_metrics)
+              LOAD_ATTR                3 (get + NULL|self)
+              LOAD_CONST               4 ('f1')
+              LOAD_CONST               2 (0.0)
+              CALL                     2
+              CALL                     1
+              LOAD_FAST                2 (eps)
+              BINARY_OP                0 (+)
+              LOAD_GLOBAL              1 (float + NULL)
+              LOAD_FAST                0 (light_metrics)
+              LOAD_ATTR                3 (get + NULL|self)
+              LOAD_CONST               4 ('f1')
+              LOAD_CONST               2 (0.0)
+              CALL                     2
+              CALL                     1
+              COMPARE_OP              18 (bool(<))
+              POP_JUMP_IF_FALSE        1 (to L2)
+
+366           RETURN_CONST             3 (True)
+
+367   L2:     RETURN_CONST             5 (False)
+
+Disassembly of <code object main at 0x00000142D6AB3060, file "cascade_eval_replica.py", line 370>:
+ 370            RESUME                   0
+
+ 371            LOAD_GLOBAL              0 (argparse)
+                LOAD_ATTR                2 (ArgumentParser)
+                PUSH_NULL
+                LOAD_CONST               1 ('D3 cascade evaluation on replica mixed dataset')
+                LOAD_CONST               2 (('description',))
+                CALL_KW                  1
+                STORE_FAST               0 (parser)
+
+ 372            LOAD_FAST                0 (parser)
+                LOAD_ATTR                5 (add_argument + NULL|self)
+                LOAD_CONST               3 ('--base-path')
+                LOAD_GLOBAL              6 (os)
+                LOAD_ATTR                8 (getcwd)
+                PUSH_NULL
+                CALL                     0
+                LOAD_CONST               4 (('default',))
+                CALL_KW                  2
+                POP_TOP
+
+ 373            LOAD_FAST                0 (parser)
+                LOAD_ATTR                5 (add_argument + NULL|self)
+                LOAD_CONST               5 ('--light-epochs')
+                LOAD_GLOBAL             10 (int)
+                LOAD_CONST               6 (1)
+                LOAD_CONST               7 (('type', 'default'))
+                CALL_KW                  3
+                POP_TOP
+
+ 374            LOAD_FAST                0 (parser)
+                LOAD_ATTR                5 (add_argument + NULL|self)
+                LOAD_CONST               8 ('--heavy-epochs')
+                LOAD_GLOBAL             10 (int)
+                LOAD_CONST               9 (12)
+                LOAD_CONST               7 (('type', 'default'))
+                CALL_KW                  3
+                POP_TOP
+
+ 375            LOAD_FAST                0 (parser)
+                LOAD_ATTR                5 (add_argument + NULL|self)
+                LOAD_CONST              10 ('--fpr-budget-floor')
+                LOAD_GLOBAL             12 (float)
+                LOAD_CONST              11 (0.05)
+                LOAD_CONST               7 (('type', 'default'))
+                CALL_KW                  3
+                POP_TOP
+
+ 376            LOAD_FAST                0 (parser)
+                LOAD_ATTR                5 (add_argument + NULL|self)
+                LOAD_CONST              12 ('--config')
+                LOAD_CONST              13 ('configs/repro_full.json')
+                LOAD_CONST              14 ('Config path for full-profile manifest-driven evaluation')
+                LOAD_CONST              15 (('default', 'help'))
+                CALL_KW                  3
+                POP_TOP
+
+ 377            LOAD_FAST                0 (parser)
+                LOAD_ATTR               15 (parse_args + NULL|self)
+                CALL                     0
+                STORE_FAST               1 (args)
+
+ 379            LOAD_FAST                1 (args)
+                LOAD_ATTR               16 (base_path)
+                STORE_FAST               2 (base)
+
+ 380            LOAD_GLOBAL             18 (torch)
+                LOAD_ATTR               20 (device)
+                PUSH_NULL
+                LOAD_CONST              16 ('cpu')
+                CALL                     1
+                STORE_FAST               3 (device)
+
+ 382            LOAD_GLOBAL             23 (load_config + NULL)
+                LOAD_GLOBAL              6 (os)
+                LOAD_ATTR               24 (path)
+                LOAD_ATTR               27 (join + NULL|self)
+                LOAD_FAST_LOAD_FAST     33 (base, args)
+                LOAD_ATTR               28 (config)
+                CALL                     2
+                CALL                     1
+                STORE_FAST               4 (cfg)
+
+ 383            LOAD_FAST                4 (cfg)
+                LOAD_CONST              17 ('data')
+                BINARY_SUBSCR
+                STORE_FAST               5 (dcfg)
+
+ 384            LOAD_FAST                4 (cfg)
+                LOAD_CONST              18 ('train')
+                BINARY_SUBSCR
+                STORE_FAST               6 (tcfg)
+
+ 385            LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              19 ('decision_target_fpr')
+                LOAD_CONST              11 (0.05)
+                CALL                     2
+                CALL                     1
+                STORE_FAST               7 (decision_target_fpr)
+
+ 386            LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              20 ('decision_threshold')
+                LOAD_CONST               0 (None)
+                CALL                     2
+                STORE_FAST               8 (decision_threshold_cfg)
+
+ 387            LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              21 ('cascade_min_routed_fraction')
+                LOAD_CONST              22 (0.02)
+                CALL                     2
+                CALL                     1
+                STORE_FAST               9 (min_routed_fraction)
+
+ 388            LOAD_GLOBAL             33 (str + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              23 ('d3_objective')
+                LOAD_CONST              24 ('global')
+                CALL                     2
+                CALL                     1
+                LOAD_ATTR               35 (lower + NULL|self)
+                CALL                     0
+                STORE_FAST              10 (d3_objective)
+
+ 389            LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              25 ('d3_routed_fpr_budget')
+                LOAD_CONST              26 (0.25)
+                CALL                     2
+                CALL                     1
+                STORE_FAST              11 (d3_routed_fpr_budget)
+
+ 390            LOAD_GLOBAL             37 (set_seed + NULL)
+                LOAD_GLOBAL             11 (int + NULL)
+                LOAD_FAST                4 (cfg)
+                LOAD_CONST              27 ('seed')
+                BINARY_SUBSCR
+                CALL                     1
+                LOAD_GLOBAL             39 (bool + NULL)
+                LOAD_FAST                4 (cfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              28 ('deterministic')
+                LOAD_CONST              29 (True)
+                CALL                     2
+                CALL                     1
+                CALL                     2
+                POP_TOP
+
+ 392            LOAD_FAST                5 (dcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              30 ('use_split_manifest')
+                LOAD_CONST              31 (False)
+                CALL                     2
+                TO_BOOL
+                POP_JUMP_IF_FALSE       15 (to L1)
+
+ 393            LOAD_GLOBAL             41 (build_datasets_from_manifest + NULL)
+                LOAD_FAST_LOAD_FAST     37 (base, dcfg)
+                CALL                     2
+                UNPACK_SEQUENCE          3
+                STORE_FAST_STORE_FAST  205 (train_set, val_set)
+                STORE_FAST              14 (_)
+                JUMP_FORWARD            95 (to L2)
+
+ 395    L1:     LOAD_GLOBAL             43 (build_mixed_dataset + NULL)
+                LOAD_FAST                2 (base)
+                CALL                     1
+                STORE_FAST              15 (dataset)
+
+ 396            LOAD_GLOBAL             11 (int + NULL)
+                LOAD_CONST              32 (0.8)
+                LOAD_GLOBAL             45 (len + NULL)
+                LOAD_FAST               15 (dataset)
+                CALL                     1
+                BINARY_OP                5 (*)
+                CALL                     1
+                STORE_FAST              16 (train_size)
+
+ 397            LOAD_GLOBAL             47 (random_split + NULL)
+                LOAD_FAST               15 (dataset)
+                LOAD_FAST               16 (train_size)
+                LOAD_GLOBAL             45 (len + NULL)
+                LOAD_FAST               15 (dataset)
+                CALL                     1
+                LOAD_FAST               16 (train_size)
+                BINARY_OP               10 (-)
+                BUILD_LIST               2
+                LOAD_GLOBAL             18 (torch)
+                LOAD_ATTR               48 (Generator)
+                PUSH_NULL
+                CALL                     0
+                LOAD_ATTR               51 (manual_seed + NULL|self)
+                LOAD_CONST              33 (42)
+                CALL                     1
+                LOAD_CONST              34 (('generator',))
+                CALL_KW                  3
+                UNPACK_SEQUENCE          2
+                STORE_FAST_STORE_FAST  205 (train_set, val_set)
+
+ 398    L2:     LOAD_GLOBAL             53 (compute_label_counts + NULL)
+                LOAD_FAST               12 (train_set)
+                CALL                     1
+                STORE_FAST              17 (label_counts)
+
+ 399            LOAD_GLOBAL             55 (build_train_loader + NULL)
+                LOAD_FAST               12 (train_set)
+                BUILD_MAP                0
+                LOAD_FAST                6 (tcfg)
+                DICT_UPDATE              1
+                LOAD_CONST              35 ('batch_size')
+                LOAD_CONST              36 (32)
+                BUILD_MAP                1
+                DICT_UPDATE              1
+                LOAD_FAST               17 (label_counts)
+                CALL                     3
+                STORE_FAST              18 (train_loader)
+
+ 400            LOAD_GLOBAL             57 (DataLoader + NULL)
+                LOAD_FAST               13 (val_set)
+                LOAD_CONST              36 (32)
+                LOAD_CONST              31 (False)
+                LOAD_CONST              37 (0)
+                LOAD_CONST              38 (('batch_size', 'shuffle', 'num_workers'))
+                CALL_KW                  4
+                STORE_FAST              19 (val_loader)
+
+ 402            LOAD_GLOBAL             59 (TinyHybridStudent + NULL)
+                CALL                     0
+                LOAD_ATTR               61 (to + NULL|self)
+                LOAD_FAST                3 (device)
+                CALL                     1
+                STORE_FAST              20 (light)
+
+ 403            LOAD_GLOBAL             18 (torch)
+                LOAD_ATTR               62 (optim)
+                LOAD_ATTR               65 (AdamW + NULL|self)
+                LOAD_FAST               20 (light)
+                LOAD_ATTR               67 (parameters + NULL|self)
+                CALL                     0
+                LOAD_CONST              39 (0.001)
+                LOAD_CONST              40 (('lr',))
+                CALL_KW                  2
+                STORE_FAST              21 (opt)
+
+ 404            LOAD_GLOBAL             69 (build_loss + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_FAST               17 (label_counts)
+                LOAD_FAST                3 (device)
+                CALL                     3
+                STORE_FAST              22 (ce)
+
+ 405            LOAD_GLOBAL             33 (str + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              41 ('student_checkpoint')
+                LOAD_CONST              42 ('')
+                CALL                     2
+                CALL                     1
+                LOAD_ATTR               71 (strip + NULL|self)
+                CALL                     0
+                STORE_FAST              23 (student_ckpt)
+
+ 406            LOAD_CONST              42 ('')
+                STORE_FAST              24 (loaded_checkpoint)
+
+ 407            LOAD_FAST               23 (student_ckpt)
+                TO_BOOL
+                POP_JUMP_IF_FALSE      159 (to L6)
+
+ 408            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR               24 (path)
+                LOAD_ATTR               73 (isabs + NULL|self)
+                LOAD_FAST               23 (student_ckpt)
+                CALL                     1
+                TO_BOOL
+                POP_JUMP_IF_FALSE        2 (to L3)
+                LOAD_FAST               23 (student_ckpt)
+                JUMP_FORWARD            31 (to L4)
+        L3:     LOAD_GLOBAL              6 (os)
+                LOAD_ATTR               24 (path)
+                LOAD_ATTR               27 (join + NULL|self)
+                LOAD_FAST                2 (base)
+                LOAD_FAST               23 (student_ckpt)
+                CALL                     2
+        L4:     STORE_FAST              25 (ckpt_path)
+
+ 409            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR               24 (path)
+                LOAD_ATTR               75 (exists + NULL|self)
+                LOAD_FAST               25 (ckpt_path)
+                CALL                     1
+                TO_BOOL
+                POP_JUMP_IF_TRUE        14 (to L5)
+
+ 410            LOAD_GLOBAL             77 (FileNotFoundError + NULL)
+                LOAD_CONST              43 ('student_checkpoint not found: ')
+                LOAD_FAST               25 (ckpt_path)
+                FORMAT_SIMPLE
+                BUILD_STRING             2
+                CALL                     1
+                RAISE_VARARGS            1
+
+ 411    L5:     LOAD_FAST               20 (light)
+                LOAD_ATTR               79 (load_state_dict + NULL|self)
+                LOAD_GLOBAL             18 (torch)
+                LOAD_ATTR               80 (load)
+                PUSH_NULL
+                LOAD_FAST               25 (ckpt_path)
+                LOAD_FAST                3 (device)
+                LOAD_CONST              44 (('map_location',))
+                CALL_KW                  2
+                CALL                     1
+                POP_TOP
+
+ 412            LOAD_FAST               25 (ckpt_path)
+                STORE_FAST              24 (loaded_checkpoint)
+                JUMP_FORWARD           173 (to L11)
+
+ 414    L6:     LOAD_GLOBAL             83 (range + NULL)
+                LOAD_FAST                1 (args)
+                LOAD_ATTR               84 (light_epochs)
+                CALL                     1
+                GET_ITER
+        L7:     FOR_ITER               148 (to L10)
+                STORE_FAST              14 (_)
+
+ 415            LOAD_FAST               20 (light)
+                LOAD_ATTR               87 (train + NULL|self)
+                CALL                     0
+                POP_TOP
+
+ 416            LOAD_FAST               18 (train_loader)
+                GET_ITER
+        L8:     FOR_ITER               123 (to L9)
+                STORE_FAST              26 (b)
+
+ 417            LOAD_FAST               21 (opt)
+                LOAD_ATTR               89 (zero_grad + NULL|self)
+                CALL                     0
+                POP_TOP
+
+ 418            LOAD_FAST               20 (light)
+                PUSH_NULL
+                LOAD_FAST               26 (b)
+                LOAD_CONST              45 ('can')
+                BINARY_SUBSCR
+                LOAD_ATTR               61 (to + NULL|self)
+                LOAD_FAST                3 (device)
+                CALL                     1
+                LOAD_FAST               26 (b)
+                LOAD_CONST              46 ('eth')
+                BINARY_SUBSCR
+                LOAD_ATTR               61 (to + NULL|self)
+                LOAD_FAST                3 (device)
+                CALL                     1
+                CALL                     2
+                STORE_FAST              27 (logits)
+
+ 419            LOAD_FAST               22 (ce)
+                PUSH_NULL
+                LOAD_FAST               27 (logits)
+                LOAD_FAST               26 (b)
+                LOAD_CONST              47 ('label')
+                BINARY_SUBSCR
+                LOAD_ATTR               61 (to + NULL|self)
+                LOAD_FAST                3 (device)
+                CALL                     1
+                CALL                     2
+                STORE_FAST              28 (loss)
+
+ 420            LOAD_FAST               28 (loss)
+                LOAD_ATTR               91 (backward + NULL|self)
+                CALL                     0
+                POP_TOP
+
+ 421            LOAD_FAST               21 (opt)
+                LOAD_ATTR               93 (step + NULL|self)
+                CALL                     0
+                POP_TOP
+                JUMP_BACKWARD          125 (to L8)
+
+ 416    L9:     END_FOR
+                POP_TOP
+                JUMP_BACKWARD          150 (to L7)
+
+ 414   L10:     END_FOR
+                POP_TOP
+
+ 422   L11:     LOAD_FAST               20 (light)
+                LOAD_ATTR               95 (eval + NULL|self)
+                CALL                     0
+                POP_TOP
+
+ 424            LOAD_GLOBAL             97 (extract_light_outputs + NULL)
+                LOAD_FAST               20 (light)
+                LOAD_FAST               18 (train_loader)
+                LOAD_CONST              48 (0.5)
+                CALL                     3
+                STORE_FAST              29 (train_out)
+
+ 425            LOAD_GLOBAL             97 (extract_light_outputs + NULL)
+                LOAD_FAST               20 (light)
+                LOAD_FAST               19 (val_loader)
+                LOAD_CONST              48 (0.5)
+                CALL                     3
+                STORE_FAST              30 (val_out)
+
+ 427            LOAD_FAST                8 (decision_threshold_cfg)
+                POP_JUMP_IF_NOT_NONE    23 (to L12)
+
+ 428            LOAD_GLOBAL             99 (tune_decision_threshold + NULL)
+
+ 429            LOAD_FAST               29 (train_out)
+                LOAD_CONST              49 ('y')
+                BINARY_SUBSCR
+
+ 430            LOAD_FAST               29 (train_out)
+                LOAD_CONST              50 ('attack_score')
+                BINARY_SUBSCR
+
+ 431            LOAD_FAST                7 (decision_target_fpr)
+
+ 428            LOAD_CONST              51 (('y_true', 'attack_score', 'target_fpr'))
+                CALL_KW                  3
+                UNPACK_SEQUENCE          2
+                STORE_FAST              31 (decision_threshold)
+                STORE_FAST              32 (threshold_calibration)
+
+ 433            LOAD_CONST              52 ('train_calibrated')
+                STORE_FAST              33 (decision_threshold_source)
+                JUMP_FORWARD            98 (to L13)
+
+ 435   L12:     LOAD_GLOBAL            101 (resolve_decision_threshold_from_report + NULL)
+
+ 436            LOAD_FAST_LOAD_FAST     38 (base, tcfg)
+                LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST                8 (decision_threshold_cfg)
+                CALL                     1
+
+ 435            CALL                     3
+                UNPACK_SEQUENCE          2
+                STORE_FAST              31 (decision_threshold)
+                STORE_FAST              33 (decision_threshold_source)
+
+ 438            LOAD_FAST               29 (train_out)
+                LOAD_CONST              50 ('attack_score')
+                BINARY_SUBSCR
+                LOAD_FAST               31 (decision_threshold)
+                COMPARE_OP             172 (>=)
+                LOAD_ATTR              103 (astype + NULL|self)
+                LOAD_GLOBAL            104 (np)
+                LOAD_ATTR              106 (int64)
+                CALL                     1
+                STORE_FAST              34 (train_pred)
+
+ 440            LOAD_FAST               31 (decision_threshold)
+
+ 441            LOAD_GLOBAL            109 (binary_fpr + NULL)
+                LOAD_FAST               29 (train_out)
+                LOAD_CONST              49 ('y')
+                BINARY_SUBSCR
+                LOAD_FAST               34 (train_pred)
+                CALL                     2
+
+ 439            LOAD_CONST              53 (('threshold', 'fpr'))
+                BUILD_CONST_KEY_MAP      2
+
+ 442            LOAD_GLOBAL            111 (as_metrics + NULL)
+                LOAD_FAST               29 (train_out)
+                LOAD_CONST              49 ('y')
+                BINARY_SUBSCR
+                LOAD_FAST               34 (train_pred)
+                CALL                     2
+
+ 439            DICT_UPDATE              1
+
+ 443            LOAD_CONST              54 ('feasible')
+                LOAD_CONST              29 (True)
+
+ 439            BUILD_MAP                1
+                DICT_UPDATE              1
+                STORE_FAST              32 (threshold_calibration)
+
+ 446   L13:     LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              55 ('heavy_train_route_fraction')
+                LOAD_CONST              56 (0.3)
+                CALL                     2
+                CALL                     1
+                STORE_FAST              35 (heavy_train_route_fraction)
+
+ 447            LOAD_GLOBAL            113 (select_heavy_train_subset + NULL)
+
+ 448            LOAD_FAST               29 (train_out)
+
+ 449            LOAD_FAST               31 (decision_threshold)
+
+ 450            LOAD_FAST               35 (heavy_train_route_fraction)
+
+ 447            LOAD_CONST              57 (('train_out', 'decision_threshold', 'route_fraction'))
+                CALL_KW                  3
+                STORE_FAST              36 (heavy_train_subset)
+
+ 453            LOAD_GLOBAL            115 (HeavyTrainConfig + NULL)
+
+ 454            LOAD_FAST                1 (args)
+                LOAD_ATTR              116 (heavy_epochs)
+
+ 455            LOAD_CONST              39 (0.001)
+
+ 456            LOAD_CONST              58 (64)
+
+ 457            LOAD_CONST              59 (0.0001)
+
+ 458            LOAD_CONST              29 (True)
+
+ 459            LOAD_GLOBAL             33 (str + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              60 ('heavy_backend')
+                LOAD_CONST              61 ('mlp')
+                CALL                     2
+                CALL                     1
+
+ 460            LOAD_GLOBAL             11 (int + NULL)
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              62 ('heavy_rf_n_estimators')
+                LOAD_CONST              63 (300)
+                CALL                     2
+                CALL                     1
+
+ 461            LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              64 ('heavy_rf_max_depth')
+                LOAD_CONST               0 (None)
+                CALL                     2
+
+ 453            LOAD_CONST              65 (('epochs', 'lr', 'batch_size', 'weight_decay', 'class_weighting', 'backend', 'rf_n_estimators', 'rf_max_depth'))
+                CALL_KW                  8
+                STORE_FAST              37 (heavy_cfg)
+
+ 463            LOAD_GLOBAL            119 (train_heavy_model + NULL)
+
+ 464            LOAD_FAST               36 (heavy_train_subset)
+                LOAD_CONST              66 ('X')
+                BINARY_SUBSCR
+
+ 465            LOAD_FAST               36 (heavy_train_subset)
+                LOAD_CONST              49 ('y')
+                BINARY_SUBSCR
+
+ 466            LOAD_FAST               37 (heavy_cfg)
+
+ 467            LOAD_FAST               36 (heavy_train_subset)
+                LOAD_CONST              67 ('sample_weights')
+                BINARY_SUBSCR
+
+ 463            LOAD_CONST              68 (('sample_weights',))
+                CALL_KW                  4
+                STORE_FAST              38 (heavy)
+
+ 469            LOAD_GLOBAL            121 (predict_heavy + NULL)
+                LOAD_FAST               38 (heavy)
+                LOAD_FAST               30 (val_out)
+                LOAD_CONST              66 ('X')
+                BINARY_SUBSCR
+                CALL                     2
+                STORE_FAST              39 (heavy_val)
+
+ 471            LOAD_FAST               30 (val_out)
+                LOAD_CONST              49 ('y')
+                BINARY_SUBSCR
+                STORE_FAST              40 (y_true)
+
+ 472            LOAD_FAST               30 (val_out)
+                LOAD_CONST              50 ('attack_score')
+                BINARY_SUBSCR
+                LOAD_FAST               31 (decision_threshold)
+                COMPARE_OP             172 (>=)
+                LOAD_ATTR              103 (astype + NULL|self)
+                LOAD_GLOBAL            104 (np)
+                LOAD_ATTR              106 (int64)
+                CALL                     1
+                STORE_FAST              41 (light_pred)
+
+ 473            LOAD_FAST               39 (heavy_val)
+                LOAD_CONST              69 ('probs')
+                BINARY_SUBSCR
+                LOAD_CONST               0 (None)
+                LOAD_CONST               0 (None)
+                BUILD_SLICE              2
+                LOAD_CONST               6 (1)
+                BUILD_TUPLE              2
+                BINARY_SUBSCR
+                STORE_FAST              42 (heavy_attack_score)
+
+ 474            LOAD_FAST               30 (val_out)
+                LOAD_CONST              70 ('conf')
+                BINARY_SUBSCR
+                STORE_FAST              43 (conf)
+
+ 475            LOAD_FAST               30 (val_out)
+                LOAD_CONST              50 ('attack_score')
+                BINARY_SUBSCR
+                STORE_FAST              44 (light_attack_score)
+
+ 477            LOAD_GLOBAL            111 (as_metrics + NULL)
+                LOAD_FAST               40 (y_true)
+                LOAD_FAST               41 (light_pred)
+                CALL                     2
+                STORE_FAST              45 (light_metrics)
+
+ 478            LOAD_GLOBAL            109 (binary_fpr + NULL)
+                LOAD_FAST               40 (y_true)
+                LOAD_FAST               41 (light_pred)
+                CALL                     2
+                STORE_FAST              46 (light_fpr)
+
+ 479            LOAD_GLOBAL            123 (max + NULL)
+                LOAD_FAST               46 (light_fpr)
+                LOAD_FAST                1 (args)
+                LOAD_ATTR              124 (fpr_budget_floor)
+                CALL                     2
+                STORE_FAST              47 (budget)
+
+ 480            LOAD_GLOBAL             13 (float + NULL)
+                LOAD_GLOBAL            127 (average_precision_score + NULL)
+                LOAD_FAST               40 (y_true)
+                LOAD_FAST               44 (light_attack_score)
+                CALL                     2
+                CALL                     1
+                STORE_FAST              48 (light_pr_auc)
+
+ 482            LOAD_GLOBAL            104 (np)
+                LOAD_ATTR              128 (array)
+                PUSH_NULL
+                LOAD_FAST                6 (tcfg)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              71 ('heavy_threshold_grid')
+                BUILD_LIST               0
+                LOAD_CONST              72 ((0.4, 0.45, 0.5, 0.55, 0.6))
+                LIST_EXTEND              1
+                CALL                     2
+                LOAD_GLOBAL            104 (np)
+                LOAD_ATTR              130 (float32)
+                LOAD_CONST              73 (('dtype',))
+                CALL_KW                  2
+                STORE_FAST              49 (heavy_threshold_grid)
+
+ 483            LOAD_GLOBAL            133 (pick_best_threshold + NULL)
+
+ 484            LOAD_FAST               40 (y_true)
+
+ 485            LOAD_FAST               41 (light_pred)
+
+ 486            LOAD_FAST               42 (heavy_attack_score)
+
+ 487            LOAD_FAST               44 (light_attack_score)
+
+ 488            LOAD_FAST               43 (conf)
+
+ 489            LOAD_FAST               47 (budget)
+
+ 490            LOAD_FAST                9 (min_routed_fraction)
+
+ 491            LOAD_FAST               49 (heavy_threshold_grid)
+
+ 492            LOAD_FAST               10 (d3_objective)
+
+ 493            LOAD_FAST               11 (d3_routed_fpr_budget)
+
+ 483            LOAD_CONST              74 (('y_true', 'light_pred', 'heavy_attack_score', 'light_attack_score', 'conf', 'fpr_budget', 'min_routed_fraction', 'heavy_thresholds', 'objective_mode', 'routed_fpr_budget'))
+                CALL_KW                 10
+                UNPACK_SEQUENCE          4
+                STORE_FAST              50 (best_thr)
+                STORE_FAST              51 (cascade_metrics)
+                STORE_FAST              52 (cascade_pred)
+                STORE_FAST              53 (cascade_attack_score)
+
+ 495            LOAD_CONST              31 (False)
+                STORE_FAST              54 (fallback_applied)
+
+ 496            LOAD_GLOBAL            135 (should_fallback_to_light + NULL)
+                LOAD_FAST               45 (light_metrics)
+                LOAD_FAST               51 (cascade_metrics)
+                CALL                     2
+                TO_BOOL
+                POP_JUMP_IF_FALSE       76 (to L14)
+
+ 497            LOAD_CONST              29 (True)
+                STORE_FAST              54 (fallback_applied)
+
+ 498            LOAD_GLOBAL             13 (float + NULL)
+                LOAD_GLOBAL            104 (np)
+                LOAD_ATTR              136 (min)
+                PUSH_NULL
+                LOAD_FAST               43 (conf)
+                CALL                     1
+                CALL                     1
+                STORE_FAST              50 (best_thr)
+
+ 499            LOAD_FAST               41 (light_pred)
+                LOAD_ATTR              139 (copy + NULL|self)
+                CALL                     0
+                STORE_FAST              52 (cascade_pred)
+
+ 500            LOAD_FAST               44 (light_attack_score)
+                LOAD_ATTR              139 (copy + NULL|self)
+                CALL                     0
+                STORE_FAST              53 (cascade_attack_score)
+
+ 501            LOAD_CONST              75 ('fpr')
+                LOAD_FAST               46 (light_fpr)
+                BUILD_MAP                1
+                LOAD_FAST               45 (light_metrics)
+                DICT_UPDATE              1
+                LOAD_CONST              76 (0.0)
+                LOAD_CONST              48 (0.5)
+                LOAD_CONST              77 (('routed_fraction', 'heavy_decision_threshold'))
+                BUILD_CONST_KEY_MAP      2
+                DICT_UPDATE              1
+                STORE_FAST              51 (cascade_metrics)
+
+ 503   L14:     LOAD_GLOBAL            141 (ConfidenceRouter + NULL)
+                LOAD_GLOBAL            143 (RouterConfig + NULL)
+                LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST               50 (best_thr)
+                CALL                     1
+                LOAD_CONST              78 (('threshold',))
+                CALL_KW                  1
+                CALL                     1
+                LOAD_ATTR              145 (route_from_confidence + NULL|self)
+
+ 504            LOAD_GLOBAL             18 (torch)
+                LOAD_ATTR              146 (tensor)
+                PUSH_NULL
+                LOAD_FAST               43 (conf)
+                CALL                     1
+
+ 503            CALL                     1
+
+ 505            LOAD_ATTR              149 (cpu + NULL|self)
+                CALL                     0
+                LOAD_ATTR              151 (numpy + NULL|self)
+                CALL                     0
+                LOAD_ATTR              103 (astype + NULL|self)
+                LOAD_GLOBAL             38 (bool)
+                CALL                     1
+
+ 503            STORE_FAST              55 (selected_route_mask)
+
+ 506            LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST               51 (cascade_metrics)
+                LOAD_ATTR               31 (get + NULL|self)
+                LOAD_CONST              79 ('heavy_decision_threshold')
+                LOAD_CONST              48 (0.5)
+                CALL                     2
+                CALL                     1
+                STORE_FAST              56 (selected_heavy_thr)
+
+ 507            LOAD_FAST               42 (heavy_attack_score)
+                LOAD_FAST               56 (selected_heavy_thr)
+                COMPARE_OP             172 (>=)
+                LOAD_ATTR              103 (astype + NULL|self)
+                LOAD_GLOBAL            104 (np)
+                LOAD_ATTR              106 (int64)
+                CALL                     1
+                STORE_FAST              57 (heavy_pred_selected)
+
+ 508            LOAD_GLOBAL             11 (int + NULL)
+                LOAD_FAST               55 (selected_route_mask)
+                LOAD_ATTR              153 (sum + NULL|self)
+                CALL                     0
+                CALL                     1
+                STORE_FAST              58 (routed_count)
+
+ 509            LOAD_FAST               58 (routed_count)
+                LOAD_CONST              37 (0)
+                COMPARE_OP             148 (bool(>))
+                POP_JUMP_IF_FALSE       34 (to L15)
+                LOAD_GLOBAL             11 (int + NULL)
+                LOAD_FAST               41 (light_pred)
+                LOAD_FAST               55 (selected_route_mask)
+                BINARY_SUBSCR
+                LOAD_FAST               57 (heavy_pred_selected)
+                LOAD_FAST               55 (selected_route_mask)
+                BINARY_SUBSCR
+                COMPARE_OP             103 (!=)
+                LOAD_ATTR              153 (sum + NULL|self)
+                CALL                     0
+                CALL                     1
+                JUMP_FORWARD             1 (to L16)
+       L15:     LOAD_CONST              37 (0)
+       L16:     STORE_FAST              59 (disagreement_count)
+
+ 510            LOAD_GLOBAL             13 (float + NULL)
+                LOAD_GLOBAL            127 (average_precision_score + NULL)
+                LOAD_FAST               40 (y_true)
+                LOAD_FAST               53 (cascade_attack_score)
+                CALL                     2
+                CALL                     1
+                STORE_FAST              60 (cascade_pr_auc)
+
+ 512            BUILD_MAP                0
+
+ 513            LOAD_CONST              80 ('timestamp_utc')
+                LOAD_GLOBAL            154 (datetime)
+                LOAD_ATTR              156 (now)
+                PUSH_NULL
+                LOAD_GLOBAL            158 (timezone)
+                LOAD_ATTR              160 (utc)
+                CALL                     1
+                LOAD_ATTR              163 (strftime + NULL|self)
+                LOAD_CONST              81 ('%Y-%m-%dT%H:%M:%SZ')
+                CALL                     1
+
+ 512            MAP_ADD                  1
+
+ 514            LOAD_CONST              82 ('fpr_budget')
+                LOAD_FAST               47 (budget)
+
+ 512            MAP_ADD                  1
+
+ 515            LOAD_CONST              83 ('fpr_budget_policy')
+                LOAD_CONST              84 ('max(light_fpr, ')
+                LOAD_FAST                1 (args)
+                LOAD_ATTR              124 (fpr_budget_floor)
+                FORMAT_SIMPLE
+                LOAD_CONST              85 (')')
+                BUILD_STRING             3
+
+ 512            MAP_ADD                  1
+
+ 516            LOAD_CONST              86 ('light_only')
+                LOAD_CONST              75 ('fpr')
+                LOAD_FAST               46 (light_fpr)
+                BUILD_MAP                1
+                LOAD_FAST               45 (light_metrics)
+                DICT_UPDATE              1
+
+ 512            MAP_ADD                  1
+
+ 517            LOAD_CONST              87 ('cascade')
+                LOAD_CONST              88 ('router_threshold')
+                LOAD_FAST               50 (best_thr)
+                BUILD_MAP                1
+                LOAD_FAST               51 (cascade_metrics)
+                DICT_UPDATE              1
+
+ 512            MAP_ADD                  1
+
+ 518            LOAD_CONST              20 ('decision_threshold')
+                LOAD_FAST               31 (decision_threshold)
+
+ 512            MAP_ADD                  1
+
+ 519            LOAD_CONST              89 ('decision_threshold_source')
+                LOAD_FAST               33 (decision_threshold_source)
+
+ 512            MAP_ADD                  1
+
+ 520            LOAD_CONST              90 ('decision_threshold_target_fpr')
+                LOAD_FAST                7 (decision_target_fpr)
+
+ 512            MAP_ADD                  1
+
+ 521            LOAD_CONST              21 ('cascade_min_routed_fraction')
+                LOAD_FAST                9 (min_routed_fraction)
+
+ 512            MAP_ADD                  1
+
+ 522            LOAD_CONST              23 ('d3_objective')
+                LOAD_FAST               10 (d3_objective)
+
+ 512            MAP_ADD                  1
+
+ 523            LOAD_CONST              25 ('d3_routed_fpr_budget')
+                LOAD_FAST               11 (d3_routed_fpr_budget)
+
+ 512            MAP_ADD                  1
+
+ 524            LOAD_CONST              91 ('decision_threshold_train_metrics')
+                LOAD_FAST               32 (threshold_calibration)
+
+ 512            MAP_ADD                  1
+
+ 525            LOAD_CONST              92 ('cascade_fallback_to_light')
+                LOAD_FAST               54 (fallback_applied)
+
+ 512            MAP_ADD                  1
+
+ 526            LOAD_CONST              93 ('pr_auc')
+                LOAD_FAST               48 (light_pr_auc)
+                LOAD_FAST               60 (cascade_pr_auc)
+                LOAD_CONST              94 (('light_only', 'cascade'))
+                BUILD_CONST_KEY_MAP      2
+
+ 512            MAP_ADD                  1
+
+ 527            LOAD_CONST              95 ('improvement')
+
+ 528            LOAD_FAST               51 (cascade_metrics)
+                LOAD_CONST              96 ('f1')
+                BINARY_SUBSCR
+                LOAD_FAST               45 (light_metrics)
+                LOAD_CONST              96 ('f1')
+                BINARY_SUBSCR
+                BINARY_OP               10 (-)
+
+ 529            LOAD_FAST               51 (cascade_metrics)
+                LOAD_CONST              97 ('recall')
+                BINARY_SUBSCR
+                LOAD_FAST               45 (light_metrics)
+                LOAD_CONST              97 ('recall')
+                BINARY_SUBSCR
+                BINARY_OP               10 (-)
+
+ 530            LOAD_FAST               51 (cascade_metrics)
+                LOAD_CONST              98 ('precision')
+                BINARY_SUBSCR
+                LOAD_FAST               45 (light_metrics)
+                LOAD_CONST              98 ('precision')
+                BINARY_SUBSCR
+                BINARY_OP               10 (-)
+
+ 531            LOAD_FAST               60 (cascade_pr_auc)
+                LOAD_FAST               48 (light_pr_auc)
+                BINARY_OP               10 (-)
+
+ 527            LOAD_CONST              99 (('f1', 'recall', 'precision', 'pr_auc'))
+                BUILD_CONST_KEY_MAP      4
+
+ 512            MAP_ADD                  1
+
+ 533            LOAD_CONST             100 ('confusion_matrix')
+
+ 534            LOAD_GLOBAL            165 (confusion_matrix + NULL)
+                LOAD_FAST               40 (y_true)
+                LOAD_FAST               41 (light_pred)
+                LOAD_CONST              37 (0)
+                LOAD_CONST               6 (1)
+                BUILD_LIST               2
+                LOAD_CONST             101 (('labels',))
+                CALL_KW                  3
+                LOAD_ATTR              167 (tolist + NULL|self)
+                CALL                     0
+
+ 535            LOAD_GLOBAL            165 (confusion_matrix + NULL)
+                LOAD_FAST               40 (y_true)
+                LOAD_FAST               52 (cascade_pred)
+                LOAD_CONST              37 (0)
+                LOAD_CONST               6 (1)
+                BUILD_LIST               2
+                LOAD_CONST             101 (('labels',))
+                CALL_KW                  3
+                LOAD_ATTR              167 (tolist + NULL|self)
+                CALL                     0
+
+ 533            LOAD_CONST              94 (('light_only', 'cascade'))
+                BUILD_CONST_KEY_MAP      2
+
+ 512            MAP_ADD                  1
+
+ 537            LOAD_CONST             102 ('dataset_sizes')
+                LOAD_GLOBAL             11 (int + NULL)
+                LOAD_GLOBAL             45 (len + NULL)
+                LOAD_FAST               12 (train_set)
+                CALL                     1
+                CALL                     1
+                LOAD_GLOBAL             11 (int + NULL)
+                LOAD_GLOBAL             45 (len + NULL)
+                LOAD_FAST               13 (val_set)
+                CALL                     1
+                CALL                     1
+                LOAD_CONST             103 (('train', 'val'))
+                BUILD_CONST_KEY_MAP      2
+
+ 512            MAP_ADD                  1
+
+ 538            LOAD_CONST             104 ('resource_notes')
+
+ 539            LOAD_CONST             105 ('TinyHybridStudent on CPU')
+
+ 540            LOAD_FAST               37 (heavy_cfg)
+                LOAD_ATTR              168 (backend)
+                FORMAT_SIMPLE
+                LOAD_CONST             106 (' backend for routed subset')
+                BUILD_STRING             2
+
+ 541            LOAD_FAST               24 (loaded_checkpoint)
+                COPY                     1
+                TO_BOOL
+                POP_JUMP_IF_TRUE         2 (to L17)
+                POP_TOP
+                LOAD_CONST             107 ('trained_in_script')
+
+ 543   L17:     LOAD_FAST               35 (heavy_train_route_fraction)
+
+ 544            LOAD_FAST               36 (heavy_train_subset)
+                LOAD_CONST             108 ('route_threshold')
+                BINARY_SUBSCR
+
+ 545            LOAD_FAST               36 (heavy_train_subset)
+                LOAD_CONST             109 ('routed_count')
+                BINARY_SUBSCR
+
+ 546            LOAD_FAST               36 (heavy_train_subset)
+                LOAD_CONST             110 ('hard_error_count')
+                BINARY_SUBSCR
+
+ 547            LOAD_FAST               36 (heavy_train_subset)
+                LOAD_CONST             111 ('balanced_count')
+                BINARY_SUBSCR
+
+ 542            LOAD_CONST             112 (('heavy_train_route_fraction', 'heavy_train_route_threshold', 'heavy_train_routed_count', 'heavy_train_hard_error_count', 'heavy_train_balanced_count'))
+                BUILD_CONST_KEY_MAP      5
+
+ 550            LOAD_FAST               58 (routed_count)
+
+ 551            LOAD_FAST               59 (disagreement_count)
+
+ 552            LOAD_FAST               58 (routed_count)
+                LOAD_CONST              37 (0)
+                COMPARE_OP             148 (bool(>))
+                POP_JUMP_IF_FALSE       14 (to L18)
+                LOAD_GLOBAL             13 (float + NULL)
+                LOAD_FAST               59 (disagreement_count)
+                LOAD_FAST               58 (routed_count)
+                BINARY_OP               11 (/)
+                CALL                     1
+                JUMP_FORWARD             1 (to L19)
+       L18:     LOAD_CONST              76 (0.0)
+
+ 549   L19:     LOAD_CONST             113 (('routed_count', 'light_heavy_disagreement_count', 'light_heavy_disagreement_rate'))
+                BUILD_CONST_KEY_MAP      3
+
+ 538            LOAD_CONST             114 (('light_model', 'heavy_model', 'light_model_source', 'heavy_hard_example_boost', 'routed_decision_diagnostics'))
+                BUILD_CONST_KEY_MAP      5
+
+ 512            BUILD_MAP                1
+                DICT_UPDATE              1
+                STORE_FAST              61 (report)
+
+ 557            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR               24 (path)
+                LOAD_ATTR               27 (join + NULL|self)
+                LOAD_FAST                2 (base)
+                LOAD_CONST             115 ('logs')
+                CALL                     2
+                STORE_FAST              62 (logs_dir)
+
+ 558            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR              170 (makedirs)
+                PUSH_NULL
+                LOAD_FAST               62 (logs_dir)
+                LOAD_CONST              29 (True)
+                LOAD_CONST             116 (('exist_ok',))
+                CALL_KW                  2
+                POP_TOP
+
+ 559            LOAD_GLOBAL            154 (datetime)
+                LOAD_ATTR              156 (now)
+                PUSH_NULL
+                LOAD_GLOBAL            158 (timezone)
+                LOAD_ATTR              160 (utc)
+                CALL                     1
+                LOAD_ATTR              163 (strftime + NULL|self)
+                LOAD_CONST             117 ('%Y%m%d_%H%M%S')
+                CALL                     1
+                STORE_FAST              63 (stamp)
+
+ 560            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR               24 (path)
+                LOAD_ATTR               27 (join + NULL|self)
+                LOAD_FAST               62 (logs_dir)
+                LOAD_CONST             118 ('cascade_eval_report_')
+                LOAD_FAST               63 (stamp)
+                FORMAT_SIMPLE
+                LOAD_CONST             119 ('.json')
+                BUILD_STRING             3
+                CALL                     2
+                STORE_FAST              64 (report_path)
+
+ 561            LOAD_GLOBAL              6 (os)
+                LOAD_ATTR               24 (path)
+                LOAD_ATTR               27 (join + NULL|self)
+                LOAD_FAST               62 (logs_dir)
+                LOAD_CONST             120 ('cascade_eval_report_latest.json')
+                CALL                     2
+                STORE_FAST              65 (latest_path)
+
+ 562            LOAD_GLOBAL            173 (open + NULL)
+                LOAD_FAST               64 (report_path)
+                LOAD_CONST             121 ('w')
+                LOAD_CONST             122 ('utf-8')
+                LOAD_CONST             123 (('encoding',))
+                CALL_KW                  3
+                BEFORE_WITH
+       L20:     STORE_FAST              66 (f)
+
+ 563            LOAD_GLOBAL            174 (json)
+                LOAD_ATTR              176 (dump)
+                PUSH_NULL
+                LOAD_FAST               61 (report)
+                LOAD_FAST               66 (f)
+                LOAD_CONST             124 (2)
+                LOAD_CONST             125 (('indent',))
+                CALL_KW                  3
+                POP_TOP
+
+ 562   L21:     LOAD_CONST               0 (None)
+                LOAD_CONST               0 (None)
+                LOAD_CONST               0 (None)
+                CALL                     2
+                POP_TOP
+
+ 564   L22:     LOAD_GLOBAL            173 (open + NULL)
+                LOAD_FAST_CHECK         65 (latest_path)
+                LOAD_CONST             121 ('w')
+                LOAD_CONST             122 ('utf-8')
+                LOAD_CONST             123 (('encoding',))
+                CALL_KW                  3
+                BEFORE_WITH
+       L23:     STORE_FAST              66 (f)
+
+ 565            LOAD_GLOBAL            174 (json)
+                LOAD_ATTR              176 (dump)
+                PUSH_NULL
+                LOAD_FAST               61 (report)
+                LOAD_FAST               66 (f)
+                LOAD_CONST             124 (2)
+                LOAD_CONST             125 (('indent',))
+                CALL_KW                  3
+                POP_TOP
+
+ 564   L24:     LOAD_CONST               0 (None)
+                LOAD_CONST               0 (None)
+                LOAD_CONST               0 (None)
+                CALL                     2
+                POP_TOP
+
+ 567   L25:     LOAD_GLOBAL            179 (print + NULL)
+                LOAD_CONST             126 ('[D3] Light F1/FPR: ')
+                LOAD_FAST               45 (light_metrics)
+                LOAD_CONST              96 ('f1')
+                BINARY_SUBSCR
+                LOAD_CONST             127 ('.4f')
+                FORMAT_WITH_SPEC
+                LOAD_CONST             128 ('/')
+                LOAD_FAST               46 (light_fpr)
+                LOAD_CONST             127 ('.4f')
+                FORMAT_WITH_SPEC
+                BUILD_STRING             4
+                CALL                     1
+                POP_TOP
+
+ 568            LOAD_GLOBAL            179 (print + NULL)
+                LOAD_CONST             129 ('[D3] Cascade F1/FPR: ')
+                LOAD_FAST               51 (cascade_metrics)
+                LOAD_CONST              96 ('f1')
+                BINARY_SUBSCR
+                LOAD_CONST             127 ('.4f')
+                FORMAT_WITH_SPEC
+                LOAD_CONST             128 ('/')
+                LOAD_FAST               51 (cascade_metrics)
+                LOAD_CONST              75 ('fpr')
+                BINARY_SUBSCR
+                LOAD_CONST             127 ('.4f')
+                FORMAT_WITH_SPEC
+                BUILD_STRING             4
+                CALL                     1
+                POP_TOP
+
+ 569            LOAD_GLOBAL            179 (print + NULL)
+                LOAD_CONST             130 ('[D3] Routed fraction: ')
+                LOAD_FAST               51 (cascade_metrics)
+                LOAD_CONST             131 ('routed_fraction')
+                BINARY_SUBSCR
+                LOAD_CONST             127 ('.4f')
+                FORMAT_WITH_SPEC
+                BUILD_STRING             2
+                CALL                     1
+                POP_TOP
+
+ 570            LOAD_GLOBAL            179 (print + NULL)
+                LOAD_CONST             132 ('[D3] Report: ')
+                LOAD_FAST_CHECK         64 (report_path)
+                FORMAT_SIMPLE
+                BUILD_STRING             2
+                CALL                     1
+                POP_TOP
+                RETURN_CONST             0 (None)
+
+ 562   L26:     PUSH_EXC_INFO
+                WITH_EXCEPT_START
+                TO_BOOL
+                POP_JUMP_IF_TRUE         1 (to L27)
+                RERAISE                  2
+       L27:     POP_TOP
+       L28:     POP_EXCEPT
+                POP_TOP
+                POP_TOP
+                JUMP_BACKWARD_NO_INTERRUPT 136 (to L22)
+
+  --   L29:     COPY                     3
+                POP_EXCEPT
+                RERAISE                  1
+
+ 564   L30:     PUSH_EXC_INFO
+                WITH_EXCEPT_START
+                TO_BOOL
+                POP_JUMP_IF_TRUE         1 (to L31)
+                RERAISE                  2
+       L31:     POP_TOP
+       L32:     POP_EXCEPT
+                POP_TOP
+                POP_TOP
+                JUMP_BACKWARD_NO_INTERRUPT 111 (to L25)
+
+  --   L33:     COPY                     3
+                POP_EXCEPT
+                RERAISE                  1
+ExceptionTable:
+  L20 to L21 -> L26 [1] lasti
+  L23 to L24 -> L30 [1] lasti
+  L26 to L28 -> L29 [3] lasti
+  L30 to L32 -> L33 [3] lasti

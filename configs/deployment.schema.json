@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Automotive IDS Deployment Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "light_model_path",
+    "heavy_model_path",
+    "onnx_model_path",
+    "can_window_size",
+    "eth_window_size",
+    "routing_threshold",
+    "latency_budget_ms",
+    "fpr_budget",
+    "fail_safe_mode",
+    "model_integrity_sha256"
+  ],
+  "properties": {
+    "light_model_path": { "type": "string", "minLength": 1 },
+    "heavy_model_path": { "type": "string", "minLength": 1 },
+    "onnx_model_path": { "type": "string", "minLength": 1 },
+    "can_window_size": { "type": "integer", "const": 100 },
+    "eth_window_size": { "type": "integer", "const": 1 },
+    "routing_threshold": { "type": "number", "exclusiveMinimum": 0.0, "exclusiveMaximum": 1.0 },
+    "latency_budget_ms": { "type": "number", "exclusiveMinimum": 0.0 },
+    "fpr_budget": { "type": "number", "exclusiveMinimum": 0.0, "exclusiveMaximum": 1.0 },
+    "fail_safe_mode": {
+      "type": "string",
+      "enum": ["fail_open", "fail_closed", "degraded"]
+    },
+    "model_integrity_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "can_source": { "type": "string" },
+    "eth_source": { "type": "string" },
+    "alert_output_path": { "type": "string" },
+    "use_onnx": { "type": "boolean" },
+    "max_samples": { "type": "integer", "minimum": 1 }
+  }
+}

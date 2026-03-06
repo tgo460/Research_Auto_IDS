@@ -1,0 +1,28 @@
+flowchart TD
+    subgraph A[Input Layer: In-Vehicle Networks]
+        CAN[Controller Area Network<br>CAN Bus Traffic]
+        Eth[Automotive Ethernet<br>Ethernet Frames & SOME/IP]
+    end
+
+    subgraph B[Protocol-Specific Feature Extraction]
+        CAN --> P1[Can Feature Extractor<br>Time-Series Features<br>e.g., ID Frequency, Payload Entropy]
+        Eth --> P2[Ethernet Feature Extractor<br>Spatial-Temporal Features<br>e.g., Image Transform WT, Packet Sequences]
+    end
+
+    subgraph C[Cross-Protocol Correlation & Fusion Core]
+        P1 --> Correlation[Cross-Protocol<br>Correlation Engine]
+        P2 --> Correlation
+        Correlation --> Fusion[Feature Fusion Layer]
+    end
+
+    subgraph D[Tiered Detection & Decision]
+        Fusion --> LightweightModel[Lightweight Detection Tier<br>e.g., Distilled CNN-BiLSTM<br><500KB, <1ms]
+        LightweightModel --> Decision{Confidence Threshold}
+        Decision -- "High Confidence<br>(Attack/Normal)" --> Alert
+        Decision -- "Low Confidence /<br>Complex Pattern" --> HeavyModel[Heavy Analysis Tier<br>e.g., Full Attention-Based Model<br>On Gateway/Cloud]
+        HeavyModel --> Alert[Final Intrusion<br>Alert & Log]
+    end
+
+    subgraph E[Validation & Output]
+        Alert --> Metrics[Performance Metrics:<br>F1-Score, Latency, Model Size]
+    end

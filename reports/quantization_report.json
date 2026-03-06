@@ -1,0 +1,7 @@
+{
+  "timestamp_utc": "2026-02-27T06:25:30.888709+00:00",
+  "input_model": "models/student_tiny_improved.onnx",
+  "quantized_model": null,
+  "status": "skipped",
+  "reason": "quantization dependencies unavailable: No module named 'onnx.defs'"
+}

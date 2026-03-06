@@ -1,0 +1,120 @@
+{
+  "timestamp_utc": "2026-02-27T06:26:14.038732+00:00",
+  "sources": {
+    "edge_benchmark_report": "./logs/edge_benchmark_report_latest.json",
+    "router_eval_report": "./logs/router_eval_report_latest.json",
+    "cascade_eval_report": "./logs/cascade_eval_report_latest.json",
+    "correlation_report": "./logs/correlation_report_latest.json"
+  },
+  "ids_metrics": {
+    "light_only": {
+      "fpr": 0.0964109781843772,
+      "f1": 0.1037567084078712,
+      "precision": 0.09570957095709572,
+      "recall": 0.11328125,
+      "fnr": 0.88671875,
+      "mcc": 0.015636583888582432
+    },
+    "cascade": {
+      "router_threshold": 0.5013631582260132,
+      "fpr": 0.0964109781843772,
+      "f1": 0.1037567084078712,
+      "precision": 0.09570957095709572,
+      "recall": 0.11328125,
+      "routed_fraction": 0.0,
+      "routed_fpr": 0.0,
+      "routed_recall": 0.0,
+      "routed_f1": 0.0,
+      "routed_light_recall": 0.0,
+      "routed_light_f1": 0.0,
+      "routed_recall_gain": 0.0,
+      "routed_f1_gain": 0.0,
+      "routed_count": 0,
+      "heavy_decision_threshold": 0.5,
+      "fnr": 0.88671875,
+      "mcc": 0.015636583888582432
+    },
+    "pr_auc": {
+      "light_only": 0.09279135654129217,
+      "cascade": 0.09279135654129217
+    },
+    "improvement": {
+      "f1": 0.0,
+      "recall": 0.0,
+      "precision": 0.0,
+      "pr_auc": 0.0
+    },
+    "fpr_budget": 0.1064109781843772,
+    "fpr_budget_policy": "max(light_fpr + 0.01, 0.05)",
+    "detection_delay_ms_proxy": {
+      "median": 2.483487129211426,
+      "p95": 10.752737522125233
+    },
+    "route_analytics": {
+      "routed_fraction": 0.30051646223369916,
+      "light_samples": 2167,
+      "heavy_samples": 931
+    },
+    "confusion_matrices": {
+      "overall_cascade": [
+        [
+          2568,
+          274
+        ],
+        [
+          227,
+          29
+        ]
+      ],
+      "light_path": [
+        [
+          403,
+          1584
+        ],
+        [
+          30,
+          150
+        ]
+      ],
+      "heavy_path": [
+        [
+          0,
+          855
+        ],
+        [
+          0,
+          76
+        ]
+      ]
+    }
+  },
+  "deployment_metrics": {
+    "model_size_kb": 63.0927734375,
+    "torchscript_size_kb": 103.06640625,
+    "latency_ms": {
+      "mean_ms": 0.6641679993481375,
+      "p50_ms": 0.6096999859437346,
+      "p95_ms": 0.9696249850094315,
+      "throughput_samples_per_sec": 1505.6431520059266
+    },
+    "throughput_samples_per_sec": 1505.6431520059266,
+    "environment": {
+      "python": "3.13.12",
+      "torch": "2.10.0+cpu",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+      "cpu_count": 24
+    }
+  },
+  "artifacts": {
+    "plots": {
+      "cascade_confusion": "reports/confusion_cascade.png",
+      "light_confusion": "reports/confusion_light_path.png",
+      "heavy_confusion": "reports/confusion_heavy_path.png",
+      "latency_summary": "reports/latency_summary.png"
+    }
+  },
+  "automation": {
+    "command": "python evaluate.py --base-path . --out-dir reports --strict-split-check --split-manifest data/splits/split_v2_domain_balanced.json"
+  }
+}

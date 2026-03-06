@@ -1,0 +1,560 @@
+  0           RESUME                   0
+
+ 85           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              0 (torch)
+              STORE_NAME               0 (torch)
+
+ 86           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              1 (torch.nn)
+              IMPORT_FROM              2 (nn)
+              STORE_NAME               2 (nn)
+              POP_TOP
+
+ 87           LOAD_CONST               0 (0)
+              LOAD_CONST               2 (('QuantStub', 'DeQuantStub'))
+              IMPORT_NAME              3 (torch.quantization)
+              IMPORT_FROM              4 (QuantStub)
+              STORE_NAME               4 (QuantStub)
+              IMPORT_FROM              5 (DeQuantStub)
+              STORE_NAME               5 (DeQuantStub)
+              POP_TOP
+
+ 89           LOAD_BUILD_CLASS
+              PUSH_NULL
+              LOAD_CONST               3 (<code object DepthwiseSeparableTCN at 0x000002327CD6F730, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 89>)
+              MAKE_FUNCTION
+              LOAD_CONST               4 ('DepthwiseSeparableTCN')
+              LOAD_NAME                2 (nn)
+              LOAD_ATTR               12 (Module)
+              CALL                     3
+              STORE_NAME               7 (DepthwiseSeparableTCN)
+
+106           LOAD_BUILD_CLASS
+              PUSH_NULL
+              LOAD_CONST               5 (<code object TinyHybridStudent at 0x000002327CD8D8A0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 106>)
+              MAKE_FUNCTION
+              LOAD_CONST               6 ('TinyHybridStudent')
+              LOAD_NAME                2 (nn)
+              LOAD_ATTR               12 (Module)
+              CALL                     3
+              STORE_NAME               8 (TinyHybridStudent)
+              RETURN_CONST             1 (None)
+
+Disassembly of <code object DepthwiseSeparableTCN at 0x000002327CD6F730, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 89>:
+  --           MAKE_CELL                0 (__class__)
+
+  89           RESUME                   0
+               LOAD_NAME                0 (__name__)
+               STORE_NAME               1 (__module__)
+               LOAD_CONST               0 ('DepthwiseSeparableTCN')
+               STORE_NAME               2 (__qualname__)
+               LOAD_CONST               1 (89)
+               STORE_NAME               3 (__firstlineno__)
+
+  90           LOAD_CONST               5 ((3, 1))
+               LOAD_FAST                0 (__class__)
+               BUILD_TUPLE              1
+               LOAD_CONST               2 (<code object __init__ at 0x000002327CB32120, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 90>)
+               MAKE_FUNCTION
+               SET_FUNCTION_ATTRIBUTE   8 (closure)
+               SET_FUNCTION_ATTRIBUTE   1 (defaults)
+               STORE_NAME               4 (__init__)
+
+  99           LOAD_CONST               3 (<code object forward at 0x000002327CB721F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 99>)
+               MAKE_FUNCTION
+               STORE_NAME               5 (forward)
+               LOAD_CONST               4 (('act', 'bn', 'depthwise', 'padding', 'pointwise'))
+               STORE_NAME               6 (__static_attributes__)
+               LOAD_FAST                0 (__class__)
+               COPY                     1
+               STORE_NAME               7 (__classcell__)
+               RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x000002327CB32120, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 90>:
+  --           COPY_FREE_VARS           1
+
+  90           RESUME                   0
+
+  91           LOAD_GLOBAL              0 (super)
+               LOAD_DEREF               5 (__class__)
+               LOAD_FAST                0 (self)
+               LOAD_SUPER_ATTR          5 (__init__ + NULL|self)
+               CALL                     0
+               POP_TOP
+
+  92           LOAD_FAST                3 (kernel_size)
+               LOAD_CONST               1 (1)
+               BINARY_OP               10 (-)
+               LOAD_FAST                4 (dilation)
+               BINARY_OP                5 (*)
+               LOAD_FAST                0 (self)
+               STORE_ATTR               2 (padding)
+
+  93           LOAD_GLOBAL              6 (nn)
+               LOAD_ATTR                8 (Conv1d)
+               PUSH_NULL
+               LOAD_FAST_LOAD_FAST     17 (in_channels, in_channels)
+               LOAD_FAST                3 (kernel_size)
+
+  94           LOAD_FAST                0 (self)
+               LOAD_ATTR                4 (padding)
+               LOAD_FAST_LOAD_FAST     65 (dilation, in_channels)
+
+  93           LOAD_CONST               2 (('padding', 'dilation', 'groups'))
+               CALL_KW                  6
+               LOAD_FAST                0 (self)
+               STORE_ATTR               5 (depthwise)
+
+  95           LOAD_GLOBAL              6 (nn)
+               LOAD_ATTR                8 (Conv1d)
+               PUSH_NULL
+               LOAD_FAST_LOAD_FAST     18 (in_channels, out_channels)
+               LOAD_CONST               1 (1)
+               CALL                     3
+               LOAD_FAST                0 (self)
+               STORE_ATTR               6 (pointwise)
+
+  96           LOAD_GLOBAL              6 (nn)
+               LOAD_ATTR               14 (BatchNorm1d)
+               PUSH_NULL
+               LOAD_FAST                2 (out_channels)
+               CALL                     1
+               LOAD_FAST                0 (self)
+               STORE_ATTR               8 (bn)
+
+  97           LOAD_GLOBAL              6 (nn)
+               LOAD_ATTR               18 (ReLU)
+               PUSH_NULL
+               LOAD_CONST               3 (True)
+               LOAD_CONST               4 (('inplace',))
+               CALL_KW                  1
+               LOAD_FAST                0 (self)
+               STORE_ATTR              10 (act)
+               RETURN_CONST             0 (None)
+
+Disassembly of <code object forward at 0x000002327CB721F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 99>:
+ 99           RESUME                   0
+
+100           LOAD_FAST                0 (self)
+              LOAD_ATTR                1 (depthwise + NULL|self)
+              LOAD_FAST                1 (x)
+              CALL                     1
+              STORE_FAST               2 (out)
+
+101           LOAD_FAST                0 (self)
+              LOAD_ATTR                2 (padding)
+              LOAD_CONST               1 (0)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_FALSE       25 (to L1)
+              LOAD_FAST                2 (out)
+              LOAD_CONST               0 (None)
+              LOAD_CONST               0 (None)
+              BUILD_SLICE              2
+              LOAD_CONST               0 (None)
+              LOAD_CONST               0 (None)
+              BUILD_SLICE              2
+              LOAD_CONST               0 (None)
+              LOAD_FAST                0 (self)
+              LOAD_ATTR                2 (padding)
+              UNARY_NEGATIVE
+              BUILD_SLICE              2
+              BUILD_TUPLE              3
+              BINARY_SUBSCR
+              STORE_FAST               2 (out)
+
+102   L1:     LOAD_FAST                0 (self)
+              LOAD_ATTR                5 (pointwise + NULL|self)
+              LOAD_FAST                2 (out)
+              CALL                     1
+              STORE_FAST               2 (out)
+
+103           LOAD_FAST                0 (self)
+              LOAD_ATTR                7 (bn + NULL|self)
+              LOAD_FAST                2 (out)
+              CALL                     1
+              STORE_FAST               2 (out)
+
+104           LOAD_FAST                0 (self)
+              LOAD_ATTR                9 (act + NULL|self)
+              LOAD_FAST                2 (out)
+              CALL                     1
+              RETURN_VALUE
+
+Disassembly of <code object TinyHybridStudent at 0x000002327CD8D8A0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 106>:
+  --           MAKE_CELL                0 (__class__)
+
+ 106           RESUME                   0
+               LOAD_NAME                0 (__name__)
+               STORE_NAME               1 (__module__)
+               LOAD_CONST               0 ('TinyHybridStudent')
+               STORE_NAME               2 (__qualname__)
+               LOAD_CONST               1 (106)
+               STORE_NAME               3 (__firstlineno__)
+
+ 107           LOAD_FAST                0 (__class__)
+               BUILD_TUPLE              1
+               LOAD_CONST               2 (<code object __init__ at 0x000002327DA98B90, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 107>)
+               MAKE_FUNCTION
+               SET_FUNCTION_ATTRIBUTE   8 (closure)
+               STORE_NAME               4 (__init__)
+
+ 128           LOAD_CONST               3 (<code object _extract_features at 0x000002327DA94FA0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 128>)
+               MAKE_FUNCTION
+               STORE_NAME               5 (_extract_features)
+
+ 147           LOAD_CONST               4 (<code object forward at 0x000002327CB02EF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 147>)
+               MAKE_FUNCTION
+               STORE_NAME               6 (forward)
+
+ 152           LOAD_CONST               5 (<code object forward_diagnostics at 0x000002327D176520, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 152>)
+               MAKE_FUNCTION
+               STORE_NAME               7 (forward_diagnostics)
+               LOAD_CONST               6 (('can_branch', 'can_head', 'classifier', 'dequant', 'eth_branch', 'eth_head', 'quant'))
+               STORE_NAME               8 (__static_attributes__)
+               LOAD_FAST                0 (__class__)
+               COPY                     1
+               STORE_NAME               9 (__classcell__)
+               RETURN_VALUE
+
+Disassembly of <code object __init__ at 0x000002327DA98B90, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 107>:
+  --           COPY_FREE_VARS           1
+
+ 107           RESUME                   0
+
+ 108           LOAD_GLOBAL              0 (super)
+               LOAD_DEREF               1 (__class__)
+               LOAD_FAST                0 (self)
+               LOAD_SUPER_ATTR          5 (__init__ + NULL|self)
+               CALL                     0
+               POP_TOP
+
+ 109           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR                6 (Sequential)
+               PUSH_NULL
+
+ 110           LOAD_GLOBAL              9 (DepthwiseSeparableTCN + NULL)
+               LOAD_CONST               1 (10)
+               LOAD_CONST               2 (32)
+               LOAD_CONST               3 (1)
+               LOAD_CONST               4 (('dilation',))
+               CALL_KW                  3
+
+ 111           LOAD_GLOBAL              9 (DepthwiseSeparableTCN + NULL)
+               LOAD_CONST               2 (32)
+               LOAD_CONST               5 (64)
+               LOAD_CONST               6 (2)
+               LOAD_CONST               4 (('dilation',))
+               CALL_KW                  3
+
+ 112           LOAD_GLOBAL              9 (DepthwiseSeparableTCN + NULL)
+               LOAD_CONST               5 (64)
+               LOAD_CONST               2 (32)
+               LOAD_CONST               7 (4)
+               LOAD_CONST               4 (('dilation',))
+               CALL_KW                  3
+
+ 113           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               10 (AdaptiveAvgPool1d)
+               PUSH_NULL
+               LOAD_CONST               3 (1)
+               CALL                     1
+
+ 109           CALL                     4
+               LOAD_FAST                0 (self)
+               STORE_ATTR               6 (can_branch)
+
+ 115           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR                6 (Sequential)
+               PUSH_NULL
+
+ 116           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               14 (Conv2d)
+               PUSH_NULL
+               LOAD_CONST               3 (1)
+               LOAD_CONST               8 (16)
+               LOAD_CONST               9 (3)
+               LOAD_CONST               6 (2)
+               LOAD_CONST               3 (1)
+               LOAD_CONST              10 (('stride', 'padding'))
+               CALL_KW                  5
+               LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               16 (ReLU)
+               PUSH_NULL
+               LOAD_CONST              11 (True)
+               LOAD_CONST              12 (('inplace',))
+               CALL_KW                  1
+
+ 117           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               14 (Conv2d)
+               PUSH_NULL
+               LOAD_CONST               8 (16)
+               LOAD_CONST               2 (32)
+               LOAD_CONST               9 (3)
+               LOAD_CONST               6 (2)
+               LOAD_CONST               3 (1)
+               LOAD_CONST              10 (('stride', 'padding'))
+               CALL_KW                  5
+               LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               16 (ReLU)
+               PUSH_NULL
+               LOAD_CONST              11 (True)
+               LOAD_CONST              12 (('inplace',))
+               CALL_KW                  1
+
+ 118           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               18 (AdaptiveAvgPool2d)
+               PUSH_NULL
+               LOAD_CONST               3 (1)
+               CALL                     1
+
+ 115           CALL                     5
+               LOAD_FAST                0 (self)
+               STORE_ATTR              10 (eth_branch)
+
+ 120           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR                6 (Sequential)
+               PUSH_NULL
+
+ 121           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               22 (Linear)
+               PUSH_NULL
+               LOAD_CONST               5 (64)
+               LOAD_CONST               2 (32)
+               CALL                     2
+               LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               16 (ReLU)
+               PUSH_NULL
+               LOAD_CONST              11 (True)
+               LOAD_CONST              12 (('inplace',))
+               CALL_KW                  1
+               LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               24 (Dropout)
+               PUSH_NULL
+               LOAD_CONST              13 (0.2)
+               CALL                     1
+               LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               22 (Linear)
+               PUSH_NULL
+               LOAD_CONST               2 (32)
+               LOAD_CONST               6 (2)
+               CALL                     2
+
+ 120           CALL                     4
+               LOAD_FAST                0 (self)
+               STORE_ATTR              13 (classifier)
+
+ 123           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               22 (Linear)
+               PUSH_NULL
+               LOAD_CONST               2 (32)
+               LOAD_CONST               6 (2)
+               CALL                     2
+               LOAD_FAST                0 (self)
+               STORE_ATTR              14 (can_head)
+
+ 124           LOAD_GLOBAL              4 (nn)
+               LOAD_ATTR               22 (Linear)
+               PUSH_NULL
+               LOAD_CONST               2 (32)
+               LOAD_CONST               6 (2)
+               CALL                     2
+               LOAD_FAST                0 (self)
+               STORE_ATTR              15 (eth_head)
+
+ 125           LOAD_GLOBAL             33 (QuantStub + NULL)
+               CALL                     0
+               LOAD_FAST                0 (self)
+               STORE_ATTR              17 (quant)
+
+ 126           LOAD_GLOBAL             37 (DeQuantStub + NULL)
+               CALL                     0
+               LOAD_FAST                0 (self)
+               STORE_ATTR              19 (dequant)
+               RETURN_CONST             0 (None)
+
+Disassembly of <code object _extract_features at 0x000002327DA94FA0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 128>:
+128           RESUME                   0
+
+129           LOAD_FAST                0 (self)
+              LOAD_ATTR                1 (quant + NULL|self)
+              LOAD_FAST                1 (can)
+              CALL                     1
+              LOAD_FAST                0 (self)
+              LOAD_ATTR                1 (quant + NULL|self)
+              LOAD_FAST                2 (eth)
+              CALL                     1
+              STORE_FAST_STORE_FAST   33 (eth, can)
+
+130           LOAD_FAST                0 (self)
+              LOAD_ATTR                3 (can_branch + NULL|self)
+              LOAD_FAST                1 (can)
+              LOAD_ATTR                5 (permute + NULL|self)
+              LOAD_CONST               1 (0)
+              LOAD_CONST               2 (2)
+              LOAD_CONST               3 (1)
+              CALL                     3
+              CALL                     1
+              LOAD_ATTR                7 (flatten + NULL|self)
+              LOAD_CONST               3 (1)
+              CALL                     1
+              STORE_FAST               3 (can_feat)
+
+133           LOAD_FAST                2 (eth)
+              LOAD_ATTR                9 (dim + NULL|self)
+              CALL                     0
+              LOAD_CONST               4 (5)
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE      100 (to L1)
+
+134           LOAD_FAST                2 (eth)
+              LOAD_ATTR               10 (shape)
+              UNPACK_SEQUENCE          5
+              STORE_FAST_STORE_FAST   69 (batch_size, window_size)
+              STORE_FAST_STORE_FAST  103 (channels, height)
+              STORE_FAST               8 (width)
+
+136           LOAD_FAST                2 (eth)
+              LOAD_ATTR               13 (view + NULL|self)
+              LOAD_FAST_LOAD_FAST     69 (batch_size, window_size)
+              BINARY_OP                5 (*)
+              LOAD_FAST_LOAD_FAST    103 (channels, height)
+              LOAD_FAST                8 (width)
+              CALL                     4
+              STORE_FAST               9 (eth_4d)
+
+138           LOAD_FAST                0 (self)
+              LOAD_ATTR               15 (eth_branch + NULL|self)
+              LOAD_FAST                9 (eth_4d)
+              CALL                     1
+              LOAD_ATTR                7 (flatten + NULL|self)
+              LOAD_CONST               3 (1)
+              CALL                     1
+              STORE_FAST              10 (eth_feat_4d)
+
+140           LOAD_FAST               10 (eth_feat_4d)
+              LOAD_ATTR               13 (view + NULL|self)
+              LOAD_FAST_LOAD_FAST     69 (batch_size, window_size)
+              LOAD_CONST               5 (-1)
+              CALL                     3
+              LOAD_CONST               0 (None)
+              LOAD_CONST               0 (None)
+              BUILD_SLICE              2
+              LOAD_CONST               5 (-1)
+              LOAD_CONST               0 (None)
+              LOAD_CONST               0 (None)
+              BUILD_SLICE              2
+              BUILD_TUPLE              3
+              BINARY_SUBSCR
+              STORE_FAST              11 (eth_feat)
+
+145           LOAD_FAST_LOAD_FAST     59 (can_feat, eth_feat)
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+143   L1:     LOAD_FAST                0 (self)
+              LOAD_ATTR               15 (eth_branch + NULL|self)
+              LOAD_FAST                2 (eth)
+              CALL                     1
+              LOAD_ATTR                7 (flatten + NULL|self)
+              LOAD_CONST               3 (1)
+              CALL                     1
+              STORE_FAST              11 (eth_feat)
+
+145           LOAD_FAST_LOAD_FAST     59 (can_feat, eth_feat)
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+Disassembly of <code object forward at 0x000002327CB02EF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 147>:
+147           RESUME                   0
+
+148           LOAD_FAST                0 (self)
+              LOAD_ATTR                1 (_extract_features + NULL|self)
+              LOAD_FAST_LOAD_FAST     18 (can, eth)
+              CALL                     2
+              UNPACK_SEQUENCE          2
+              STORE_FAST_STORE_FAST   52 (can_feat, eth_feat)
+
+149           LOAD_FAST                0 (self)
+              LOAD_ATTR                3 (classifier + NULL|self)
+              LOAD_GLOBAL              4 (torch)
+              LOAD_ATTR                6 (cat)
+              PUSH_NULL
+              LOAD_FAST_LOAD_FAST     52 (can_feat, eth_feat)
+              BUILD_TUPLE              2
+              LOAD_CONST               1 (1)
+              LOAD_CONST               2 (('dim',))
+              CALL_KW                  2
+              CALL                     1
+              STORE_FAST               5 (fused_logits)
+
+150           LOAD_FAST                0 (self)
+              LOAD_ATTR                9 (dequant + NULL|self)
+              LOAD_FAST                5 (fused_logits)
+              CALL                     1
+              RETURN_VALUE
+
+Disassembly of <code object forward_diagnostics at 0x000002327D176520, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\architecture_replica.py", line 152>:
+152           RESUME                   0
+
+153           LOAD_FAST                0 (self)
+              LOAD_ATTR                1 (_extract_features + NULL|self)
+              LOAD_FAST_LOAD_FAST     18 (can, eth)
+              CALL                     2
+              UNPACK_SEQUENCE          2
+              STORE_FAST_STORE_FAST   52 (can_feat, eth_feat)
+
+154           LOAD_FAST                0 (self)
+              LOAD_ATTR                3 (classifier + NULL|self)
+              LOAD_GLOBAL              4 (torch)
+              LOAD_ATTR                6 (cat)
+              PUSH_NULL
+              LOAD_FAST_LOAD_FAST     52 (can_feat, eth_feat)
+              BUILD_TUPLE              2
+              LOAD_CONST               1 (1)
+              LOAD_CONST               2 (('dim',))
+              CALL_KW                  2
+              CALL                     1
+              STORE_FAST               5 (fused_logits)
+
+155           LOAD_FAST                0 (self)
+              LOAD_ATTR                9 (can_head + NULL|self)
+              LOAD_FAST                3 (can_feat)
+              CALL                     1
+              STORE_FAST               6 (can_logits)
+
+156           LOAD_FAST                0 (self)
+              LOAD_ATTR               11 (eth_head + NULL|self)
+              LOAD_FAST                4 (eth_feat)
+              CALL                     1
+              STORE_FAST               7 (eth_logits)
+
+158           LOAD_FAST                0 (self)
+              LOAD_ATTR               13 (dequant + NULL|self)
+              LOAD_FAST                5 (fused_logits)
+              CALL                     1
+
+159           LOAD_FAST                0 (self)
+              LOAD_ATTR               13 (dequant + NULL|self)
+              LOAD_FAST                6 (can_logits)
+              CALL                     1
+
+160           LOAD_FAST                0 (self)
+              LOAD_ATTR               13 (dequant + NULL|self)
+              LOAD_FAST                7 (eth_logits)
+              CALL                     1
+
+161           LOAD_FAST                0 (self)
+              LOAD_ATTR               13 (dequant + NULL|self)
+              LOAD_FAST                3 (can_feat)
+              CALL                     1
+
+162           LOAD_FAST                0 (self)
+              LOAD_ATTR               13 (dequant + NULL|self)
+              LOAD_FAST                4 (eth_feat)
+              CALL                     1
+
+157           LOAD_CONST               3 (('fused_logits', 'can_logits', 'eth_logits', 'can_feat', 'eth_feat'))
+              BUILD_CONST_KEY_MAP      5
+              RETURN_VALUE

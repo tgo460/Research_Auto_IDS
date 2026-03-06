@@ -1,0 +1,16 @@
+{
+  "version": "repro_v1",
+  "description": "Canonical reproducibility config for full training/eval and v2 split validation.",
+  "split_manifest": "data/splits/split_v2_domain_balanced.json",
+  "deployment_config": "configs/deployment.example.json",
+  "targets": {
+    "latency_budget_ms": 100.0,
+    "fpr_budget": 0.05
+  },
+  "commands": {
+    "validate": "python validate_ids.py --config configs/deployment.example.json",
+    "benchmark": "python benchmark_ids.py --config configs/deployment.example.json --output reports/benchmark_ids_report.json --max_samples 100",
+    "replay": "python replay_can_eth.py --config configs/deployment.example.json --can_csv datasets/can_dos_train.csv --eth_csv datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv --max_samples 50",
+    "evaluate": "python evaluate.py --base-path . --out-dir reports --strict-split-check --split-manifest data/splits/split_v2_domain_balanced.json"
+  }
+}

@@ -1,0 +1,793 @@
+  0           RESUME                   0
+
+  1           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              0 (os)
+              STORE_NAME               0 (os)
+
+  2           LOAD_CONST               0 (0)
+              LOAD_CONST               2 (('List', 'Optional'))
+              IMPORT_NAME              1 (typing)
+              IMPORT_FROM              2 (List)
+              STORE_NAME               2 (List)
+              IMPORT_FROM              3 (Optional)
+              STORE_NAME               3 (Optional)
+              POP_TOP
+
+  4           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              4 (numpy)
+              STORE_NAME               5 (np)
+
+  5           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              6 (pandas)
+              STORE_NAME               7 (pd)
+
+  6           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              8 (torch)
+              STORE_NAME               8 (torch)
+
+  7           LOAD_CONST               0 (0)
+              LOAD_CONST               3 (('Dataset',))
+              IMPORT_NAME              9 (torch.utils.data)
+              IMPORT_FROM             10 (Dataset)
+              STORE_NAME              10 (Dataset)
+              POP_TOP
+
+  9           LOAD_CONST               0 (0)
+              LOAD_CONST               4 (('correlate_can_eth',))
+              IMPORT_NAME             11 (correlation_replica)
+              IMPORT_FROM             12 (correlate_can_eth)
+              STORE_NAME              12 (correlate_can_eth)
+              POP_TOP
+
+ 12           LOAD_BUILD_CLASS
+              PUSH_NULL
+              LOAD_CONST               5 (<code object CorrelatedHybridVehicleDataset at 0x0000022B8BA1DA30, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 12>)
+              MAKE_FUNCTION
+              LOAD_CONST               6 ('CorrelatedHybridVehicleDataset')
+              LOAD_NAME               10 (Dataset)
+              CALL                     3
+              STORE_NAME              13 (CorrelatedHybridVehicleDataset)
+              RETURN_CONST             1 (None)
+
+Disassembly of <code object CorrelatedHybridVehicleDataset at 0x0000022B8BA1DA30, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 12>:
+ 12           RESUME                   0
+              LOAD_NAME                0 (__name__)
+              STORE_NAME               1 (__module__)
+              LOAD_CONST               0 ('CorrelatedHybridVehicleDataset')
+              STORE_NAME               2 (__qualname__)
+              LOAD_CONST               1 (12)
+              STORE_NAME               3 (__firstlineno__)
+
+ 13           LOAD_CONST               2 ('\nReplica dataset that aligns CAN and ETH windows via timestamp/session correlation (C1).\n')
+              STORE_NAME               4 (__doc__)
+
+ 23           NOP
+
+ 24           NOP
+
+ 25           NOP
+
+ 26           NOP
+
+ 27           NOP
+
+ 28           NOP
+
+ 29           NOP
+
+ 30           NOP
+
+ 31           NOP
+
+ 17           LOAD_CONST              26 ((10, 5, 20, 10, 100.0, 'relative_session', None, None, 'max'))
+              LOAD_CONST               4 ('can_csv_path')
+
+ 19           LOAD_NAME                5 (str)
+
+ 17           LOAD_CONST               5 ('eth_packet_csv_path')
+
+ 20           LOAD_NAME                5 (str)
+
+ 17           LOAD_CONST               6 ('eth_npy_path')
+
+ 21           LOAD_NAME                5 (str)
+
+ 17           LOAD_CONST               7 ('can_features')
+
+ 22           LOAD_NAME                6 (List)
+              LOAD_NAME                5 (str)
+              BINARY_SUBSCR
+
+ 17           LOAD_CONST               8 ('can_window_size')
+
+ 23           LOAD_NAME                7 (int)
+
+ 17           LOAD_CONST               9 ('can_overlap')
+
+ 24           LOAD_NAME                7 (int)
+
+ 17           LOAD_CONST              10 ('eth_window_size')
+
+ 25           LOAD_NAME                7 (int)
+
+ 17           LOAD_CONST              11 ('eth_overlap')
+
+ 26           LOAD_NAME                7 (int)
+
+ 17           LOAD_CONST              12 ('tolerance_ms')
+
+ 27           LOAD_NAME                8 (float)
+
+ 17           LOAD_CONST              13 ('time_mode')
+
+ 28           LOAD_NAME                5 (str)
+
+ 17           LOAD_CONST              14 ('can_max_rows')
+
+ 29           LOAD_NAME                9 (Optional)
+              LOAD_NAME                7 (int)
+              BINARY_SUBSCR
+
+ 17           LOAD_CONST              15 ('eth_max_frames')
+
+ 30           LOAD_NAME                9 (Optional)
+              LOAD_NAME                7 (int)
+              BINARY_SUBSCR
+
+ 17           LOAD_CONST              16 ('label_policy')
+
+ 31           LOAD_NAME                5 (str)
+
+ 17           BUILD_TUPLE             26
+              LOAD_CONST              17 (<code object __init__ at 0x0000022B89A7AAD0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 17>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              SET_FUNCTION_ATTRIBUTE   1 (defaults)
+              STORE_NAME              10 (__init__)
+
+ 98           LOAD_CONST              18 (<code object __len__ at 0x0000022B8BCF4730, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 98>)
+              MAKE_FUNCTION
+              STORE_NAME              11 (__len__)
+
+101           LOAD_CONST              19 ('can_window_idx')
+              LOAD_NAME                7 (int)
+              LOAD_CONST              20 ('return')
+              LOAD_NAME               12 (np)
+              LOAD_ATTR               26 (ndarray)
+              BUILD_TUPLE              4
+              LOAD_CONST              21 (<code object _slice_can_window at 0x0000022B8BCB2310, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 101>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              14 (_slice_can_window)
+
+106           LOAD_CONST              22 ('eth_window_idx')
+              LOAD_NAME                7 (int)
+              LOAD_CONST              20 ('return')
+              LOAD_NAME               12 (np)
+              LOAD_ATTR               26 (ndarray)
+              BUILD_TUPLE              4
+              LOAD_CONST              23 (<code object _slice_eth_window at 0x0000022B8BA4DDF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 106>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              15 (_slice_eth_window)
+
+114           LOAD_CONST              24 (<code object __getitem__ at 0x0000022B89A4E220, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 114>)
+              MAKE_FUNCTION
+              STORE_NAME              16 (__getitem__)
+              LOAD_CONST              25 (('aligned_pairs', 'alignment_report', 'can_features', 'can_labels', 'can_overlap', 'can_step', 'can_values', 'can_window_size', 'eth_images', 'eth_label', 'eth_overlap', 'eth_step', 'eth_window_size', 'label_policy'))
+              STORE_NAME              17 (__static_attributes__)
+              RETURN_CONST             3 (None)
+
+Disassembly of <code object __init__ at 0x0000022B89A7AAD0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 17>:
+ 17            RESUME                   0
+
+ 33            LOAD_GLOBAL              0 (os)
+               LOAD_ATTR                2 (path)
+               LOAD_ATTR                5 (exists + NULL|self)
+               LOAD_FAST                1 (can_csv_path)
+               CALL                     1
+               TO_BOOL
+               POP_JUMP_IF_TRUE        14 (to L1)
+
+ 34            LOAD_GLOBAL              7 (FileNotFoundError + NULL)
+               LOAD_CONST               1 ('CAN CSV not found: ')
+               LOAD_FAST                1 (can_csv_path)
+               FORMAT_SIMPLE
+               BUILD_STRING             2
+               CALL                     1
+               RAISE_VARARGS            1
+
+ 35    L1:     LOAD_GLOBAL              0 (os)
+               LOAD_ATTR                2 (path)
+               LOAD_ATTR                5 (exists + NULL|self)
+               LOAD_FAST                2 (eth_packet_csv_path)
+               CALL                     1
+               TO_BOOL
+               POP_JUMP_IF_TRUE        14 (to L2)
+
+ 36            LOAD_GLOBAL              7 (FileNotFoundError + NULL)
+               LOAD_CONST               2 ('ETH packet CSV not found: ')
+               LOAD_FAST                2 (eth_packet_csv_path)
+               FORMAT_SIMPLE
+               BUILD_STRING             2
+               CALL                     1
+               RAISE_VARARGS            1
+
+ 37    L2:     LOAD_GLOBAL              0 (os)
+               LOAD_ATTR                2 (path)
+               LOAD_ATTR                5 (exists + NULL|self)
+               LOAD_FAST                3 (eth_npy_path)
+               CALL                     1
+               TO_BOOL
+               POP_JUMP_IF_TRUE        14 (to L3)
+
+ 38            LOAD_GLOBAL              7 (FileNotFoundError + NULL)
+               LOAD_CONST               3 ('ETH image NPY not found: ')
+               LOAD_FAST                3 (eth_npy_path)
+               FORMAT_SIMPLE
+               BUILD_STRING             2
+               CALL                     1
+               RAISE_VARARGS            1
+
+ 40    L3:     LOAD_FAST_LOAD_FAST     64 (can_features, self)
+               STORE_ATTR               4 (can_features)
+
+ 41            LOAD_FAST_LOAD_FAST     80 (can_window_size, self)
+               STORE_ATTR               5 (can_window_size)
+
+ 42            LOAD_FAST_LOAD_FAST     96 (can_overlap, self)
+               STORE_ATTR               6 (can_overlap)
+
+ 43            LOAD_FAST_LOAD_FAST    112 (eth_window_size, self)
+               STORE_ATTR               7 (eth_window_size)
+
+ 44            LOAD_FAST_LOAD_FAST    128 (eth_overlap, self)
+               STORE_ATTR               8 (eth_overlap)
+
+ 45            LOAD_GLOBAL             19 (max + NULL)
+               LOAD_CONST               4 (1)
+               LOAD_FAST_LOAD_FAST    120 (eth_window_size, eth_overlap)
+               BINARY_OP               10 (-)
+               CALL                     2
+               LOAD_FAST                0 (self)
+               STORE_ATTR              10 (eth_step)
+
+ 46            LOAD_GLOBAL             19 (max + NULL)
+               LOAD_CONST               4 (1)
+               LOAD_FAST_LOAD_FAST     86 (can_window_size, can_overlap)
+               BINARY_OP               10 (-)
+               CALL                     2
+               LOAD_FAST                0 (self)
+               STORE_ATTR              11 (can_step)
+
+ 47            LOAD_FAST_LOAD_FAST    208 (label_policy, self)
+               STORE_ATTR              12 (label_policy)
+
+ 49            LOAD_GLOBAL             26 (pd)
+               LOAD_ATTR               28 (read_csv)
+               PUSH_NULL
+               LOAD_FAST                1 (can_csv_path)
+               CALL                     1
+               STORE_FAST              14 (can_df)
+
+ 50            LOAD_FAST               11 (can_max_rows)
+               POP_JUMP_IF_NONE        17 (to L4)
+
+ 51            LOAD_FAST               14 (can_df)
+               LOAD_ATTR               31 (head + NULL|self)
+               LOAD_FAST               11 (can_max_rows)
+               CALL                     1
+               STORE_FAST              14 (can_df)
+
+ 52    L4:     LOAD_FAST_LOAD_FAST    224 (can_df, self)
+               LOAD_ATTR                8 (can_features)
+               BINARY_SUBSCR
+               LOAD_ATTR               33 (to_numpy + NULL|self)
+               LOAD_GLOBAL             34 (np)
+               LOAD_ATTR               36 (float32)
+               LOAD_CONST               5 (('dtype',))
+               CALL_KW                  1
+               LOAD_FAST                0 (self)
+               STORE_ATTR              19 (can_values)
+
+ 53            LOAD_FAST               14 (can_df)
+               LOAD_CONST               6 ('Label')
+               BINARY_SUBSCR
+               LOAD_ATTR               41 (astype + NULL|self)
+               LOAD_GLOBAL             42 (int)
+               CALL                     1
+               LOAD_ATTR               33 (to_numpy + NULL|self)
+               CALL                     0
+               LOAD_FAST                0 (self)
+               STORE_ATTR              22 (can_labels)
+
+ 55            LOAD_GLOBAL             34 (np)
+               LOAD_ATTR               46 (load)
+               PUSH_NULL
+               LOAD_FAST                3 (eth_npy_path)
+               LOAD_CONST               7 ('r')
+               LOAD_CONST               8 (('mmap_mode',))
+               CALL_KW                  2
+               STORE_FAST              15 (eth_npy)
+
+ 56            LOAD_FAST               12 (eth_max_frames)
+               POP_JUMP_IF_NONE        30 (to L5)
+               LOAD_FAST               15 (eth_npy)
+               LOAD_ATTR               48 (shape)
+               LOAD_CONST               9 (0)
+               BINARY_SUBSCR
+               LOAD_FAST               12 (eth_max_frames)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       11 (to L5)
+
+ 57            LOAD_FAST               15 (eth_npy)
+               LOAD_CONST               0 (None)
+               LOAD_FAST               12 (eth_max_frames)
+               BINARY_SLICE
+               LOAD_FAST                0 (self)
+               STORE_ATTR              25 (eth_images)
+               JUMP_FORWARD             6 (to L6)
+
+ 59    L5:     LOAD_FAST_LOAD_FAST    240 (eth_npy, self)
+               STORE_ATTR              25 (eth_images)
+
+ 61    L6:     LOAD_CONST              10 ('injected')
+               LOAD_GLOBAL              0 (os)
+               LOAD_ATTR                2 (path)
+               LOAD_ATTR               53 (basename + NULL|self)
+               LOAD_FAST                3 (eth_npy_path)
+               CALL                     1
+               LOAD_ATTR               55 (lower + NULL|self)
+               CALL                     0
+               CONTAINS_OP              0
+               POP_JUMP_IF_TRUE        49 (to L7)
+               LOAD_CONST              11 ('attack')
+               LOAD_GLOBAL              0 (os)
+               LOAD_ATTR                2 (path)
+               LOAD_ATTR               53 (basename + NULL|self)
+               LOAD_FAST                3 (eth_npy_path)
+               CALL                     1
+               LOAD_ATTR               55 (lower + NULL|self)
+               CALL                     0
+               CONTAINS_OP              0
+               POP_JUMP_IF_FALSE        2 (to L8)
+       L7:     LOAD_CONST               4 (1)
+               JUMP_FORWARD             1 (to L9)
+       L8:     LOAD_CONST               9 (0)
+       L9:     LOAD_FAST                0 (self)
+               STORE_ATTR              28 (eth_label)
+
+ 63            LOAD_GLOBAL             59 (correlate_can_eth + NULL)
+
+ 64            LOAD_FAST                1 (can_csv_path)
+
+ 65            LOAD_FAST                2 (eth_packet_csv_path)
+
+ 66            LOAD_FAST                5 (can_window_size)
+
+ 67            LOAD_FAST                6 (can_overlap)
+
+ 68            LOAD_FAST                7 (eth_window_size)
+
+ 69            LOAD_FAST                8 (eth_overlap)
+
+ 70            LOAD_FAST                9 (tolerance_ms)
+
+ 71            LOAD_FAST               10 (time_mode)
+
+ 63            LOAD_CONST              12 (('can_csv_path', 'eth_csv_path', 'can_window_size', 'can_overlap', 'eth_window_size', 'eth_overlap', 'tolerance_ms', 'time_mode'))
+               CALL_KW                  8
+               UNPACK_SEQUENCE          2
+               STORE_FAST              16 (pairs_df)
+               STORE_FAST              17 (alignment_report)
+
+ 74            LOAD_CONST               9 (0)
+               STORE_FAST              18 (max_eth_windows_from_images)
+
+ 75            LOAD_FAST                0 (self)
+               LOAD_ATTR               50 (eth_images)
+               LOAD_ATTR               48 (shape)
+               LOAD_CONST               9 (0)
+               BINARY_SUBSCR
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               14 (eth_window_size)
+               COMPARE_OP             188 (bool(>=))
+               POP_JUMP_IF_FALSE       54 (to L10)
+
+ 76            LOAD_FAST                0 (self)
+               LOAD_ATTR               50 (eth_images)
+               LOAD_ATTR               48 (shape)
+               LOAD_CONST               9 (0)
+               BINARY_SUBSCR
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               14 (eth_window_size)
+               BINARY_OP               10 (-)
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               20 (eth_step)
+               BINARY_OP                2 (//)
+               LOAD_CONST               4 (1)
+               BINARY_OP                0 (+)
+               STORE_FAST              18 (max_eth_windows_from_images)
+
+ 77   L10:     LOAD_CONST               9 (0)
+               STORE_FAST              19 (max_can_windows_from_values)
+
+ 78            LOAD_FAST                0 (self)
+               LOAD_ATTR               38 (can_values)
+               LOAD_ATTR               48 (shape)
+               LOAD_CONST               9 (0)
+               BINARY_SUBSCR
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               10 (can_window_size)
+               COMPARE_OP             188 (bool(>=))
+               POP_JUMP_IF_FALSE       54 (to L11)
+
+ 79            LOAD_FAST                0 (self)
+               LOAD_ATTR               38 (can_values)
+               LOAD_ATTR               48 (shape)
+               LOAD_CONST               9 (0)
+               BINARY_SUBSCR
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               10 (can_window_size)
+               BINARY_OP               10 (-)
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               22 (can_step)
+               BINARY_OP                2 (//)
+               LOAD_CONST               4 (1)
+               BINARY_OP                0 (+)
+               STORE_FAST              19 (max_can_windows_from_values)
+
+ 81   L11:     LOAD_FAST               18 (max_eth_windows_from_images)
+               LOAD_CONST               9 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       40 (to L12)
+               LOAD_FAST               19 (max_can_windows_from_values)
+               LOAD_CONST               9 (0)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       34 (to L12)
+
+ 82            LOAD_FAST               16 (pairs_df)
+
+ 83            LOAD_FAST               16 (pairs_df)
+               LOAD_CONST              13 ('eth_window_idx')
+               BINARY_SUBSCR
+               LOAD_FAST               18 (max_eth_windows_from_images)
+               COMPARE_OP               2 (<)
+
+ 84            LOAD_FAST               16 (pairs_df)
+               LOAD_CONST              14 ('can_window_idx')
+               BINARY_SUBSCR
+               LOAD_FAST               19 (max_can_windows_from_values)
+               COMPARE_OP               2 (<)
+
+ 83            BINARY_OP                1 (&)
+
+ 82            BINARY_SUBSCR
+
+ 85            LOAD_ATTR               61 (reset_index + NULL|self)
+               LOAD_CONST              15 (True)
+               LOAD_CONST              16 (('drop',))
+               CALL_KW                  1
+
+ 82            STORE_FAST              16 (pairs_df)
+               JUMP_FORWARD            29 (to L13)
+
+ 87   L12:     LOAD_FAST               16 (pairs_df)
+               LOAD_ATTR               62 (iloc)
+               LOAD_CONST               9 (0)
+               LOAD_CONST               9 (0)
+               BINARY_SLICE
+               LOAD_ATTR               65 (copy + NULL|self)
+               CALL                     0
+               STORE_FAST              16 (pairs_df)
+
+ 89   L13:     LOAD_FAST               16 (pairs_df)
+               LOAD_FAST                0 (self)
+               STORE_ATTR              33 (aligned_pairs)
+
+ 90            LOAD_FAST               17 (alignment_report)
+               LOAD_FAST                0 (self)
+               STORE_ATTR              34 (alignment_report)
+
+ 92            LOAD_GLOBAL             71 (print + NULL)
+               LOAD_CONST              17 ('Initialized CorrelatedHybridVehicleDataset')
+               CALL                     1
+               POP_TOP
+
+ 93            LOAD_GLOBAL             71 (print + NULL)
+               LOAD_CONST              18 ('Aligned pairs: ')
+               LOAD_GLOBAL             73 (len + NULL)
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               66 (aligned_pairs)
+               CALL                     1
+               FORMAT_SIMPLE
+               BUILD_STRING             2
+               CALL                     1
+               POP_TOP
+
+ 94            LOAD_GLOBAL             71 (print + NULL)
+               LOAD_CONST              19 ('Matched rate (CAN): ')
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               68 (alignment_report)
+               LOAD_ATTR               74 (matched_rate_can)
+               LOAD_CONST              20 ('.4f')
+               FORMAT_WITH_SPEC
+               BUILD_STRING             2
+               CALL                     1
+               POP_TOP
+
+ 95            LOAD_GLOBAL             71 (print + NULL)
+               LOAD_CONST              21 ('Median delta ms: ')
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               68 (alignment_report)
+               LOAD_ATTR               76 (median_delta_ms)
+               FORMAT_SIMPLE
+               BUILD_STRING             2
+               CALL                     1
+               POP_TOP
+
+ 96            LOAD_GLOBAL             71 (print + NULL)
+               LOAD_CONST              22 ('P95 delta ms: ')
+               LOAD_FAST                0 (self)
+               LOAD_ATTR               68 (alignment_report)
+               LOAD_ATTR               78 (p95_delta_ms)
+               FORMAT_SIMPLE
+               BUILD_STRING             2
+               CALL                     1
+               POP_TOP
+               RETURN_CONST             0 (None)
+
+Disassembly of <code object __len__ at 0x0000022B8BCF4730, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 98>:
+ 98           RESUME                   0
+
+ 99           LOAD_GLOBAL              1 (len + NULL)
+              LOAD_FAST                0 (self)
+              LOAD_ATTR                2 (aligned_pairs)
+              CALL                     1
+              RETURN_VALUE
+
+Disassembly of <code object _slice_can_window at 0x0000022B8BCB2310, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 101>:
+101           RESUME                   0
+
+102           LOAD_FAST_LOAD_FAST     16 (can_window_idx, self)
+              LOAD_ATTR                0 (can_step)
+              BINARY_OP                5 (*)
+              STORE_FAST               2 (start)
+
+103           LOAD_FAST_LOAD_FAST     32 (start, self)
+              LOAD_ATTR                2 (can_window_size)
+              BINARY_OP                0 (+)
+              STORE_FAST               3 (end)
+
+104           LOAD_FAST                0 (self)
+              LOAD_ATTR                4 (can_values)
+              LOAD_FAST_LOAD_FAST     35 (start, end)
+              BINARY_SLICE
+              RETURN_VALUE
+
+Disassembly of <code object _slice_eth_window at 0x0000022B8BA4DDF0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 106>:
+106           RESUME                   0
+
+107           LOAD_FAST_LOAD_FAST     16 (eth_window_idx, self)
+              LOAD_ATTR                0 (eth_step)
+              BINARY_OP                5 (*)
+              STORE_FAST               2 (start)
+
+108           LOAD_FAST_LOAD_FAST     32 (start, self)
+              LOAD_ATTR                2 (eth_window_size)
+              BINARY_OP                0 (+)
+              STORE_FAST               3 (end)
+
+109           LOAD_GLOBAL              4 (np)
+              LOAD_ATTR                6 (asarray)
+              PUSH_NULL
+              LOAD_FAST                0 (self)
+              LOAD_ATTR                8 (eth_images)
+              LOAD_FAST_LOAD_FAST     35 (start, end)
+              BINARY_SLICE
+              LOAD_GLOBAL              4 (np)
+              LOAD_ATTR               10 (float32)
+              LOAD_CONST               1 (('dtype',))
+              CALL_KW                  2
+              STORE_FAST               4 (window)
+
+110           LOAD_FAST                4 (window)
+              LOAD_ATTR               13 (max + NULL|self)
+              CALL                     0
+              LOAD_CONST               2 (1.5)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_FALSE        5 (to L1)
+
+111           LOAD_FAST                4 (window)
+              LOAD_CONST               3 (255.0)
+              BINARY_OP               11 (/)
+              STORE_FAST               4 (window)
+
+112   L1:     LOAD_GLOBAL              4 (np)
+              LOAD_ATTR               14 (expand_dims)
+              PUSH_NULL
+              LOAD_FAST                4 (window)
+              LOAD_CONST               4 (1)
+              LOAD_CONST               5 (('axis',))
+              CALL_KW                  2
+              RETURN_VALUE
+
+Disassembly of <code object __getitem__ at 0x0000022B89A4E220, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\dataloader_correlated_replica.py", line 114>:
+114           RESUME                   0
+
+115           LOAD_FAST                0 (self)
+              LOAD_ATTR                0 (aligned_pairs)
+              LOAD_ATTR                2 (iloc)
+              LOAD_FAST                1 (idx)
+              BINARY_SUBSCR
+              STORE_FAST               2 (row)
+
+116           LOAD_GLOBAL              5 (int + NULL)
+              LOAD_FAST                2 (row)
+              LOAD_CONST               1 ('can_window_idx')
+              BINARY_SUBSCR
+              CALL                     1
+              STORE_FAST               3 (can_widx)
+
+117           LOAD_GLOBAL              5 (int + NULL)
+              LOAD_FAST                2 (row)
+              LOAD_CONST               2 ('eth_window_idx')
+              BINARY_SUBSCR
+              CALL                     1
+              STORE_FAST               4 (eth_widx)
+
+119           LOAD_FAST                0 (self)
+              LOAD_ATTR                7 (_slice_can_window + NULL|self)
+              LOAD_FAST                3 (can_widx)
+              CALL                     1
+              STORE_FAST               5 (can_seq)
+
+120           LOAD_FAST                0 (self)
+              LOAD_ATTR                9 (_slice_eth_window + NULL|self)
+              LOAD_FAST                4 (eth_widx)
+              CALL                     1
+              STORE_FAST               6 (eth_seq)
+
+122           LOAD_FAST_LOAD_FAST     48 (can_widx, self)
+              LOAD_ATTR               10 (can_step)
+              BINARY_OP                5 (*)
+              LOAD_FAST                0 (self)
+              LOAD_ATTR               12 (can_window_size)
+              LOAD_CONST               3 (1)
+              BINARY_OP               10 (-)
+              BINARY_OP                0 (+)
+              STORE_FAST               7 (can_last_row_idx)
+
+123           LOAD_GLOBAL             15 (min + NULL)
+              LOAD_FAST                7 (can_last_row_idx)
+              LOAD_GLOBAL             17 (len + NULL)
+              LOAD_FAST                0 (self)
+              LOAD_ATTR               18 (can_labels)
+              CALL                     1
+              LOAD_CONST               3 (1)
+              BINARY_OP               10 (-)
+              CALL                     2
+              STORE_FAST               7 (can_last_row_idx)
+
+124           LOAD_GLOBAL              5 (int + NULL)
+              LOAD_FAST                0 (self)
+              LOAD_ATTR               18 (can_labels)
+              LOAD_FAST                7 (can_last_row_idx)
+              BINARY_SUBSCR
+              CALL                     1
+              STORE_FAST               8 (can_label)
+
+125           LOAD_FAST                0 (self)
+              LOAD_ATTR               20 (label_policy)
+              LOAD_CONST               4 ('eth_only')
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE       22 (to L1)
+
+126           LOAD_GLOBAL              5 (int + NULL)
+              LOAD_FAST                0 (self)
+              LOAD_ATTR               22 (eth_label)
+              CALL                     1
+              STORE_FAST               9 (combined_label)
+              JUMP_FORWARD            96 (to L5)
+
+127   L1:     LOAD_FAST                0 (self)
+              LOAD_ATTR               20 (label_policy)
+              LOAD_CONST               5 ('can_only')
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE       12 (to L2)
+
+128           LOAD_GLOBAL              5 (int + NULL)
+              LOAD_FAST                8 (can_label)
+              CALL                     1
+              STORE_FAST               9 (combined_label)
+              JUMP_FORWARD            68 (to L5)
+
+129   L2:     LOAD_FAST                0 (self)
+              LOAD_ATTR               20 (label_policy)
+              LOAD_CONST               6 ('and')
+              COMPARE_OP              88 (bool(==))
+              POP_JUMP_IF_FALSE       31 (to L4)
+
+131           LOAD_GLOBAL              5 (int + NULL)
+              LOAD_FAST                8 (can_label)
+              COPY                     1
+              TO_BOOL
+              POP_JUMP_IF_FALSE       12 (to L3)
+              POP_TOP
+              LOAD_FAST                0 (self)
+              LOAD_ATTR               22 (eth_label)
+      L3:     CALL                     1
+              STORE_FAST               9 (combined_label)
+              JUMP_FORWARD            21 (to L5)
+
+133   L4:     LOAD_GLOBAL             25 (max + NULL)
+              LOAD_FAST_LOAD_FAST    128 (can_label, self)
+              LOAD_ATTR               22 (eth_label)
+              CALL                     2
+              STORE_FAST               9 (combined_label)
+
+136   L5:     LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               28 (tensor)
+              PUSH_NULL
+              LOAD_FAST                5 (can_seq)
+              LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               30 (float32)
+              LOAD_CONST               7 (('dtype',))
+              CALL_KW                  2
+
+137           LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               28 (tensor)
+              PUSH_NULL
+              LOAD_FAST                6 (eth_seq)
+              LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               30 (float32)
+              LOAD_CONST               7 (('dtype',))
+              CALL_KW                  2
+
+138           LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               28 (tensor)
+              PUSH_NULL
+              LOAD_FAST                9 (combined_label)
+              LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               32 (long)
+              LOAD_CONST               7 (('dtype',))
+              CALL_KW                  2
+
+139           LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               28 (tensor)
+              PUSH_NULL
+              LOAD_FAST                3 (can_widx)
+              LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               32 (long)
+              LOAD_CONST               7 (('dtype',))
+              CALL_KW                  2
+
+140           LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               28 (tensor)
+              PUSH_NULL
+              LOAD_FAST                4 (eth_widx)
+              LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               32 (long)
+              LOAD_CONST               7 (('dtype',))
+              CALL_KW                  2
+
+141           LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               28 (tensor)
+              PUSH_NULL
+              LOAD_GLOBAL             35 (float + NULL)
+              LOAD_FAST                2 (row)
+              LOAD_CONST               8 ('delta_ms')
+              BINARY_SUBSCR
+              CALL                     1
+              LOAD_GLOBAL             26 (torch)
+              LOAD_ATTR               30 (float32)
+              LOAD_CONST               7 (('dtype',))
+              CALL_KW                  2
+
+135           LOAD_CONST               9 (('can', 'eth', 'label', 'can_window_idx', 'eth_window_idx', 'delta_ms'))
+              BUILD_CONST_KEY_MAP      6
+              RETURN_VALUE

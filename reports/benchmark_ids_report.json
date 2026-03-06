@@ -1,0 +1,39 @@
+{
+  "timestamp_utc": "2026-02-27T06:26:13.625839+00:00",
+  "report_type": "benchmark_ids",
+  "report_schema_version": "1.0",
+  "deployment_config": {
+    "light_model_path": "models/student_tiny_improved.pth",
+    "heavy_model_path": "models/heavy_rf_improved.joblib",
+    "onnx_model_path": "models/student_tiny_improved.onnx",
+    "can_window_size": 100,
+    "eth_window_size": 1,
+    "routing_threshold": 0.5781,
+    "latency_budget_ms": 100.0,
+    "fpr_budget": 0.05,
+    "fail_safe_mode": "degraded",
+    "model_integrity_sha256": "337989fb496ae987cb58ae22a20ede806f0217c02b7b751a2bcc4562f982db33",
+    "can_source": "datasets/can_dos_train.csv",
+    "eth_source": "datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv",
+    "alert_output_path": "logs/runtime_alerts.jsonl",
+    "use_onnx": true,
+    "max_samples": 100
+  },
+  "benchmark_report": {
+    "latency_p50_ms": 0.15497207641601562,
+    "latency_p95_ms": 0.1746296882629394,
+    "latency_max_ms": 0.6730556488037109,
+    "fpr": 1.0,
+    "fnr": 0.0,
+    "mcc": 0.0,
+    "cpu_percent": 0.0,
+    "memory_mb": 0.0,
+    "power_watts": null,
+    "hardware_id": "AMD64",
+    "os": "Windows-11-10.0.26200-SP0",
+    "model_hash": "337989fb496ae987cb58ae22a20ede806f0217c02b7b751a2bcc4562f982db33",
+    "total_samples": 100,
+    "deadline_ms": 100.0,
+    "deadline_miss_rate": 0.0
+  }
+}

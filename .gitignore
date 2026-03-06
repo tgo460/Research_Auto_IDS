@@ -1,0 +1,57 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.Python
+
+# ===== Virtual Environment =====
+.venv/
+venv/
+ENV/
+env/
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== Datasets (too large for GitHub; download separately) =====
+# .npy image arrays (600MB–3.9GB each)
+datasets/*.npy
+
+# Raw & preprocessed CSVs (100MB–600MB each)
+datasets/*.csv
+
+# PCAP network captures (100MB–440MB each)
+datasets/autoeth-intrusion-dataset/*.pcap
+datasets/autoeth-intrusion-dataset/*.mpeg
+
+# Third-party Car-Hacking dataset (large CSVs + archive)
+datasets/Car-Hacking Dataset/
+
+# Replica/smoke-test data (generated, not needed in repo)
+datasets/replica_*/
+
+# ===== Models =====
+# Exclude training checkpoints (intermediate, regenerable)
+models/checkpoints/
+
+# Exclude non-production model files
+models/heavy_rf.joblib
+models/student_tiny_local.pth
+
+# ===== Logs (timestamped reports, regenerable) =====
+logs/
+
+# ===== OS & IDE =====
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# ===== Misc =====
+*.pdf

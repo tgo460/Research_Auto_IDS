@@ -1,0 +1,1085 @@
+  0           RESUME                   0
+
+  1           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              0 (os)
+              STORE_NAME               0 (os)
+
+  2           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              1 (re)
+              STORE_NAME               1 (re)
+
+  3           LOAD_CONST               0 (0)
+              LOAD_CONST               2 (('dataclass',))
+              IMPORT_NAME              2 (dataclasses)
+              IMPORT_FROM              3 (dataclass)
+              STORE_NAME               3 (dataclass)
+              POP_TOP
+
+  4           LOAD_CONST               0 (0)
+              LOAD_CONST               3 (('Dict', 'List', 'Optional', 'Tuple'))
+              IMPORT_NAME              4 (typing)
+              IMPORT_FROM              5 (Dict)
+              STORE_NAME               5 (Dict)
+              IMPORT_FROM              6 (List)
+              STORE_NAME               6 (List)
+              IMPORT_FROM              7 (Optional)
+              STORE_NAME               7 (Optional)
+              IMPORT_FROM              8 (Tuple)
+              STORE_NAME               8 (Tuple)
+              POP_TOP
+
+  6           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME              9 (numpy)
+              STORE_NAME              10 (np)
+
+  7           LOAD_CONST               0 (0)
+              LOAD_CONST               1 (None)
+              IMPORT_NAME             11 (pandas)
+              STORE_NAME              12 (pd)
+
+ 10           LOAD_NAME                1 (re)
+              LOAD_ATTR               26 (compile)
+              PUSH_NULL
+              LOAD_CONST               4 ('^eth_(.+?)_replica_packets\\.csv$')
+              CALL                     1
+              STORE_NAME              14 (CSV_PATTERN)
+
+ 11           LOAD_NAME                1 (re)
+              LOAD_ATTR               26 (compile)
+              PUSH_NULL
+              LOAD_CONST               5 ('^eth_(.+?)_images(?:[-_].+)?\\.npy$')
+              CALL                     1
+              STORE_NAME              15 (NPY_PATTERN)
+
+ 14           LOAD_NAME                3 (dataclass)
+
+ 15           LOAD_BUILD_CLASS
+              PUSH_NULL
+              LOAD_CONST               6 (<code object ScenarioRows at 0x0000026E1A080030, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 14>)
+              MAKE_FUNCTION
+              LOAD_CONST               7 ('ScenarioRows')
+              CALL                     2
+
+ 14           CALL                     0
+
+ 15           STORE_NAME              16 (ScenarioRows)
+
+ 22           LOAD_CONST               8 ('file_name')
+              LOAD_NAME               17 (str)
+              LOAD_CONST               9 ('return')
+              LOAD_NAME                7 (Optional)
+              LOAD_NAME               17 (str)
+              BINARY_SUBSCR
+              BUILD_TUPLE              4
+              LOAD_CONST              10 (<code object scenario_key_from_protocol_csv at 0x0000026E1A0804F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 22>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              18 (scenario_key_from_protocol_csv)
+
+ 27           LOAD_CONST               8 ('file_name')
+              LOAD_NAME               17 (str)
+              LOAD_CONST               9 ('return')
+              LOAD_NAME                7 (Optional)
+              LOAD_NAME               17 (str)
+              BINARY_SUBSCR
+              BUILD_TUPLE              4
+              LOAD_CONST              11 (<code object scenario_key_from_image_npy at 0x0000026E1A080160, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 27>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              19 (scenario_key_from_image_npy)
+
+ 32           LOAD_CONST              12 ('key')
+              LOAD_NAME               17 (str)
+              LOAD_CONST               9 ('return')
+              LOAD_NAME               20 (int)
+              BUILD_TUPLE              4
+              LOAD_CONST              13 (<code object label_from_key at 0x0000026E1A02D8A0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 32>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              21 (label_from_key)
+
+ 37           LOAD_CONST              14 ('packet_df')
+
+ 38           LOAD_NAME               12 (pd)
+              LOAD_ATTR               44 (DataFrame)
+
+ 37           LOAD_CONST              15 ('window_size')
+
+ 39           LOAD_NAME               20 (int)
+
+ 37           LOAD_CONST              16 ('max_windows')
+
+ 40           LOAD_NAME                7 (Optional)
+              LOAD_NAME               20 (int)
+              BINARY_SUBSCR
+
+ 37           LOAD_CONST               9 ('return')
+
+ 41           LOAD_NAME               12 (pd)
+              LOAD_ATTR               44 (DataFrame)
+
+ 37           BUILD_TUPLE              8
+              LOAD_CONST              17 (<code object build_protocol_window_features at 0x0000026E17A8D570, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 37>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              23 (build_protocol_window_features)
+
+ 86           LOAD_CONST              18 ('npy_path')
+
+ 87           LOAD_NAME               17 (str)
+
+ 86           LOAD_CONST              15 ('window_size')
+
+ 88           LOAD_NAME               20 (int)
+
+ 86           LOAD_CONST              16 ('max_windows')
+
+ 89           LOAD_NAME                7 (Optional)
+              LOAD_NAME               20 (int)
+              BINARY_SUBSCR
+
+ 86           LOAD_CONST               9 ('return')
+
+ 90           LOAD_NAME               12 (pd)
+              LOAD_ATTR               44 (DataFrame)
+
+ 86           BUILD_TUPLE              8
+              LOAD_CONST              19 (<code object build_image_window_features at 0x0000026E17ABFA50, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 86>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              24 (build_image_window_features)
+
+135           LOAD_CONST              20 ('protocol_dir')
+              LOAD_NAME               17 (str)
+              LOAD_CONST              21 ('image_dir')
+              LOAD_NAME               17 (str)
+              LOAD_CONST               9 ('return')
+              LOAD_NAME                8 (Tuple)
+              LOAD_NAME                5 (Dict)
+              LOAD_NAME               17 (str)
+              LOAD_NAME               17 (str)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              LOAD_NAME                5 (Dict)
+              LOAD_NAME               17 (str)
+              LOAD_NAME               17 (str)
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              2
+              BINARY_SUBSCR
+              BUILD_TUPLE              6
+              LOAD_CONST              22 (<code object discover_eth_sources at 0x0000026E17A8B680, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 135>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              STORE_NAME              25 (discover_eth_sources)
+
+154           NOP
+
+155           NOP
+
+151           LOAD_CONST              25 ((20, 1000))
+              LOAD_CONST              20 ('protocol_dir')
+
+152           LOAD_NAME               17 (str)
+
+151           LOAD_CONST              21 ('image_dir')
+
+153           LOAD_NAME               17 (str)
+
+151           LOAD_CONST              15 ('window_size')
+
+154           LOAD_NAME               20 (int)
+
+151           LOAD_CONST              23 ('max_windows_per_scenario')
+
+155           LOAD_NAME                7 (Optional)
+              LOAD_NAME               20 (int)
+              BINARY_SUBSCR
+
+151           LOAD_CONST               9 ('return')
+
+156           LOAD_NAME                8 (Tuple)
+              LOAD_NAME               12 (pd)
+              LOAD_ATTR               44 (DataFrame)
+              LOAD_NAME               12 (pd)
+              LOAD_ATTR               44 (DataFrame)
+              LOAD_NAME               12 (pd)
+              LOAD_ATTR               44 (DataFrame)
+              BUILD_TUPLE              3
+              BINARY_SUBSCR
+
+151           BUILD_TUPLE             10
+              LOAD_CONST              24 (<code object build_eth_feature_tables at 0x0000026E17A77B50, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 151>)
+              MAKE_FUNCTION
+              SET_FUNCTION_ATTRIBUTE   4 (annotations)
+              SET_FUNCTION_ATTRIBUTE   1 (defaults)
+              STORE_NAME              26 (build_eth_feature_tables)
+              RETURN_CONST             1 (None)
+
+Disassembly of <code object ScenarioRows at 0x0000026E1A080030, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 14>:
+ 14           RESUME                   0
+              LOAD_NAME                0 (__name__)
+              STORE_NAME               1 (__module__)
+              LOAD_CONST               0 ('ScenarioRows')
+              STORE_NAME               2 (__qualname__)
+              LOAD_CONST               1 (14)
+              STORE_NAME               3 (__firstlineno__)
+              SETUP_ANNOTATIONS
+
+ 16           LOAD_NAME                4 (str)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               2 ('key')
+              STORE_SUBSCR
+
+ 17           LOAD_NAME                6 (int)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               3 ('label')
+              STORE_SUBSCR
+
+ 18           LOAD_NAME                7 (pd)
+              LOAD_ATTR               16 (DataFrame)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               4 ('protocol_df')
+              STORE_SUBSCR
+
+ 19           LOAD_NAME                7 (pd)
+              LOAD_ATTR               16 (DataFrame)
+              LOAD_NAME                5 (__annotations__)
+              LOAD_CONST               5 ('image_df')
+              STORE_SUBSCR
+              LOAD_CONST               6 (())
+              STORE_NAME               9 (__static_attributes__)
+              RETURN_CONST             7 (None)
+
+Disassembly of <code object scenario_key_from_protocol_csv at 0x0000026E1A0804F0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 22>:
+ 22           RESUME                   0
+
+ 23           LOAD_GLOBAL              0 (CSV_PATTERN)
+              LOAD_ATTR                3 (match + NULL|self)
+              LOAD_FAST                0 (file_name)
+              CALL                     1
+              STORE_FAST               1 (m)
+
+ 24           LOAD_FAST                1 (m)
+              TO_BOOL
+              POP_JUMP_IF_FALSE       17 (to L1)
+              LOAD_FAST                1 (m)
+              LOAD_ATTR                5 (group + NULL|self)
+              LOAD_CONST               1 (1)
+              CALL                     1
+              RETURN_VALUE
+      L1:     LOAD_CONST               0 (None)
+              RETURN_VALUE
+
+Disassembly of <code object scenario_key_from_image_npy at 0x0000026E1A080160, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 27>:
+ 27           RESUME                   0
+
+ 28           LOAD_GLOBAL              0 (NPY_PATTERN)
+              LOAD_ATTR                3 (match + NULL|self)
+              LOAD_FAST                0 (file_name)
+              CALL                     1
+              STORE_FAST               1 (m)
+
+ 29           LOAD_FAST                1 (m)
+              TO_BOOL
+              POP_JUMP_IF_FALSE       17 (to L1)
+              LOAD_FAST                1 (m)
+              LOAD_ATTR                5 (group + NULL|self)
+              LOAD_CONST               1 (1)
+              CALL                     1
+              RETURN_VALUE
+      L1:     LOAD_CONST               0 (None)
+              RETURN_VALUE
+
+Disassembly of <code object label_from_key at 0x0000026E1A02D8A0, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 32>:
+ 32           RESUME                   0
+
+ 33           LOAD_FAST                0 (key)
+              LOAD_ATTR                1 (lower + NULL|self)
+              CALL                     0
+              STORE_FAST               1 (key_l)
+
+ 34           LOAD_CONST               1 ('injected')
+              LOAD_FAST                1 (key_l)
+              CONTAINS_OP              0
+              POP_JUMP_IF_TRUE         6 (to L1)
+              LOAD_CONST               2 ('attack')
+              LOAD_FAST                1 (key_l)
+              CONTAINS_OP              0
+              POP_JUMP_IF_FALSE        2 (to L2)
+      L1:     LOAD_CONST               3 (1)
+              RETURN_VALUE
+      L2:     LOAD_CONST               4 (0)
+              RETURN_VALUE
+
+Disassembly of <code object build_protocol_window_features at 0x0000026E17A8D570, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 37>:
+ 37           RESUME                   0
+
+ 42           LOAD_FAST                0 (packet_df)
+              LOAD_CONST               1 ('timestamp_sec')
+              BINARY_SUBSCR
+              LOAD_ATTR                1 (astype + NULL|self)
+              LOAD_GLOBAL              2 (float)
+              CALL                     1
+              LOAD_FAST                0 (packet_df)
+              LOAD_CONST               2 ('timestamp_usec')
+              BINARY_SUBSCR
+              LOAD_ATTR                1 (astype + NULL|self)
+              LOAD_GLOBAL              2 (float)
+              CALL                     1
+              LOAD_CONST               3 (1000000.0)
+              BINARY_OP               11 (/)
+              BINARY_OP                0 (+)
+              STORE_FAST               3 (ts)
+
+ 43           LOAD_FAST                3 (ts)
+              LOAD_ATTR                5 (diff + NULL|self)
+              CALL                     0
+              LOAD_ATTR                7 (fillna + NULL|self)
+              LOAD_CONST               4 (0.0)
+              CALL                     1
+              LOAD_ATTR                9 (clip + NULL|self)
+              LOAD_CONST               4 (0.0)
+              LOAD_CONST               5 (('lower',))
+              CALL_KW                  1
+              STORE_FAST               4 (gaps)
+
+ 44           LOAD_FAST                0 (packet_df)
+              LOAD_CONST               6 ('captured_len')
+              BINARY_SUBSCR
+              LOAD_ATTR                1 (astype + NULL|self)
+              LOAD_GLOBAL              2 (float)
+              CALL                     1
+              STORE_FAST               5 (cap_len)
+
+ 45           LOAD_FAST                0 (packet_df)
+              LOAD_CONST               7 ('original_len')
+              BINARY_SUBSCR
+              LOAD_ATTR                1 (astype + NULL|self)
+              LOAD_GLOBAL              2 (float)
+              CALL                     1
+              LOAD_ATTR               11 (replace + NULL|self)
+              LOAD_CONST               4 (0.0)
+              LOAD_GLOBAL             12 (np)
+              LOAD_ATTR               14 (nan)
+              CALL                     2
+              STORE_FAST               6 (orig_len)
+
+ 46           LOAD_FAST_LOAD_FAST     86 (cap_len, orig_len)
+              BINARY_OP               11 (/)
+              LOAD_ATTR                7 (fillna + NULL|self)
+              LOAD_CONST               4 (0.0)
+              CALL                     1
+              LOAD_ATTR                9 (clip + NULL|self)
+              LOAD_CONST               4 (0.0)
+              LOAD_CONST               8 (1.5)
+              LOAD_CONST               9 (('lower', 'upper'))
+              CALL_KW                  2
+              STORE_FAST               7 (eff)
+
+ 48           BUILD_LIST               0
+              STORE_FAST               8 (rows)
+
+ 49           LOAD_GLOBAL             17 (len + NULL)
+              LOAD_FAST                0 (packet_df)
+              CALL                     1
+              STORE_FAST               9 (total)
+
+ 50           LOAD_FAST_LOAD_FAST    145 (total, window_size)
+              BINARY_OP                2 (//)
+              STORE_FAST              10 (n_windows)
+
+ 51           LOAD_FAST                2 (max_windows)
+              POP_JUMP_IF_NONE        11 (to L1)
+
+ 52           LOAD_GLOBAL             19 (min + NULL)
+              LOAD_FAST_LOAD_FAST    162 (n_windows, max_windows)
+              CALL                     2
+              STORE_FAST              10 (n_windows)
+
+ 54   L1:     LOAD_GLOBAL             21 (range + NULL)
+              LOAD_FAST               10 (n_windows)
+              CALL                     1
+              GET_ITER
+      L2:     EXTENDED_ARG             1
+              FOR_ITER               336 (to L5)
+              STORE_FAST              11 (w)
+
+ 55           LOAD_FAST_LOAD_FAST    177 (w, window_size)
+              BINARY_OP                5 (*)
+              STORE_FAST              12 (s)
+
+ 56           LOAD_FAST_LOAD_FAST    193 (s, window_size)
+              BINARY_OP                0 (+)
+              STORE_FAST              13 (e)
+
+ 58           LOAD_FAST                5 (cap_len)
+              LOAD_ATTR               22 (iloc)
+              LOAD_FAST_LOAD_FAST    205 (s, e)
+              BINARY_SLICE
+              STORE_FAST              14 (p_len)
+
+ 59           LOAD_FAST                4 (gaps)
+              LOAD_ATTR               22 (iloc)
+              LOAD_FAST_LOAD_FAST    205 (s, e)
+              BINARY_SLICE
+              STORE_FAST              15 (p_gap)
+
+ 60           LOAD_FAST                7 (eff)
+              LOAD_ATTR               22 (iloc)
+              LOAD_FAST_LOAD_FAST    205 (s, e)
+              BINARY_SLICE
+              STORE_FAST              16 (p_eff)
+
+ 62           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               14 (p_len)
+              LOAD_ATTR               25 (mean + NULL|self)
+              CALL                     0
+              CALL                     1
+              STORE_FAST              17 (mean_len)
+
+ 63           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               14 (p_len)
+              LOAD_ATTR               27 (std + NULL|self)
+              LOAD_CONST              10 (0)
+              LOAD_CONST              11 (('ddof',))
+              CALL_KW                  1
+              CALL                     1
+              STORE_FAST              18 (std_len)
+
+ 64           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               15 (p_gap)
+              LOAD_ATTR               25 (mean + NULL|self)
+              CALL                     0
+              CALL                     1
+              STORE_FAST              19 (mean_gap)
+
+ 65           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               15 (p_gap)
+              LOAD_ATTR               27 (std + NULL|self)
+              LOAD_CONST              10 (0)
+              LOAD_CONST              11 (('ddof',))
+              CALL_KW                  1
+              CALL                     1
+              STORE_FAST              20 (std_gap)
+
+ 67           LOAD_FAST                8 (rows)
+              LOAD_ATTR               29 (append + NULL|self)
+
+ 69           LOAD_FAST               11 (w)
+
+ 70           LOAD_FAST               17 (mean_len)
+
+ 71           LOAD_FAST               18 (std_len)
+
+ 72           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               14 (p_len)
+              LOAD_ATTR               19 (min + NULL|self)
+              CALL                     0
+              CALL                     1
+
+ 73           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               14 (p_len)
+              LOAD_ATTR               31 (max + NULL|self)
+              CALL                     0
+              CALL                     1
+
+ 74           LOAD_FAST               17 (mean_len)
+              LOAD_CONST              10 (0)
+              COMPARE_OP             148 (bool(>))
+              POP_JUMP_IF_FALSE       14 (to L3)
+              LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               18 (std_len)
+              LOAD_FAST               17 (mean_len)
+              BINARY_OP               11 (/)
+              CALL                     1
+              JUMP_FORWARD             1 (to L4)
+      L3:     LOAD_CONST               4 (0.0)
+
+ 75   L4:     LOAD_FAST               19 (mean_gap)
+
+ 76           LOAD_FAST               20 (std_gap)
+
+ 77           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_GLOBAL             12 (np)
+              LOAD_ATTR               32 (percentile)
+              PUSH_NULL
+              LOAD_FAST               15 (p_gap)
+              LOAD_CONST              12 (95)
+              CALL                     2
+              CALL                     1
+
+ 78           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               15 (p_gap)
+              LOAD_GLOBAL             31 (max + NULL)
+              LOAD_FAST               19 (mean_gap)
+              LOAD_CONST              13 (1e-06)
+              CALL                     2
+              COMPARE_OP               2 (<)
+              LOAD_ATTR               25 (mean + NULL|self)
+              CALL                     0
+              CALL                     1
+
+ 79           LOAD_GLOBAL              3 (float + NULL)
+              LOAD_FAST               16 (p_eff)
+              LOAD_ATTR               25 (mean + NULL|self)
+              CALL                     0
+              CALL                     1
+
+ 68           LOAD_CONST              14 (('window_idx', 'p_len_mean', 'p_len_std', 'p_len_min', 'p_len_max', 'p_len_cv', 'p_gap_mean', 'p_gap_std', 'p_gap_p95', 'p_burst_ratio', 'p_eff_mean'))
+              BUILD_CONST_KEY_MAP     11
+
+ 67           CALL                     1
+              POP_TOP
+              EXTENDED_ARG             1
+              JUMP_BACKWARD          339 (to L2)
+
+ 54   L5:     END_FOR
+              POP_TOP
+
+ 83           LOAD_GLOBAL             34 (pd)
+              LOAD_ATTR               36 (DataFrame)
+              PUSH_NULL
+              LOAD_FAST                8 (rows)
+              CALL                     1
+              RETURN_VALUE
+
+Disassembly of <code object build_image_window_features at 0x0000026E17ABFA50, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 86>:
+ 86            RESUME                   0
+
+ 91            LOAD_GLOBAL              0 (np)
+               LOAD_ATTR                2 (load)
+               PUSH_NULL
+               LOAD_FAST                0 (npy_path)
+               LOAD_CONST               1 ('r')
+               LOAD_CONST               2 (('mmap_mode',))
+               CALL_KW                  2
+               STORE_FAST               3 (arr)
+
+ 92            LOAD_FAST                3 (arr)
+               LOAD_ATTR                4 (ndim)
+               LOAD_CONST               3 (3)
+               COMPARE_OP             119 (bool(!=))
+               POP_JUMP_IF_FALSE       27 (to L1)
+
+ 93            LOAD_GLOBAL              7 (ValueError + NULL)
+               LOAD_CONST               4 ('Expected 3D image tensor (N,H,W), got shape=')
+               LOAD_FAST                3 (arr)
+               LOAD_ATTR                8 (shape)
+               FORMAT_SIMPLE
+               LOAD_CONST               5 (' for ')
+               LOAD_FAST                0 (npy_path)
+               FORMAT_SIMPLE
+               BUILD_STRING             4
+               CALL                     1
+               RAISE_VARARGS            1
+
+ 95    L1:     LOAD_GLOBAL             11 (int + NULL)
+               LOAD_FAST                3 (arr)
+               LOAD_ATTR                8 (shape)
+               LOAD_CONST               6 (0)
+               BINARY_SUBSCR
+               CALL                     1
+               STORE_FAST               4 (total)
+
+ 96            LOAD_FAST_LOAD_FAST     65 (total, window_size)
+               BINARY_OP                2 (//)
+               STORE_FAST               5 (n_windows)
+
+ 97            LOAD_FAST                2 (max_windows)
+               POP_JUMP_IF_NONE        11 (to L2)
+
+ 98            LOAD_GLOBAL             13 (min + NULL)
+               LOAD_FAST_LOAD_FAST     82 (n_windows, max_windows)
+               CALL                     2
+               STORE_FAST               5 (n_windows)
+
+100    L2:     BUILD_LIST               0
+               STORE_FAST               6 (rows)
+
+101            LOAD_GLOBAL             15 (range + NULL)
+               LOAD_FAST                5 (n_windows)
+               CALL                     1
+               GET_ITER
+       L3:     EXTENDED_ARG             1
+               FOR_ITER               461 (to L11)
+               STORE_FAST               7 (w)
+
+102            LOAD_FAST_LOAD_FAST    113 (w, window_size)
+               BINARY_OP                5 (*)
+               STORE_FAST               8 (s)
+
+103            LOAD_FAST_LOAD_FAST    129 (s, window_size)
+               BINARY_OP                0 (+)
+               STORE_FAST               9 (e)
+
+104            LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               16 (asarray)
+               PUSH_NULL
+               LOAD_FAST_LOAD_FAST     56 (arr, s)
+               LOAD_FAST                9 (e)
+               BINARY_SLICE
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               18 (float32)
+               LOAD_CONST               7 (('dtype',))
+               CALL_KW                  2
+               STORE_FAST              10 (win)
+
+107            LOAD_FAST               10 (win)
+               LOAD_ATTR               21 (max + NULL|self)
+               CALL                     0
+               LOAD_CONST               8 (1.5)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE        5 (to L4)
+
+108            LOAD_FAST               10 (win)
+               LOAD_CONST               9 (255.0)
+               BINARY_OP               11 (/)
+               STORE_FAST              10 (win)
+
+110    L4:     LOAD_GLOBAL             23 (float + NULL)
+               LOAD_FAST               10 (win)
+               LOAD_ATTR               25 (mean + NULL|self)
+               CALL                     0
+               CALL                     1
+               STORE_FAST              11 (mean_val)
+
+111            LOAD_GLOBAL             23 (float + NULL)
+               LOAD_FAST               10 (win)
+               LOAD_ATTR               27 (std + NULL|self)
+               CALL                     0
+               CALL                     1
+               STORE_FAST              12 (std_val)
+
+112            LOAD_GLOBAL             23 (float + NULL)
+               LOAD_FAST               10 (win)
+               LOAD_CONST               6 (0)
+               COMPARE_OP             132 (>)
+               LOAD_ATTR               25 (mean + NULL|self)
+               CALL                     0
+               CALL                     1
+               STORE_FAST              13 (nonzero)
+
+113            LOAD_GLOBAL             23 (float + NULL)
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               28 (percentile)
+               PUSH_NULL
+               LOAD_FAST               10 (win)
+               LOAD_CONST              10 (95)
+               CALL                     2
+               CALL                     1
+               STORE_FAST              14 (p95)
+
+116            LOAD_FAST               10 (win)
+               LOAD_ATTR                8 (shape)
+               LOAD_CONST              11 (2)
+               BINARY_SUBSCR
+               LOAD_CONST              12 (1)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       55 (to L5)
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               30 (abs)
+               PUSH_NULL
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               32 (diff)
+               PUSH_NULL
+               LOAD_FAST               10 (win)
+               LOAD_CONST              11 (2)
+               LOAD_CONST              13 (('axis',))
+               CALL_KW                  2
+               CALL                     1
+               LOAD_ATTR               25 (mean + NULL|self)
+               CALL                     0
+               JUMP_FORWARD             1 (to L6)
+       L5:     LOAD_CONST              14 (0.0)
+       L6:     STORE_FAST              15 (gx)
+
+117            LOAD_FAST               10 (win)
+               LOAD_ATTR                8 (shape)
+               LOAD_CONST              12 (1)
+               BINARY_SUBSCR
+               LOAD_CONST              12 (1)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       55 (to L7)
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               30 (abs)
+               PUSH_NULL
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               32 (diff)
+               PUSH_NULL
+               LOAD_FAST               10 (win)
+               LOAD_CONST              12 (1)
+               LOAD_CONST              13 (('axis',))
+               CALL_KW                  2
+               CALL                     1
+               LOAD_ATTR               25 (mean + NULL|self)
+               CALL                     0
+               JUMP_FORWARD             1 (to L8)
+       L7:     LOAD_CONST              14 (0.0)
+       L8:     STORE_FAST              16 (gy)
+
+118            LOAD_FAST               10 (win)
+               LOAD_ATTR                8 (shape)
+               LOAD_CONST               6 (0)
+               BINARY_SUBSCR
+               LOAD_CONST              12 (1)
+               COMPARE_OP             148 (bool(>))
+               POP_JUMP_IF_FALSE       55 (to L9)
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               30 (abs)
+               PUSH_NULL
+               LOAD_GLOBAL              0 (np)
+               LOAD_ATTR               32 (diff)
+               PUSH_NULL
+               LOAD_FAST               10 (win)
+               LOAD_CONST               6 (0)
+               LOAD_CONST              13 (('axis',))
+               CALL_KW                  2
+               CALL                     1
+               LOAD_ATTR               25 (mean + NULL|self)
+               CALL                     0
+               JUMP_FORWARD             1 (to L10)
+       L9:     LOAD_CONST              14 (0.0)
+      L10:     STORE_FAST              17 (gt)
+
+120            LOAD_FAST                6 (rows)
+               LOAD_ATTR               35 (append + NULL|self)
+
+122            LOAD_FAST                7 (w)
+
+123            LOAD_FAST               11 (mean_val)
+
+124            LOAD_FAST               12 (std_val)
+
+125            LOAD_FAST               13 (nonzero)
+
+126            LOAD_FAST               14 (p95)
+
+127            LOAD_GLOBAL             23 (float + NULL)
+               LOAD_FAST               15 (gx)
+               LOAD_FAST               16 (gy)
+               BINARY_OP                0 (+)
+               LOAD_CONST              15 (2.0)
+               BINARY_OP               11 (/)
+               CALL                     1
+
+128            LOAD_GLOBAL             23 (float + NULL)
+               LOAD_FAST               17 (gt)
+               CALL                     1
+
+121            LOAD_CONST              16 (('window_idx', 'i_mean', 'i_std', 'i_nonzero_ratio', 'i_p95', 'i_grad_spatial', 'i_grad_temporal'))
+               BUILD_CONST_KEY_MAP      7
+
+120            CALL                     1
+               POP_TOP
+               EXTENDED_ARG             1
+               JUMP_BACKWARD          464 (to L3)
+
+101   L11:     END_FOR
+               POP_TOP
+
+132            LOAD_GLOBAL             36 (pd)
+               LOAD_ATTR               38 (DataFrame)
+               PUSH_NULL
+               LOAD_FAST                6 (rows)
+               CALL                     1
+               RETURN_VALUE
+
+Disassembly of <code object discover_eth_sources at 0x0000026E17A8B680, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 135>:
+135           RESUME                   0
+
+136           BUILD_MAP                0
+              STORE_FAST               2 (protocol_map)
+
+137           LOAD_GLOBAL              1 (sorted + NULL)
+              LOAD_GLOBAL              2 (os)
+              LOAD_ATTR                4 (listdir)
+              PUSH_NULL
+              LOAD_FAST                0 (protocol_dir)
+              CALL                     1
+              CALL                     1
+              GET_ITER
+      L1:     FOR_ITER                56 (to L3)
+              STORE_FAST               3 (name)
+
+138           LOAD_GLOBAL              7 (scenario_key_from_protocol_csv + NULL)
+              LOAD_FAST                3 (name)
+              CALL                     1
+              STORE_FAST               4 (key)
+
+139           LOAD_FAST                4 (key)
+              TO_BOOL
+              POP_JUMP_IF_TRUE         2 (to L2)
+              JUMP_BACKWARD           23 (to L1)
+
+140   L2:     LOAD_GLOBAL              2 (os)
+              LOAD_ATTR                8 (path)
+              LOAD_ATTR               11 (join + NULL|self)
+              LOAD_FAST_LOAD_FAST      3 (protocol_dir, name)
+              CALL                     2
+              LOAD_FAST_LOAD_FAST     36 (protocol_map, key)
+              STORE_SUBSCR
+              JUMP_BACKWARD           58 (to L1)
+
+137   L3:     END_FOR
+              POP_TOP
+
+142           BUILD_MAP                0
+              STORE_FAST               5 (image_map)
+
+143           LOAD_GLOBAL              1 (sorted + NULL)
+              LOAD_GLOBAL              2 (os)
+              LOAD_ATTR                4 (listdir)
+              PUSH_NULL
+              LOAD_FAST                1 (image_dir)
+              CALL                     1
+              CALL                     1
+              GET_ITER
+      L4:     FOR_ITER                56 (to L6)
+              STORE_FAST               3 (name)
+
+144           LOAD_GLOBAL             13 (scenario_key_from_image_npy + NULL)
+              LOAD_FAST                3 (name)
+              CALL                     1
+              STORE_FAST               4 (key)
+
+145           LOAD_FAST                4 (key)
+              TO_BOOL
+              POP_JUMP_IF_TRUE         2 (to L5)
+              JUMP_BACKWARD           23 (to L4)
+
+146   L5:     LOAD_GLOBAL              2 (os)
+              LOAD_ATTR                8 (path)
+              LOAD_ATTR               11 (join + NULL|self)
+              LOAD_FAST_LOAD_FAST     19 (image_dir, name)
+              CALL                     2
+              LOAD_FAST_LOAD_FAST     84 (image_map, key)
+              STORE_SUBSCR
+              JUMP_BACKWARD           58 (to L4)
+
+143   L6:     END_FOR
+              POP_TOP
+
+148           LOAD_FAST_LOAD_FAST     37 (protocol_map, image_map)
+              BUILD_TUPLE              2
+              RETURN_VALUE
+
+Disassembly of <code object build_eth_feature_tables at 0x0000026E17A77B50, file "C:\Users\Admin\Desktop\Research_Auto_IDS\src_replica\features_eth_replica.py", line 151>:
+151           RESUME                   0
+
+157           LOAD_GLOBAL              1 (discover_eth_sources + NULL)
+              LOAD_FAST_LOAD_FAST      1 (protocol_dir, image_dir)
+              CALL                     2
+              UNPACK_SEQUENCE          2
+              STORE_FAST_STORE_FAST   69 (protocol_map, image_map)
+
+158           LOAD_GLOBAL              3 (sorted + NULL)
+              LOAD_GLOBAL              5 (set + NULL)
+              LOAD_FAST                4 (protocol_map)
+              LOAD_ATTR                7 (keys + NULL|self)
+              CALL                     0
+              CALL                     1
+              LOAD_GLOBAL              5 (set + NULL)
+              LOAD_FAST                5 (image_map)
+              LOAD_ATTR                7 (keys + NULL|self)
+              CALL                     0
+              CALL                     1
+              BINARY_OP                1 (&)
+              CALL                     1
+              STORE_FAST               6 (shared_keys)
+
+159           LOAD_FAST                6 (shared_keys)
+              TO_BOOL
+              POP_JUMP_IF_TRUE        11 (to L1)
+
+160           LOAD_GLOBAL              9 (FileNotFoundError + NULL)
+              LOAD_CONST               1 ('No shared ETH scenarios between protocol CSVs and image NPY files.')
+              CALL                     1
+              RAISE_VARARGS            1
+
+162   L1:     BUILD_LIST               0
+              STORE_FAST               7 (protocol_rows)
+
+163           BUILD_LIST               0
+              STORE_FAST               8 (image_rows)
+
+164           BUILD_LIST               0
+              STORE_FAST               9 (combined_rows)
+
+166           LOAD_FAST                6 (shared_keys)
+              GET_ITER
+      L2:     EXTENDED_ARG             1
+              FOR_ITER               273 (to L5)
+              STORE_FAST              10 (key)
+
+167           LOAD_GLOBAL             11 (label_from_key + NULL)
+              LOAD_FAST               10 (key)
+              CALL                     1
+              STORE_FAST              11 (label)
+
+169           LOAD_GLOBAL             12 (pd)
+              LOAD_ATTR               14 (read_csv)
+              PUSH_NULL
+              LOAD_FAST_LOAD_FAST     74 (protocol_map, key)
+              BINARY_SUBSCR
+              CALL                     1
+              STORE_FAST              12 (p_df_raw)
+
+170           LOAD_GLOBAL             17 (build_protocol_window_features + NULL)
+              LOAD_FAST_LOAD_FAST    194 (p_df_raw, window_size)
+              LOAD_FAST                3 (max_windows_per_scenario)
+              CALL                     3
+              STORE_FAST              13 (p_feat)
+
+171           LOAD_GLOBAL             19 (build_image_window_features + NULL)
+              LOAD_FAST_LOAD_FAST     90 (image_map, key)
+              BINARY_SUBSCR
+              LOAD_FAST_LOAD_FAST     35 (window_size, max_windows_per_scenario)
+              CALL                     3
+              STORE_FAST              14 (i_feat)
+
+173           LOAD_GLOBAL             21 (min + NULL)
+              LOAD_GLOBAL             23 (len + NULL)
+              LOAD_FAST               13 (p_feat)
+              CALL                     1
+              LOAD_GLOBAL             23 (len + NULL)
+              LOAD_FAST               14 (i_feat)
+              CALL                     1
+              CALL                     2
+              STORE_FAST              15 (max_common)
+
+174           LOAD_FAST               15 (max_common)
+              LOAD_CONST               2 (0)
+              COMPARE_OP              58 (bool(<=))
+              POP_JUMP_IF_FALSE        2 (to L3)
+
+175           JUMP_BACKWARD          103 (to L2)
+
+177   L3:     LOAD_FAST               13 (p_feat)
+              LOAD_ATTR               24 (iloc)
+              LOAD_CONST               0 (None)
+              LOAD_FAST               15 (max_common)
+              BINARY_SLICE
+              LOAD_ATTR               27 (copy + NULL|self)
+              CALL                     0
+              STORE_FAST              13 (p_feat)
+
+178           LOAD_FAST               14 (i_feat)
+              LOAD_ATTR               24 (iloc)
+              LOAD_CONST               0 (None)
+              LOAD_FAST               15 (max_common)
+              BINARY_SLICE
+              LOAD_ATTR               27 (copy + NULL|self)
+              CALL                     0
+              STORE_FAST              14 (i_feat)
+
+180           LOAD_FAST_LOAD_FAST    173 (key, p_feat)
+              LOAD_CONST               3 ('scenario_key')
+              STORE_SUBSCR
+
+181           LOAD_FAST_LOAD_FAST    189 (label, p_feat)
+              LOAD_CONST               4 ('label')
+              STORE_SUBSCR
+
+182           LOAD_FAST_LOAD_FAST    174 (key, i_feat)
+              LOAD_CONST               3 ('scenario_key')
+              STORE_SUBSCR
+
+183           LOAD_FAST_LOAD_FAST    190 (label, i_feat)
+              LOAD_CONST               4 ('label')
+              STORE_SUBSCR
+
+185           LOAD_GLOBAL             12 (pd)
+              LOAD_ATTR               28 (merge)
+              PUSH_NULL
+
+186           LOAD_FAST               13 (p_feat)
+
+187           LOAD_FAST               14 (i_feat)
+
+188           BUILD_LIST               0
+              LOAD_CONST               5 (('scenario_key', 'window_idx', 'label'))
+              LIST_EXTEND              1
+
+189           LOAD_CONST               6 ('inner')
+
+190           LOAD_CONST               7 (('_p', '_i'))
+
+185           LOAD_CONST               8 (('on', 'how', 'suffixes'))
+              CALL_KW                  5
+              STORE_FAST              16 (merged)
+
+192           LOAD_FAST               16 (merged)
+              LOAD_ATTR               30 (empty)
+              TO_BOOL
+              POP_JUMP_IF_FALSE        2 (to L4)
+
+193           JUMP_BACKWARD          222 (to L2)
+
+195   L4:     LOAD_FAST                7 (protocol_rows)
+              LOAD_ATTR               33 (append + NULL|self)
+              LOAD_FAST               13 (p_feat)
+              CALL                     1
+              POP_TOP
+
+196           LOAD_FAST                8 (image_rows)
+              LOAD_ATTR               33 (append + NULL|self)
+              LOAD_FAST               14 (i_feat)
+              CALL                     1
+              POP_TOP
+
+197           LOAD_FAST                9 (combined_rows)
+              LOAD_ATTR               33 (append + NULL|self)
+              LOAD_FAST               16 (merged)
+              CALL                     1
+              POP_TOP
+              EXTENDED_ARG             1
+              JUMP_BACKWARD          276 (to L2)
+
+166   L5:     END_FOR
+              POP_TOP
+
+199           LOAD_FAST                9 (combined_rows)
+              TO_BOOL
+              POP_JUMP_IF_TRUE        11 (to L6)
+
+200           LOAD_GLOBAL             35 (ValueError + NULL)
+              LOAD_CONST               9 ('No aligned ETH windows produced for ablation.')
+              CALL                     1
+              RAISE_VARARGS            1
+
+202   L6:     LOAD_GLOBAL             12 (pd)
+              LOAD_ATTR               36 (concat)
+              PUSH_NULL
+              LOAD_FAST                7 (protocol_rows)
+              LOAD_CONST              10 (True)
+              LOAD_CONST              11 (('ignore_index',))
+              CALL_KW                  2
+              STORE_FAST              17 (protocol_all)
+
+203           LOAD_GLOBAL             12 (pd)
+              LOAD_ATTR               36 (concat)
+              PUSH_NULL
+              LOAD_FAST                8 (image_rows)
+              LOAD_CONST              10 (True)
+              LOAD_CONST              11 (('ignore_index',))
+              CALL_KW                  2
+              STORE_FAST              18 (image_all)
+
+204           LOAD_GLOBAL             12 (pd)
+              LOAD_ATTR               36 (concat)
+              PUSH_NULL
+              LOAD_FAST                9 (combined_rows)
+              LOAD_CONST              10 (True)
+              LOAD_CONST              11 (('ignore_index',))
+              CALL_KW                  2
+              STORE_FAST              19 (combined_all)
+
+205           LOAD_FAST               17 (protocol_all)
+              LOAD_FAST               18 (image_all)
+              LOAD_FAST               19 (combined_all)
+              BUILD_TUPLE              3
+              RETURN_VALUE

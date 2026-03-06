@@ -1,0 +1,39 @@
+graph TD
+    subgraph Data Sources
+        CAN[CAN Bus Data]
+        ETH[Ethernet Data]
+    end
+
+    subgraph Feature Engineering
+        CAN --> |Raw 10 Features| FE[Feature Extractor]
+        FE --> |Engineered 16 Features| CAN_Eng[Engineered CAN Data]
+        ETH --> |Raw Packets| ETH_Prep[Preprocessed ETH Data]
+    end
+
+    subgraph Model Architecture
+        CAN_Eng --> |TCN Branch| LightModel[TinyHybridStudent]
+        ETH_Prep --> |CNN Branch| LightModel
+        
+        CAN --> |Raw 10 Features| HeavyModel[Random Forest]
+        ETH_Prep --> |Flattened| HeavyModel
+    end
+
+    subgraph Real-Time Inference Engine
+        LightModel --> |Confidence Score| Router{Confidence Router}
+        Router --> |Score > Threshold| FastPred[Fast Prediction]
+        Router --> |Score <= Threshold| HeavyModel
+        HeavyModel --> SlowPred[Heavy Prediction]
+    end
+
+    subgraph Current Status
+        FastPred --> |F1: 0.90, Latency: ~1.3ms| Output[Final Decision]
+        SlowPred --> |Latency: ~19ms| Output
+    end
+
+    classDef completed fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef inProgress fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+    classDef future fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
+
+    class FE,CAN_Eng,LightModel,Router,FastPred completed;
+    class HeavyModel,SlowPred inProgress;
+    class Output future;

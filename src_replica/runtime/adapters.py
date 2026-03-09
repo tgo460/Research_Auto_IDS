@@ -50,19 +50,29 @@ class CsvCanIngest(CanIngest):
         self._idx = 0
         self._timestamp_col = timestamp_col
 
+    _ENGINEERED_COLS = [
+        "can_id_freq_global", "can_id_freq_win", "payload_entropy",
+        "inter_arrival", "inter_arrival_roll_mean", "id_switch_rate_win",
+    ]
+
     def read_frame(self) -> Optional[Dict[str, Any]]:
         if self._idx >= len(self._df):
             return None
         row = self._df.iloc[self._idx]
         self._idx += 1
         payload = [float(row.get(f"D{i}", 0.0)) for i in range(8)]
-        return {
+        frame: Dict[str, Any] = {
             "timestamp": float(row.get(self._timestamp_col, self._idx)),
             "can_id": int(row.get("CAN_ID", 0)),
             "dlc": int(row.get("DLC", 8)),
             "payload": payload,
             "label": int(row.get("Label", 0)),
         }
+        # Carry engineered features if present in the CSV
+        eng = [float(row.get(c, 0.0)) for c in self._ENGINEERED_COLS if c in row.index]
+        if eng:
+            frame["engineered"] = eng
+        return frame
 
 
 class CsvEthIngest(EthIngest):
@@ -229,13 +239,15 @@ def to_can_window(frames: Deque[Dict[str, Any]], expected_size: int) -> np.ndarr
     win = list(frames)[-expected_size:]
     out = []
     for fr in win:
-        out.append(
-            [
-                float(fr.get("can_id", 0.0)),
-                float(fr.get("dlc", 0.0)),
-                *[float(x) for x in fr.get("payload", [0.0] * 8)],
-            ]
-        )
+        row = [
+            float(fr.get("can_id", 0.0)),
+            float(fr.get("dlc", 0.0)),
+            *[float(x) for x in fr.get("payload", [0.0] * 8)],
+        ]
+        # Append engineered features when available (16-feature model)
+        if "engineered" in fr:
+            row.extend(fr["engineered"])
+        out.append(row)
     return np.asarray(out, dtype=np.float32)
 
 

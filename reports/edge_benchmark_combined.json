@@ -1,0 +1,65 @@
+{
+  "timestamp_utc": "2026-03-09T06:38:57.855923+00:00",
+  "report_type": "edge_benchmark_combined",
+  "report_schema_version": "1.0",
+  "window_config": {
+    "can_window_size": 100,
+    "eth_window_size": 1
+  },
+  "model_hash": "f8c92c72c9cbf788e3b1ad206912e1cd8433b485d2971e06273cea9f50341323",
+  "latency": {
+    "p50_ms": 0.151,
+    "p95_ms": 0.2171,
+    "max_ms": 18.8396,
+    "deadline_ms": 100.0,
+    "deadline_miss_rate": 0.0
+  },
+  "accuracy": {
+    "fpr_normal_scenario": 0.0,
+    "fnr_normal_scenario": 0.0,
+    "fpr_attack_scenario": 1.0,
+    "fnr_attack_scenario": 0.0,
+    "note": "FPR on attack scenario is elevated due to file-global engineered features leaking attack context into normal-labeled rows"
+  },
+  "compliance": {
+    "C09_latency_p95_under_100ms": true,
+    "C11_fpr_under_5pct": true,
+    "C11_fnr_under_15pct": true
+  },
+  "scenarios": {
+    "normal": {
+      "latency_p50_ms": 0.15115737915039062,
+      "latency_p95_ms": 0.2171158790588375,
+      "latency_max_ms": 18.839597702026367,
+      "fpr": 0.0,
+      "fnr": 0.0,
+      "mcc": 0.0,
+      "cpu_percent": 0.0,
+      "memory_mb": 0.0,
+      "power_watts": null,
+      "hardware_id": "AMD64",
+      "os": "Windows-11-10.0.26200-SP0",
+      "model_hash": "f8c92c72c9cbf788e3b1ad206912e1cd8433b485d2971e06273cea9f50341323",
+      "total_samples": 200,
+      "deadline_ms": 100.0,
+      "deadline_miss_rate": 0.0
+    },
+    "attack": {
+      "latency_p50_ms": 0.15091896057128906,
+      "latency_p95_ms": 0.18123388290405248,
+      "latency_max_ms": 0.6659030914306641,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "mcc": 0.0,
+      "cpu_percent": 0.0,
+      "memory_mb": 0.0,
+      "power_watts": null,
+      "hardware_id": "AMD64",
+      "os": "Windows-11-10.0.26200-SP0",
+      "model_hash": "f8c92c72c9cbf788e3b1ad206912e1cd8433b485d2971e06273cea9f50341323",
+      "total_samples": 200,
+      "deadline_ms": 100.0,
+      "deadline_miss_rate": 0.0
+    }
+  }
+}

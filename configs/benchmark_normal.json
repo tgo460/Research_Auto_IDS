@@ -9,9 +9,9 @@
   "fpr_budget": 0.05,
   "fail_safe_mode": "degraded",
   "model_integrity_sha256": "f8c92c72c9cbf788e3b1ad206912e1cd8433b485d2971e06273cea9f50341323",
-  "can_source": "datasets/replica_can_b1_engineered/can_dos_train.csv",
-  "eth_source": "datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv",
+  "can_source": "datasets/replica_can_b1_engineered/can_normal_train.csv",
+  "eth_source": "datasets/replica_eth_smoke/eth_driving_01_original_replica_packets.csv",
   "alert_output_path": "logs/runtime_alerts.jsonl",
   "use_onnx": true,
-  "max_samples": 100
+  "max_samples": 200
 }

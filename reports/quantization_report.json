@@ -1,7 +1,10 @@
 {
-  "timestamp_utc": "2026-02-27T06:25:30.888709+00:00",
+  "timestamp_utc": "2026-03-09T06:33:32.965609+00:00",
   "input_model": "models/student_tiny_improved.onnx",
-  "quantized_model": null,
-  "status": "skipped",
-  "reason": "quantization dependencies unavailable: No module named 'onnx.defs'"
+  "quantized_model": "models/student_tiny_improved.int8.onnx",
+  "latency_ms": {
+    "fp32": 0.12981414794921875,
+    "int8": 0.6991744041442871
+  },
+  "speedup": 0.1856677635504936
 }

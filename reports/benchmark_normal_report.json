@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-03-09T06:35:50.518900+00:00",
+  "timestamp_utc": "2026-03-09T06:37:53.282779+00:00",
   "report_type": "benchmark_ids",
   "report_schema_version": "1.0",
   "deployment_config": {
@@ -13,17 +13,17 @@
     "fpr_budget": 0.05,
     "fail_safe_mode": "degraded",
     "model_integrity_sha256": "f8c92c72c9cbf788e3b1ad206912e1cd8433b485d2971e06273cea9f50341323",
-    "can_source": "datasets/replica_can_b1_engineered/can_dos_train.csv",
-    "eth_source": "datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv",
+    "can_source": "datasets/replica_can_b1_engineered/can_normal_train.csv",
+    "eth_source": "datasets/replica_eth_smoke/eth_driving_01_original_replica_packets.csv",
     "alert_output_path": "logs/runtime_alerts.jsonl",
     "use_onnx": true,
     "max_samples": 200
   },
   "benchmark_report": {
-    "latency_p50_ms": 0.1531839370727539,
-    "latency_p95_ms": 0.21840333938598608,
-    "latency_max_ms": 0.6034374237060547,
-    "fpr": 1.0,
+    "latency_p50_ms": 0.15115737915039062,
+    "latency_p95_ms": 0.2171158790588375,
+    "latency_max_ms": 18.839597702026367,
+    "fpr": 0.0,
     "fnr": 0.0,
     "mcc": 0.0,
     "cpu_percent": 0.0,

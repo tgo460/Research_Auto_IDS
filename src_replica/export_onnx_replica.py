@@ -52,13 +52,13 @@ def main():
 
     print(f"Exporting to ONNX format at {args.output_path}...")
     
-    # Export the model
+    # Export the model using TorchScript-based exporter (compatible with onnxruntime quantization)
     torch.onnx.export(
         model,                                     # model being run
         (dummy_can, dummy_eth),                    # model input (or a tuple for multiple inputs)
         args.output_path,                          # where to save the model
         export_params=True,                        # store the trained parameter weights inside the model file
-        opset_version=14,                          # the ONNX version to export the model to
+        opset_version=18,                          # the ONNX version to export the model to
         do_constant_folding=True,                  # whether to execute constant folding for optimization
         input_names=['can_input', 'eth_input'],    # the model's input names
         output_names=['output'],                   # the model's output names
@@ -66,7 +66,8 @@ def main():
             'can_input': {0: 'batch_size'},        # variable length axes
             'eth_input': {0: 'batch_size'},
             'output': {0: 'batch_size'}
-        }
+        },
+        dynamo=False,                              # Use TorchScript exporter for quantization compatibility
     )
     
     print("Export successful!")

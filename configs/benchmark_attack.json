@@ -13,5 +13,5 @@
   "eth_source": "datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv",
   "alert_output_path": "logs/runtime_alerts.jsonl",
   "use_onnx": true,
-  "max_samples": 100
+  "max_samples": 200
 }

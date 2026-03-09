@@ -8,7 +8,7 @@
   "latency_budget_ms": 100.0,
   "fpr_budget": 0.05,
   "fail_safe_mode": "degraded",
-  "model_integrity_sha256": "337989fb496ae987cb58ae22a20ede806f0217c02b7b751a2bcc4562f982db33",
+  "model_integrity_sha256": "532437a496b04ed0dfa881b61d38856809b3eb483cdc7a7d078f3862a89a44ca",
   "can_source": "datasets/can_dos_train.csv",
   "eth_source": "datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv",
   "alert_output_path": "logs/runtime_alerts.jsonl",

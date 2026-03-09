@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-03-06T06:35:02.748803+00:00",
+  "timestamp_utc": "2026-03-09T04:06:02.963751+00:00",
   "report_type": "benchmark_ids",
   "report_schema_version": "1.0",
   "deployment_config": {
@@ -12,7 +12,7 @@
     "latency_budget_ms": 100.0,
     "fpr_budget": 0.05,
     "fail_safe_mode": "degraded",
-    "model_integrity_sha256": "337989fb496ae987cb58ae22a20ede806f0217c02b7b751a2bcc4562f982db33",
+    "model_integrity_sha256": "532437a496b04ed0dfa881b61d38856809b3eb483cdc7a7d078f3862a89a44ca",
     "can_source": "datasets/can_dos_train.csv",
     "eth_source": "datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv",
     "alert_output_path": "logs/runtime_alerts.jsonl",
@@ -20,9 +20,9 @@
     "max_samples": 100
   },
   "benchmark_report": {
-    "latency_p50_ms": 0.16427040100097656,
-    "latency_p95_ms": 0.3494501113891601,
-    "latency_max_ms": 0.8113384246826172,
+    "latency_p50_ms": 0.156402587890625,
+    "latency_p95_ms": 0.3231167793273925,
+    "latency_max_ms": 0.6794929504394531,
     "fpr": 1.0,
     "fnr": 0.0,
     "mcc": 0.0,
@@ -31,7 +31,7 @@
     "power_watts": null,
     "hardware_id": "AMD64",
     "os": "Windows-11-10.0.26200-SP0",
-    "model_hash": "337989fb496ae987cb58ae22a20ede806f0217c02b7b751a2bcc4562f982db33",
+    "model_hash": "532437a496b04ed0dfa881b61d38856809b3eb483cdc7a7d078f3862a89a44ca",
     "total_samples": 100,
     "deadline_ms": 100.0,
     "deadline_miss_rate": 0.0

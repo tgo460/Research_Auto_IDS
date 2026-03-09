@@ -1,10 +1,18 @@
 import os
+import sys
 import argparse
 import numpy as np
 import joblib
 from sklearn.ensemble import RandomForestClassifier
 from torch.utils.data import ConcatDataset
 import torch
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_DIR)
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 from dataloader_correlated_replica import CorrelatedHybridVehicleDataset
 from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD

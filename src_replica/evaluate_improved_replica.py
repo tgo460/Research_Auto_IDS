@@ -10,7 +10,10 @@ import matplotlib.pyplot as plt
 
 # Adjust path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_DIR)
 sys.path.append(BASE_DIR)
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 from architecture_improved import TinyHybridStudent
 from dataloader_correlated_replica import CorrelatedHybridVehicleDataset

@@ -12,7 +12,10 @@ from torch.utils.data import ConcatDataset, DataLoader, random_split, Subset, Da
 
 # Add src_replica to path
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_PATH)
 sys.path.append(BASE_PATH)
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 from architecture_replica import TinyHybridStudent
 from heavy_infer_replica import HeavyTrainConfig, train_heavy_model, predict_heavy

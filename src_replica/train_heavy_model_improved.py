@@ -33,17 +33,22 @@ def main():
     engineered_dir = os.path.join(args.data_dir, "replica_can_b1_engineered")
     
     pairs = [
+        # Attack pairs
         ("can_dos_train.csv", "eth_driving_01_injected_images-003.npy", "eth_driving_01_injected.csv"),
         ("can_fuzzy_train.csv", "eth_driving_02_injected_images-008.npy", "eth_driving_02_injected.csv"),
         ("can_gear_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"),
         ("can_rpm_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"),
+        # Normal pairs
+        ("can_normal_train.csv", "eth_driving_01_original_images-006.npy", "eth_driving_01_original.csv"),
+        ("can_normal_train.csv", "eth_indoors_01_original_images.npy", "eth_indoors_01_original.csv"),
     ]
     
     datasets_list = []
-    loaded_files = set()
+    loaded_pairs = set()
     
     for can_f, eth_n, eth_c in pairs:
-        if can_f in loaded_files: continue
+        pair_key = (can_f, eth_n)
+        if pair_key in loaded_pairs: continue
         
         can_path = os.path.join(engineered_dir, can_f)
         eth_npy_path = os.path.join(args.data_dir, eth_n)
@@ -76,7 +81,7 @@ def main():
                 )
                 if len(ds) > 0:
                     datasets_list.append(ds)
-                    loaded_files.add(can_f)
+                    loaded_pairs.add(pair_key)
                     print(f"  -> Added {len(ds)} samples.")
                 else:
                     print(f"  -> Warning: Dataset empty after alignment.")

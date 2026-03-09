@@ -57,20 +57,22 @@ def train_light_model(args):
     
     pairs = [
         # (Engineered CAN, ETH NPY, ETH CSV Base)
-        ("can_dos_train.csv", "eth_driving_01_injected_images-003.npy", "eth_driving_01_injected.csv"), # Attack 1
-        ("can_fuzzy_train.csv", "eth_driving_02_injected_images-008.npy", "eth_driving_02_injected.csv"), # Attack 2
-        ("can_gear_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"), # Attack 3 (Spoofing on Normal Eth?)
-        ("can_rpm_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"), # Attack 4
-        # Add Normal if possible? 
-        # Since 'can_normal_train.csv' is missing from engineered folder, we rely on the normal segments within the attack files?
-        # Or we load the raw 'can_normal_train.csv' and compute features on fly? Too complex for now.
+        # Attack pairs
+        ("can_dos_train.csv", "eth_driving_01_injected_images-003.npy", "eth_driving_01_injected.csv"),
+        ("can_fuzzy_train.csv", "eth_driving_02_injected_images-008.npy", "eth_driving_02_injected.csv"),
+        ("can_gear_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"),
+        ("can_rpm_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"),
+        # Normal pairs — critical for learning benign baseline
+        ("can_normal_train.csv", "eth_driving_01_original_images-006.npy", "eth_driving_01_original.csv"),
+        ("can_normal_train.csv", "eth_indoors_01_original_images.npy", "eth_indoors_01_original.csv"),
     ]
     
-    # Remove duplicates if any
-    loaded_files = set()
+    # Track loaded pairs (CAN+ETH) to avoid exact duplicates
+    loaded_pairs = set()
     
     for can_f, eth_n, eth_c in pairs:
-        if can_f in loaded_files: continue
+        pair_key = (can_f, eth_n)
+        if pair_key in loaded_pairs: continue
         
         can_path = os.path.join(engineered_dir, can_f)
         eth_npy_path = os.path.join(args.data_dir, eth_n)
@@ -104,7 +106,7 @@ def train_light_model(args):
                 )
                 if len(ds) > 0:
                     datasets_list.append(ds)
-                    loaded_files.add(can_f)
+                    loaded_pairs.add(pair_key)
                     print(f"  -> Added {len(ds)} samples.")
                 else:
                     print(f"  -> Warning: Dataset empty after alignment.")

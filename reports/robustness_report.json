@@ -1,40 +1,256 @@
 {
-  "timestamp_utc": "2026-02-27T06:25:51.300340+00:00",
-  "type": "robustness_eval",
-  "rows": [
-    {
-      "sigma": 0.0,
-      "accuracy": 1.0
-    },
-    {
-      "sigma": 0.01,
-      "accuracy": 1.0
-    },
-    {
-      "sigma": 0.05,
-      "accuracy": 1.0
-    },
-    {
-      "sigma": 0.1,
-      "accuracy": 1.0
-    }
+  "timestamp_utc": "2026-03-09T09:11:19.205633+00:00",
+  "type": "adversarial_robustness_eval",
+  "model": "models/student_tiny_improved.pth",
+  "dataset": "datasets/replica_can_b1_engineered/can_dos_train.csv",
+  "max_samples": 200,
+  "clean_accuracy": 1.0,
+  "worst_case_adversarial_accuracy": 0.0,
+  "max_accuracy_drop": 1.0,
+  "perturbation_budgets": [
+    0.01,
+    0.05,
+    0.1,
+    0.2
   ],
-  "degradation_vs_clean": [
+  "methods_tested": [
+    "gaussian",
+    "fgsm_untargeted",
+    "fgsm_targeted",
+    "pgd10_untargeted",
+    "pgd20_targeted"
+  ],
+  "results": [
     {
-      "sigma": 0.0,
-      "delta_accuracy": 0.0
+      "epsilon": 0.0,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 1.0,
+      "accuracy_drop": 0.0,
+      "flip_rate": 0.0,
+      "evasion_rate": 0.0,
+      "false_trigger_rate": null,
+      "method": "gaussian"
     },
     {
-      "sigma": 0.01,
-      "delta_accuracy": 0.0
+      "epsilon": 0.01,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 1.0,
+      "accuracy_drop": 0.0,
+      "flip_rate": 0.0,
+      "evasion_rate": 0.0,
+      "false_trigger_rate": null,
+      "method": "gaussian"
     },
     {
-      "sigma": 0.05,
-      "delta_accuracy": 0.0
+      "epsilon": 0.05,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 1.0,
+      "accuracy_drop": 0.0,
+      "flip_rate": 0.0,
+      "evasion_rate": 0.0,
+      "false_trigger_rate": null,
+      "method": "gaussian"
     },
     {
-      "sigma": 0.1,
-      "delta_accuracy": 0.0
+      "epsilon": 0.1,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 1.0,
+      "accuracy_drop": 0.0,
+      "flip_rate": 0.0,
+      "evasion_rate": 0.0,
+      "false_trigger_rate": null,
+      "method": "gaussian"
+    },
+    {
+      "epsilon": 0.2,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 1.0,
+      "accuracy_drop": 0.0,
+      "flip_rate": 0.0,
+      "evasion_rate": 0.0,
+      "false_trigger_rate": null,
+      "method": "gaussian"
+    },
+    {
+      "epsilon": 0.01,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.9921259842519685,
+      "accuracy_drop": 0.007874015748031482,
+      "flip_rate": 0.007874015748031496,
+      "evasion_rate": 0.007874015748031496,
+      "false_trigger_rate": null,
+      "method": "fgsm_untargeted"
+    },
+    {
+      "epsilon": 0.05,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "fgsm_untargeted"
+    },
+    {
+      "epsilon": 0.1,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "fgsm_untargeted"
+    },
+    {
+      "epsilon": 0.2,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "fgsm_untargeted"
+    },
+    {
+      "epsilon": 0.01,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.9921259842519685,
+      "accuracy_drop": 0.007874015748031482,
+      "flip_rate": 0.007874015748031496,
+      "evasion_rate": 0.007874015748031496,
+      "false_trigger_rate": null,
+      "method": "fgsm_targeted"
+    },
+    {
+      "epsilon": 0.05,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "fgsm_targeted"
+    },
+    {
+      "epsilon": 0.1,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "fgsm_targeted"
+    },
+    {
+      "epsilon": 0.2,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "fgsm_targeted"
+    },
+    {
+      "epsilon": 0.01,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.9921259842519685,
+      "accuracy_drop": 0.007874015748031482,
+      "flip_rate": 0.007874015748031496,
+      "evasion_rate": 0.007874015748031496,
+      "false_trigger_rate": null,
+      "method": "pgd10_untargeted"
+    },
+    {
+      "epsilon": 0.05,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "pgd10_untargeted"
+    },
+    {
+      "epsilon": 0.1,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "pgd10_untargeted"
+    },
+    {
+      "epsilon": 0.2,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "pgd10_untargeted"
+    },
+    {
+      "epsilon": 0.01,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.9921259842519685,
+      "accuracy_drop": 0.007874015748031482,
+      "flip_rate": 0.007874015748031496,
+      "evasion_rate": 0.007874015748031496,
+      "false_trigger_rate": null,
+      "method": "pgd20_targeted"
+    },
+    {
+      "epsilon": 0.05,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "pgd20_targeted"
+    },
+    {
+      "epsilon": 0.1,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "pgd20_targeted"
+    },
+    {
+      "epsilon": 0.2,
+      "samples": 127,
+      "clean_accuracy": 1.0,
+      "adversarial_accuracy": 0.0,
+      "accuracy_drop": 1.0,
+      "flip_rate": 1.0,
+      "evasion_rate": 1.0,
+      "false_trigger_rate": null,
+      "method": "pgd20_targeted"
     }
   ]
 }

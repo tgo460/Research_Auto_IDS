@@ -1,13 +1,643 @@
 {
-  "timestamp_utc": "2026-02-27T06:24:34.241411+00:00",
-  "type": "coordinated_attack_replay",
-  "samples": 20,
-  "attack_samples": 1,
-  "normal_samples": 19,
-  "detection_rate": 1.0,
-  "fpr": 1.0,
-  "latency_ms": {
-    "mean": 0.18451213836669922,
-    "p95": 0.2135276794433597
-  }
+  "timestamp_utc": "2026-03-09T09:06:15.509494+00:00",
+  "type": "coordinated_attack_replay_multi_scenario",
+  "num_scenarios": 35,
+  "scenarios_run": 35,
+  "scenarios_skipped": 0,
+  "overall_detection_rate": 1.0,
+  "overall_false_positive_rate": 0.7634255973503667,
+  "total_attack_samples": 10822,
+  "total_normal_samples": 59178,
+  "per_scenario": [
+    {
+      "name": "baseline_normal_can+driving_01_orig",
+      "expected_label": 0,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "accuracy": 1.0,
+      "latency_ms": {
+        "mean": 0.18768346309661865,
+        "p50": 0.1506805419921875,
+        "p95": 0.17812252044677732,
+        "max": 19.74773406982422
+      },
+      "skipped": false
+    },
+    {
+      "name": "baseline_normal_can+driving_02_orig",
+      "expected_label": 0,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "accuracy": 1.0,
+      "latency_ms": {
+        "mean": 0.18330121040344238,
+        "p50": 0.1506805419921875,
+        "p95": 0.17381906509399414,
+        "max": 20.62201499938965
+      },
+      "skipped": false
+    },
+    {
+      "name": "baseline_normal_can+indoors_01_orig",
+      "expected_label": 0,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "accuracy": 1.0,
+      "latency_ms": {
+        "mean": 0.18497180938720703,
+        "p50": 0.1513957977294922,
+        "p95": 0.18978118896484375,
+        "max": 18.528223037719727
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_dos+driving_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 623,
+      "normal_samples": 1377,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.3115,
+      "latency_ms": {
+        "mean": 0.16361641883850098,
+        "p50": 0.1518726348876953,
+        "p95": 0.21005868911743164,
+        "max": 1.3234615325927734
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_dos+driving_02_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 623,
+      "normal_samples": 1377,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.3115,
+      "latency_ms": {
+        "mean": 0.15671074390411377,
+        "p50": 0.15091896057128906,
+        "p95": 0.1721501350402832,
+        "max": 0.41174888610839844
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_dos+indoors_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 623,
+      "normal_samples": 1377,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.3115,
+      "latency_ms": {
+        "mean": 0.1587679386138916,
+        "p50": 0.15091896057128906,
+        "p95": 0.18407106399536133,
+        "max": 0.5242824554443359
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_fuzzy+driving_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 532,
+      "normal_samples": 1468,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.266,
+      "latency_ms": {
+        "mean": 0.15957117080688477,
+        "p50": 0.15091896057128906,
+        "p95": 0.19241571426391602,
+        "max": 0.4711151123046875
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_fuzzy+driving_02_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 532,
+      "normal_samples": 1468,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.266,
+      "latency_ms": {
+        "mean": 0.1598891019821167,
+        "p50": 0.15115737915039062,
+        "p95": 0.18668174743652344,
+        "max": 1.0898113250732422
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_fuzzy+indoors_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 532,
+      "normal_samples": 1468,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.266,
+      "latency_ms": {
+        "mean": 0.15693342685699463,
+        "p50": 0.1506805419921875,
+        "p95": 0.1738667488098144,
+        "max": 0.4513263702392578
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_gear+driving_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": null,
+      "accuracy": 0.0,
+      "latency_ms": {
+        "mean": 0.15828394889831543,
+        "p50": 0.15044212341308594,
+        "p95": 0.1804828643798828,
+        "max": 0.4725456237792969
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_gear+driving_02_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": null,
+      "accuracy": 0.0,
+      "latency_ms": {
+        "mean": 0.1588801145553589,
+        "p50": 0.15091896057128906,
+        "p95": 0.18365383148193354,
+        "max": 0.46181678771972656
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_gear+indoors_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": null,
+      "accuracy": 0.0,
+      "latency_ms": {
+        "mean": 0.15620660781860352,
+        "p50": 0.1506805419921875,
+        "p95": 0.17430782318115232,
+        "max": 0.4570484161376953
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_rpm+driving_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 391,
+      "normal_samples": 1609,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.1955,
+      "latency_ms": {
+        "mean": 0.15781033039093018,
+        "p50": 0.15115737915039062,
+        "p95": 0.17762184143066406,
+        "max": 0.46372413635253906
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_rpm+driving_02_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 391,
+      "normal_samples": 1609,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.1955,
+      "latency_ms": {
+        "mean": 0.15759170055389404,
+        "p50": 0.1506805419921875,
+        "p95": 0.1759648323059082,
+        "max": 0.4546642303466797
+      },
+      "skipped": false
+    },
+    {
+      "name": "can_only_rpm+indoors_01_orig",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 391,
+      "normal_samples": 1609,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.1955,
+      "latency_ms": {
+        "mean": 0.15688049793243408,
+        "p50": 0.1506805419921875,
+        "p95": 0.1721501350402832,
+        "max": 0.4870891571044922
+      },
+      "skipped": false
+    },
+    {
+      "name": "eth_only_normal_can+driving_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "accuracy": 1.0,
+      "latency_ms": {
+        "mean": 0.18528687953948975,
+        "p50": 0.15115737915039062,
+        "p95": 0.18599033355712888,
+        "max": 17.9750919342041
+      },
+      "skipped": false
+    },
+    {
+      "name": "eth_only_normal_can+driving_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "accuracy": 1.0,
+      "latency_ms": {
+        "mean": 0.18603503704071045,
+        "p50": 0.15115737915039062,
+        "p95": 0.20387172698974607,
+        "max": 18.527746200561523
+      },
+      "skipped": false
+    },
+    {
+      "name": "eth_only_normal_can+indoors_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "accuracy": 1.0,
+      "latency_ms": {
+        "mean": 0.18463468551635742,
+        "p50": 0.15115737915039062,
+        "p95": 0.18789768218994138,
+        "max": 19.7293758392334
+      },
+      "skipped": false
+    },
+    {
+      "name": "eth_only_normal_can+indoors_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": null,
+      "accuracy": 1.0,
+      "latency_ms": {
+        "mean": 0.18592429161071777,
+        "p50": 0.15091896057128906,
+        "p95": 0.19121170043945312,
+        "max": 19.781827926635742
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_dos+driving_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 623,
+      "normal_samples": 1377,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.3115,
+      "latency_ms": {
+        "mean": 0.15895390510559082,
+        "p50": 0.1506805419921875,
+        "p95": 0.1812696456909179,
+        "max": 0.4589557647705078
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_dos+driving_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 623,
+      "normal_samples": 1377,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.3115,
+      "latency_ms": {
+        "mean": 0.15845227241516113,
+        "p50": 0.1513957977294922,
+        "p95": 0.1780986785888672,
+        "max": 0.44846534729003906
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_dos+indoors_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 623,
+      "normal_samples": 1377,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.3115,
+      "latency_ms": {
+        "mean": 0.15833187103271484,
+        "p50": 0.1506805419921875,
+        "p95": 0.17644166946411133,
+        "max": 0.4596710205078125
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_dos+indoors_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 623,
+      "normal_samples": 1377,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.3115,
+      "latency_ms": {
+        "mean": 0.15689468383789062,
+        "p50": 0.1506805419921875,
+        "p95": 0.1723766326904297,
+        "max": 0.5664825439453125
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_fuzzy+driving_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 532,
+      "normal_samples": 1468,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.266,
+      "latency_ms": {
+        "mean": 0.15961170196533203,
+        "p50": 0.1506805419921875,
+        "p95": 0.18551349639892575,
+        "max": 0.6978511810302734
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_fuzzy+driving_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 532,
+      "normal_samples": 1468,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.266,
+      "latency_ms": {
+        "mean": 0.1562713384628296,
+        "p50": 0.15091896057128906,
+        "p95": 0.16977787017822263,
+        "max": 0.48279762268066406
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_fuzzy+indoors_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 532,
+      "normal_samples": 1468,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.266,
+      "latency_ms": {
+        "mean": 0.15542078018188477,
+        "p50": 0.1506805419921875,
+        "p95": 0.1709461212158203,
+        "max": 0.45108795166015625
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_fuzzy+indoors_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 532,
+      "normal_samples": 1468,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.266,
+      "latency_ms": {
+        "mean": 0.15848994255065918,
+        "p50": 0.15091896057128906,
+        "p95": 0.17690658569335938,
+        "max": 0.4475116729736328
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_gear+driving_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": null,
+      "accuracy": 0.0,
+      "latency_ms": {
+        "mean": 0.1556330919265747,
+        "p50": 0.15044212341308594,
+        "p95": 0.1704692840576172,
+        "max": 0.4222393035888672
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_gear+driving_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": null,
+      "accuracy": 0.0,
+      "latency_ms": {
+        "mean": 0.15978550910949707,
+        "p50": 0.1513957977294922,
+        "p95": 0.18552541732788083,
+        "max": 0.43010711669921875
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_gear+indoors_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": null,
+      "accuracy": 0.0,
+      "latency_ms": {
+        "mean": 0.15672743320465088,
+        "p50": 0.15044212341308594,
+        "p95": 0.1721501350402832,
+        "max": 0.4467964172363281
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_gear+indoors_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 0,
+      "normal_samples": 2000,
+      "detection_rate": null,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": null,
+      "accuracy": 0.0,
+      "latency_ms": {
+        "mean": 0.16017937660217285,
+        "p50": 0.1513957977294922,
+        "p95": 0.1835942268371582,
+        "max": 0.6284713745117188
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_rpm+driving_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 391,
+      "normal_samples": 1609,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.1955,
+      "latency_ms": {
+        "mean": 0.15811514854431152,
+        "p50": 0.15115737915039062,
+        "p95": 0.17690658569335938,
+        "max": 0.5407333374023438
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_rpm+driving_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 391,
+      "normal_samples": 1609,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.1955,
+      "latency_ms": {
+        "mean": 0.15951168537139893,
+        "p50": 0.1513957977294922,
+        "p95": 0.17952919006347656,
+        "max": 0.530242919921875
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_rpm+indoors_01_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 391,
+      "normal_samples": 1609,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.1955,
+      "latency_ms": {
+        "mean": 0.16058886051177979,
+        "p50": 0.15091896057128906,
+        "p95": 0.19551515579223633,
+        "max": 0.5981922149658203
+      },
+      "skipped": false
+    },
+    {
+      "name": "coordinated_rpm+indoors_02_inj",
+      "expected_label": 1,
+      "samples": 2000,
+      "attack_samples": 391,
+      "normal_samples": 1609,
+      "detection_rate": 1.0,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "accuracy": 0.1955,
+      "latency_ms": {
+        "mean": 0.1588059663772583,
+        "p50": 0.15115737915039062,
+        "p95": 0.17503499984741208,
+        "max": 0.6663799285888672
+      },
+      "skipped": false
+    }
+  ]
 }

@@ -38,13 +38,15 @@ def main():
         'inter_arrival', 'inter_arrival_roll_mean', 'id_switch_rate_win'
     ]
 
-    # Generate feature names
+    # Generate feature names — must match heavy model's n_features_in_
     feature_names = []
-    for w in range(32):
+    for w in range(CAN_WINDOW_SIZE_STANDARD):
         for f in can_features:
             feature_names.append(f"CAN_W{w}_{f}")
-            
-    for p in range(1024):
+
+    # ETH pixels: ETH_WINDOW_SIZE_STANDARD * 1 channel * 32 * 32
+    eth_pixel_count = ETH_WINDOW_SIZE_STANDARD * 1 * 32 * 32
+    for p in range(eth_pixel_count):
         feature_names.append(f"ETH_Px{p}")
 
     print("Loading a small dataset to compute SHAP values...")
@@ -70,7 +72,7 @@ def main():
             can_features=can_features,
             can_window_size=CAN_WINDOW_SIZE_STANDARD,
             eth_window_size=ETH_WINDOW_SIZE_STANDARD,
-            can_max_rows=500 # Just need a few
+            can_max_rows=50000  # Need enough rows for sliding windows
         )
     except Exception as e:
         print(f"Error loading dataset: {e}")

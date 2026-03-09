@@ -17,9 +17,14 @@ sys.path.append(BASE_PATH)
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
-from architecture_replica import TinyHybridStudent
+from architecture_improved import TinyHybridStudent
 from heavy_infer_replica import HeavyTrainConfig, train_heavy_model, predict_heavy
 from router_replica import ConfidenceRouter, RouterConfig, tune_threshold_by_quantile
+from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD
+
+CAN_FEATURES_16 = ['CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7',
+                   'can_id_freq_global', 'can_id_freq_win', 'payload_entropy',
+                   'inter_arrival', 'inter_arrival_roll_mean', 'id_switch_rate_win']
 
 # Conditional import for dataset
 try:
@@ -145,17 +150,20 @@ def build_mixed_dataset(base_path: str, split: str = 'train') -> Optional[Concat
 
                 print(f"Pairing {eth_file} with {target_can_file}")
                 if HAS_DATALOADER:
+                    # Use engineered CAN features if available
+                    engineered_can = os.path.join(base_path, 'datasets', 'replica_can_b1_engineered', target_can_file)
+                    if os.path.exists(engineered_can):
+                        can_csv_abs = engineered_can
+                        active_features = CAN_FEATURES_16
+                    else:
+                        active_features = CAN_FEATURES_16[:10]  # fallback to raw 10
                     ds = CorrelatedHybridVehicleDataset(
                         can_csv_path=can_csv_abs,
                         eth_packet_csv_path=eth_csv_abs,
                         eth_npy_path=eth_npy_abs,
-                        can_features=['CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'],
-                        can_window_size=100, # PDF standard: 100 CAN messages per detection window
-                        eth_window_size=1,  # Matching TinyHybridStudent eth is (B, 1, 64, 64) or similar?
-                                            # Wait, architecture expects (B, 1, 64, 64) for images.
-                                            # If dataloader returns sequence, we need to check correlation logic.
-                                            # Architecture handles 4D or 5D. 
-                                            # Let's trust defaults or adjust if needed.
+                        can_features=active_features,
+                        can_window_size=CAN_WINDOW_SIZE_STANDARD,
+                        eth_window_size=ETH_WINDOW_SIZE_STANDARD,
                         label_policy='max'
                     )
                     datasets.append(ds)
@@ -209,15 +217,8 @@ def tune_decision_threshold(y_true: np.ndarray, attack_score: np.ndarray, target
 
 class SyntheticDataset(Dataset):
     def __init__(self, n_samples=1000):
-        # Shape should be (N, Window=10, Features=?) OR (N, Window, Features)
-        # Architecture expects CAN input dim (channels) = 10. 
-        # And it permutes (0, 2, 1) before Conv1d.
-        # Conv1d expects (N, C, L).
-        # So after permute, we want (N, 10, L).
-        # So before permute, input should be (N, L, 10).
-        # Let's say Window=32. Features=10.
-        self.x_c = torch.randn(n_samples, 32, 10)
-        self.x_e = torch.randn(n_samples, 1, 64, 64)
+        self.x_c = torch.randn(n_samples, CAN_WINDOW_SIZE_STANDARD, 16)
+        self.x_e = torch.randn(n_samples, ETH_WINDOW_SIZE_STANDARD, 1, 32, 32)
 
         self.y = torch.randint(0, 2, (n_samples,))
         
@@ -249,7 +250,7 @@ def main():
 
     # 1. Load Light Model
     print(f"Loading light model from {args.light_model_path}")
-    light_model = TinyHybridStudent()
+    light_model = TinyHybridStudent(input_dim=16, hidden_dim=64, num_classes=2)
     
     if os.path.exists(args.light_model_path):
         try:

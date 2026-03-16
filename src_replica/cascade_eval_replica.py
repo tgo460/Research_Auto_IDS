@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from typing import Dict, List, Tuple, Optional, Any
 import numpy as np
 import torch
-from sklearn.metrics import average_precision_score, confusion_matrix, f1_score, precision_score, recall_score
+from sklearn.metrics import average_precision_score, confusion_matrix, f1_score, precision_score, recall_score, matthews_corrcoef
 from torch.utils.data import ConcatDataset, DataLoader, random_split, Subset, Dataset
 
 # Add src_replica to path
@@ -178,12 +178,162 @@ def build_mixed_dataset(base_path: str, split: str = 'train') -> Optional[Concat
 
 
 def as_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[0, 1]).ravel()
+    specificity = float(tn / (tn + fp)) if (tn + fp) > 0 else 0.0
+    fnr = float(fn / (fn + tp)) if (fn + tp) > 0 else 0.0
+    npv = float(tn / (tn + fn)) if (tn + fn) > 0 else 0.0
     return {
-        "f1": float(f1_score(y_true, y_pred)),
+        "f1": float(f1_score(y_true, y_pred, zero_division=0)),
         "precision": float(precision_score(y_true, y_pred, zero_division=0)),
-        "recall": float(recall_score(y_true, y_pred)),
-        "fpr": float(binary_fpr(y_true, y_pred))
+        "recall": float(recall_score(y_true, y_pred, zero_division=0)),
+        "fpr": float(binary_fpr(y_true, y_pred)),
+        "fnr": float(fnr),
+        "specificity": float(specificity),
+        "npv": float(npv),
+        "mcc": float(matthews_corrcoef(y_true, y_pred)) if len(np.unique(y_true)) > 1 else 0.0,
     }
+
+
+def bootstrap_ci(y_true: np.ndarray, y_pred: np.ndarray, n_resamples: int = 1000, seed: int = 42) -> Dict[str, List[float]]:
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+    if len(y_true) == 0:
+        return {}
+
+    rng = np.random.default_rng(seed)
+    n = len(y_true)
+    f1_vals, mcc_vals, fpr_vals, fnr_vals = [], [], [], []
+
+    for _ in range(n_resamples):
+        idx = rng.integers(0, n, size=n)
+        yt = y_true[idx]
+        yp = y_pred[idx]
+        f1_vals.append(f1_score(yt, yp, zero_division=0))
+        mcc_vals.append(matthews_corrcoef(yt, yp) if len(np.unique(yt)) > 1 else 0.0)
+        fpr_vals.append(binary_fpr(yt, yp))
+        cm = confusion_matrix(yt, yp, labels=[0, 1]).ravel()
+        tn, fp, fn, tp = cm
+        fnr_vals.append(float(fn / (fn + tp)) if (fn + tp) > 0 else 0.0)
+
+    return {
+        "f1_ci95": [float(np.percentile(f1_vals, 2.5)), float(np.percentile(f1_vals, 97.5))],
+        "mcc_ci95": [float(np.percentile(mcc_vals, 2.5)), float(np.percentile(mcc_vals, 97.5))],
+        "fpr_ci95": [float(np.percentile(fpr_vals, 2.5)), float(np.percentile(fpr_vals, 97.5))],
+        "fnr_ci95": [float(np.percentile(fnr_vals, 2.5)), float(np.percentile(fnr_vals, 97.5))],
+    }
+
+
+def calibration_metrics(y_true: np.ndarray, attack_prob: np.ndarray, n_bins: int = 10) -> Dict[str, Any]:
+    y_true = np.asarray(y_true).astype(int)
+    attack_prob = np.asarray(attack_prob).astype(float)
+    attack_prob = np.clip(attack_prob, 0.0, 1.0)
+
+    edges = np.linspace(0.0, 1.0, n_bins + 1)
+    bin_ids = np.digitize(attack_prob, edges[1:-1], right=False)
+    n = len(y_true)
+
+    ece = 0.0
+    bin_rows = []
+    for b in range(n_bins):
+        mask = bin_ids == b
+        cnt = int(np.sum(mask))
+        if cnt == 0:
+            bin_rows.append({
+                "bin": b,
+                "lower": float(edges[b]),
+                "upper": float(edges[b + 1]),
+                "count": 0,
+                "avg_confidence": None,
+                "empirical_positive_rate": None,
+            })
+            continue
+
+        conf = float(np.mean(attack_prob[mask]))
+        acc = float(np.mean(y_true[mask]))
+        ece += (cnt / max(n, 1)) * abs(acc - conf)
+        bin_rows.append({
+            "bin": b,
+            "lower": float(edges[b]),
+            "upper": float(edges[b + 1]),
+            "count": cnt,
+            "avg_confidence": conf,
+            "empirical_positive_rate": acc,
+        })
+
+    brier = float(np.mean((attack_prob - y_true) ** 2)) if n > 0 else 0.0
+    return {
+        "ece": float(ece),
+        "brier": brier,
+        "num_bins": int(n_bins),
+        "bins": bin_rows,
+    }
+
+
+def _metric_value(metric_name: str, y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    m = as_metrics(y_true, y_pred)
+    return float(m[metric_name])
+
+
+def paired_bootstrap_deltas(
+    y_true: np.ndarray,
+    pred_a: np.ndarray,
+    pred_b: np.ndarray,
+    metric_names: List[str],
+    n_resamples: int = 1000,
+    seed: int = 42,
+) -> Dict[str, Dict[str, float]]:
+    y_true = np.asarray(y_true)
+    pred_a = np.asarray(pred_a)
+    pred_b = np.asarray(pred_b)
+    rng = np.random.default_rng(seed)
+    n = len(y_true)
+
+    out = {}
+    for name in metric_names:
+        vals = []
+        for _ in range(n_resamples):
+            idx = rng.integers(0, n, size=n)
+            yt = y_true[idx]
+            pa = pred_a[idx]
+            pb = pred_b[idx]
+            vals.append(_metric_value(name, yt, pb) - _metric_value(name, yt, pa))
+
+        out[name] = {
+            "delta_mean": float(np.mean(vals)),
+            "delta_ci95_low": float(np.percentile(vals, 2.5)),
+            "delta_ci95_high": float(np.percentile(vals, 97.5)),
+        }
+    return out
+
+
+def paired_permutation_pvalue(
+    y_true: np.ndarray,
+    pred_a: np.ndarray,
+    pred_b: np.ndarray,
+    metric_name: str,
+    n_permutations: int = 1000,
+    seed: int = 42,
+) -> float:
+    y_true = np.asarray(y_true)
+    pred_a = np.asarray(pred_a)
+    pred_b = np.asarray(pred_b)
+    rng = np.random.default_rng(seed)
+
+    observed = _metric_value(metric_name, y_true, pred_b) - _metric_value(metric_name, y_true, pred_a)
+    ge = 0
+
+    for _ in range(n_permutations):
+        swap = rng.random(len(y_true)) < 0.5
+        pa = pred_a.copy()
+        pb = pred_b.copy()
+        pa[swap], pb[swap] = pred_b[swap], pred_a[swap]
+        d = _metric_value(metric_name, y_true, pb) - _metric_value(metric_name, y_true, pa)
+        if abs(d) >= abs(observed):
+            ge += 1
+
+    return float((ge + 1) / (n_permutations + 1))
 
 def binary_fpr(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[0, 1]).ravel()
@@ -240,13 +390,17 @@ def main():
     # Model parameters
     parser.add_argument("--heavy_n_estimators", type=int, default=100)
     parser.add_argument("--heavy_max_depth", type=int, default=None)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--bootstrap_resamples", type=int, default=1000)
+    parser.add_argument("--calibration_bins", type=int, default=10)
+    parser.add_argument("--permutation_resamples", type=int, default=1000)
     
     args = parser.parse_args()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
     
-    set_seed(42)
+    set_seed(args.seed)
 
     # 1. Load Light Model
     print(f"Loading light model from {args.light_model_path}")
@@ -386,6 +540,7 @@ def main():
     
     # For tracking light-only performance simultaneously
     light_only_preds = []
+    light_only_probs = []
     
     with torch.no_grad():
         for batch in val_loader:
@@ -411,6 +566,7 @@ def main():
             
             # Store light only
             light_only_preds.append(batch_light_preds)
+            light_only_probs.append(probs[:, 1])
             
             # Prepare cascade outputs
             batch_final_probs = probs.copy() # Start with light probs
@@ -449,10 +605,36 @@ def main():
     all_labels = np.concatenate(val_labels)
     all_routed = np.concatenate(routings)
     all_light_preds = np.concatenate(light_only_preds)
+    all_light_probs = np.concatenate(light_only_probs)
     
     # Calculate metrics
     cascade_metrics = as_metrics(all_labels, all_final_preds)
     light_metrics = as_metrics(all_labels, all_light_preds)
+
+    cascade_ci = bootstrap_ci(all_labels, all_final_preds, n_resamples=args.bootstrap_resamples, seed=args.seed)
+    light_ci = bootstrap_ci(all_labels, all_light_preds, n_resamples=args.bootstrap_resamples, seed=args.seed)
+
+    delta_stats = paired_bootstrap_deltas(
+        all_labels,
+        all_light_preds,
+        all_final_preds,
+        metric_names=["f1", "mcc", "fpr", "fnr"],
+        n_resamples=args.bootstrap_resamples,
+        seed=args.seed,
+    )
+    pvals = {
+        "f1": paired_permutation_pvalue(
+            all_labels, all_light_preds, all_final_preds,
+            metric_name="f1", n_permutations=args.permutation_resamples, seed=args.seed,
+        ),
+        "mcc": paired_permutation_pvalue(
+            all_labels, all_light_preds, all_final_preds,
+            metric_name="mcc", n_permutations=args.permutation_resamples, seed=args.seed,
+        ),
+    }
+
+    light_cal = calibration_metrics(all_labels, all_light_probs, n_bins=args.calibration_bins)
+    cascade_cal = calibration_metrics(all_labels, all_final_probs, n_bins=args.calibration_bins)
     
     # Calculate Confusion Matrix
     cm_cascade = confusion_matrix(all_labels, all_final_preds, labels=[0, 1])
@@ -473,14 +655,25 @@ def main():
         "fpr_budget": 0.05, # Placeholder or from args
         "light_only": {
             **light_metrics,
+            **light_ci,
             "confusion_matrix": cm_light.tolist()
         },
         "cascade": {
             **cascade_metrics,
+            **cascade_ci,
             "confusion_matrix": cm_cascade.tolist(),
             "router_threshold": threshold,
             "heavy_decision_threshold": 0.5
-        }
+        },
+        "statistical_validation": {
+            "delta_metrics_cascade_minus_light": delta_stats,
+            "paired_permutation_p_values": pvals,
+            "permutation_resamples": int(args.permutation_resamples),
+        },
+        "calibration": {
+            "light_only": light_cal,
+            "cascade": cascade_cal,
+        },
     }
 
     

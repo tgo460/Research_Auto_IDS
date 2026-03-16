@@ -1,0 +1,182 @@
+{
+  "timestamp_utc": "2026-03-13T05:48:51.954156+00:00",
+  "report_type": "generalization_eval",
+  "model_path": "models/student_tiny_improved_fold1.pth",
+  "protocol": {
+    "cross_domain": "evaluate driving vs indoors domains with matched CAN attack/normal pairing",
+    "attack_holdout": "evaluate each CAN attack against common normal baseline",
+    "note": "attack_holdout here is evaluation protocol; true LOAO requires retraining with held-out attack excluded"
+  },
+  "cross_domain_results": {
+    "driving": {
+      "samples": 18,
+      "accuracy": 0.5,
+      "f1": 0.6666666666666666,
+      "precision": 0.5,
+      "recall": 1.0,
+      "mcc": 0.0,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "f1_ci95": [
+        0.43478260869565216,
+        0.875
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        1.0,
+        1.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "indoors": {
+      "samples": 17,
+      "accuracy": 0.47058823529411764,
+      "f1": 0.64,
+      "precision": 0.47058823529411764,
+      "recall": 1.0,
+      "mcc": 0.0,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "f1_ci95": [
+        0.38095238095238093,
+        0.8275862068965517
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        1.0,
+        1.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "attack_holdout_results": {
+    "DoS": {
+      "samples": 18,
+      "accuracy": 0.5,
+      "f1": 0.6666666666666666,
+      "precision": 0.5,
+      "recall": 1.0,
+      "mcc": 0.0,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "f1_ci95": [
+        0.36363636363636365,
+        0.8387096774193549
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        1.0,
+        1.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "Fuzzy": {
+      "samples": 18,
+      "accuracy": 0.5,
+      "f1": 0.6666666666666666,
+      "precision": 0.5,
+      "recall": 1.0,
+      "mcc": 0.0,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "f1_ci95": [
+        0.36363636363636365,
+        0.8387096774193549
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        1.0,
+        1.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "Gear": {
+      "samples": 18,
+      "accuracy": 0.5,
+      "f1": 0.6666666666666666,
+      "precision": 0.5,
+      "recall": 1.0,
+      "mcc": 0.0,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "f1_ci95": [
+        0.36363636363636365,
+        0.8387096774193549
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        1.0,
+        1.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "RPM": {
+      "samples": 18,
+      "accuracy": 0.5,
+      "f1": 0.6666666666666666,
+      "precision": 0.5,
+      "recall": 1.0,
+      "mcc": 0.0,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "f1_ci95": [
+        0.36363636363636365,
+        0.8387096774193549
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        1.0,
+        1.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

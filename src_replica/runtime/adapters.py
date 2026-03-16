@@ -14,6 +14,36 @@ class CanIngest(ABC):
     @abstractmethod
     def read_frame(self) -> Optional[Dict[str, Any]]:
         raise NotImplementedError
+        
+class VirtualCanIngest(CanIngest):
+    """
+    Virtual CAN simulator using vcan.
+    Ideal for testing when hardware CAN components are unavailable.
+    It reads raw CAN messages from a virtual bus natively supported by Linux/Raspberry Pi.
+    """
+    def __init__(self, interface: str = 'vcan0'):
+        import can
+        self.interface = interface
+        try:
+            self.bus = can.interface.Bus(channel=interface, bustype='socketcan')
+            print(f"[VirtualCanIngest] Connected to virtual bus: {interface}")
+        except Exception as e:
+            print(f"[VirtualCanIngest] Failed to bind to {interface}. Ensure vcan is configured.")
+            self.bus = None
+
+    def read_frame(self) -> Optional[Dict[str, Any]]:
+        if not self.bus:
+            return None
+        
+        msg = self.bus.recv(timeout=1.0)
+        if msg:
+            return {
+                "timestamp": msg.timestamp,
+                "can_id": msg.arbitration_id,
+                "dlc": msg.dlc,
+                "data": list(msg.data)
+            }
+        return None
 
 
 class EthIngest(ABC):

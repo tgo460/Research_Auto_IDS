@@ -1,0 +1,19 @@
+{
+    "timestamp": 1773392298.3394523,
+    "batch_size": 1,
+    "device": "cpu",
+    "fp32": {
+        "accuracy": 1.0,
+        "latency_mean_ms": 0.974888889080224,
+        "latency_std_ms": 0.27628273084797134,
+        "latency_p95_ms": 1.4220999990357086,
+        "model_size_mb": 0.1665182113647461
+    },
+    "int8_dynamic": {
+        "accuracy": 1.0,
+        "latency_mean_ms": 0.8440555571319742,
+        "latency_std_ms": 0.17164057644402056,
+        "latency_p95_ms": 1.135360007174313,
+        "speedup_ratio": 1.1550055927512755
+    }
+}

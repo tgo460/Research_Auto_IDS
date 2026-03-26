@@ -15,14 +15,13 @@ if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 from architecture_improved import TinyHybridStudent
+from src_replica.data_resolvers import resolve_can_csv, resolve_eth_packet_csv
 from dataloader_correlated_replica import CorrelatedHybridVehicleDataset
+from src_replica.hybrid_curriculum import evaluation_pair_specs
+from src_replica.preprocessing_standard import STANDARD_CAN_FEATURES_16
 from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD
 
-CAN_FEATURES_16 = [
-    "CAN_ID", "DLC", "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7",
-    "can_id_freq_global", "can_id_freq_win", "payload_entropy",
-    "inter_arrival", "inter_arrival_roll_mean", "id_switch_rate_win",
-]
+CAN_FEATURES_16 = STANDARD_CAN_FEATURES_16
 
 
 def set_seed(seed: int) -> None:
@@ -31,35 +30,18 @@ def set_seed(seed: int) -> None:
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 
-
-def _eth_csv_from_npy(data_dir: str, eth_npy_file: str):
-    base = eth_npy_file.split("_images")[0] if "_images" in eth_npy_file else os.path.splitext(eth_npy_file)[0]
-    candidates = [
-        os.path.join(data_dir, "replica_eth_smoke", f"{base}_replica_packets.csv"),
-        os.path.join(data_dir, f"{base}_replica_packets.csv"),
-        os.path.join(data_dir, f"{base}_preprocessed.csv"),
-        os.path.join(data_dir, f"{base}.csv"),
-    ]
-    for c in candidates:
-        if os.path.exists(c):
-            return c
-    return None
-
-
 def _load_pair(data_dir: str, can_file: str, eth_npy_file: str, max_rows=None):
-    can_csv = os.path.join(data_dir, "replica_can_b1_engineered", can_file)
-    if not os.path.exists(can_csv):
-        can_csv = os.path.join(data_dir, can_file)
+    can_csv = resolve_can_csv(data_dir, can_file, prefer_raw=True)
     eth_npy = os.path.join(data_dir, eth_npy_file)
-    eth_csv = _eth_csv_from_npy(data_dir, eth_npy_file)
+    eth_csv = resolve_eth_packet_csv(data_dir, eth_npy_file)
 
-    if not (os.path.exists(can_csv) and os.path.exists(eth_npy) and eth_csv and os.path.exists(eth_csv)):
+    if not (can_csv and os.path.exists(can_csv) and eth_csv and os.path.exists(eth_csv)):
         return None
 
     return CorrelatedHybridVehicleDataset(
         can_csv_path=can_csv,
         eth_packet_csv_path=eth_csv,
-        eth_npy_path=eth_npy,
+        eth_npy_path=eth_npy if os.path.exists(eth_npy) else None,
         can_features=CAN_FEATURES_16,
         can_window_size=CAN_WINDOW_SIZE_STANDARD,
         eth_window_size=ETH_WINDOW_SIZE_STANDARD,
@@ -240,6 +222,41 @@ def main():
             seed=args.seed,
         )
 
+    curriculum_group_parts = {}
+    curriculum_pair_results = {}
+    for spec in evaluation_pair_specs():
+        ds = _load_pair(args.data_dir, spec.can_file, spec.eth_npy_file, max_rows=args.max_rows)
+        curriculum_pair_results[spec.name] = {
+            "group": spec.group,
+            "can_file": spec.can_file,
+            "eth_npy_file": spec.eth_npy_file,
+        }
+        if ds is None or len(ds) == 0:
+            curriculum_pair_results[spec.name]["error"] = "empty dataset"
+            continue
+
+        curriculum_pair_results[spec.name].update(
+            _eval_dataset(
+                model,
+                ds,
+                device,
+                bootstrap_resamples=min(args.bootstrap_resamples, 300),
+                seed=args.seed,
+            )
+        )
+        curriculum_group_parts.setdefault(spec.group, []).append(ds)
+
+    curriculum_group_results = {}
+    for group_name, parts in curriculum_group_parts.items():
+        group_ds = ConcatDataset(parts) if parts else None
+        curriculum_group_results[group_name] = _eval_dataset(
+            model,
+            group_ds,
+            device,
+            bootstrap_resamples=args.bootstrap_resamples,
+            seed=args.seed,
+        )
+
     report = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "report_type": "generalization_eval",
@@ -251,6 +268,8 @@ def main():
         },
         "cross_domain_results": cross_domain,
         "attack_holdout_results": holdout_eval,
+        "curriculum_group_results": curriculum_group_results,
+        "curriculum_pair_results": curriculum_pair_results,
     }
 
     os.makedirs(args.output_dir, exist_ok=True)

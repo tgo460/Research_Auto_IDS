@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 import json
 import os
 import sys
@@ -7,7 +8,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, ConcatDataset, Subset
+from torch.utils.data import DataLoader, ConcatDataset, Subset, WeightedRandomSampler
 from sklearn.metrics import f1_score, accuracy_score
 
 # Adjust path
@@ -18,7 +19,10 @@ if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 from architecture_improved import TinyHybridStudent
+from src_replica.hybrid_curriculum import training_pair_specs
+from src_replica.data_resolvers import resolve_can_csv, resolve_eth_packet_csv
 from dataloader_correlated_replica import CorrelatedHybridVehicleDataset
+from src_replica.preprocessing_standard import STANDARD_CAN_FEATURES_16
 from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD
 
 
@@ -106,6 +110,29 @@ def _extract_labels_for_concat(datasets_list):
             else:
                 labels.append(int(item[1]))
     return np.asarray(labels, dtype=np.int64)
+
+
+def _build_sample_groups(dataset_infos):
+    groups = []
+    pair_names = []
+    for info in dataset_infos:
+        groups.extend([info["group"]] * info["samples"])
+        pair_names.extend([info["name"]] * info["samples"])
+    return np.asarray(groups, dtype=object), np.asarray(pair_names, dtype=object)
+
+
+def _inverse_frequency_map(values):
+    counts = Counter(values)
+    total = sum(counts.values())
+    n_unique = max(len(counts), 1)
+    return {key: float(total / (n_unique * count)) for key, count in counts.items() if count > 0}
+
+
+def _make_subset_sampler(global_sample_weights, subset_indices):
+    subset_indices = np.asarray(subset_indices, dtype=np.int64)
+    subset_weights = np.asarray(global_sample_weights, dtype=np.float64)[subset_indices]
+    weights_tensor = torch.as_tensor(subset_weights, dtype=torch.double)
+    return WeightedRandomSampler(weights_tensor, num_samples=len(subset_indices), replacement=True)
 
 
 def train_one_split(model, criterion, optimizer, scheduler, train_loader, val_loader, args, fold_tag="single"):
@@ -213,12 +240,11 @@ def train_light_model(args):
     args.device = device
     print(f"Training Improved Light Model on {device}")
     datasets_list = []
+    dataset_infos = []
     
     # Define Features
     # Based on the engineered datasets
-    can_features = ['CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7',
-                    'can_id_freq_global', 'can_id_freq_win', 'payload_entropy', 
-                    'inter_arrival', 'inter_arrival_roll_mean', 'id_switch_rate_win']
+    can_features = STANDARD_CAN_FEATURES_16
     input_dim = len(can_features)
     print(f"Using {input_dim} CAN features.")
 
@@ -228,8 +254,6 @@ def train_light_model(args):
     
     # Data Mapping (Engineered CAN + NPY Images)
     # We will look for pairs in the engineered folder
-    engineered_dir = os.path.join(args.data_dir, "replica_can_b1_engineered")
-    
     # Map of CAN file -> ETH NPY file (heuristic)
     # can_dos_train.csv -> eth_driving_01_injected_images-003.npy (Dos)
     # can_normal_train.csv -> eth_driving_01_original_images-006.npy (Normal)
@@ -246,34 +270,21 @@ def train_light_model(args):
         ("can_normal_train.csv", "eth_driving_01_original_images-006.npy", "eth_driving_01_original.csv"),
         ("can_normal_train.csv", "eth_indoors_01_original_images.npy", "eth_indoors_01_original.csv"),
     ]
+    pairs = [(spec.can_file, spec.eth_npy_file, spec) for spec in training_pair_specs()]
     
     # Track loaded pairs (CAN+ETH) to avoid exact duplicates
     loaded_pairs = set()
     
-    for can_f, eth_n, eth_c in pairs:
-        pair_key = (can_f, eth_n)
+    for can_f, eth_n, spec in pairs:
+        pair_key = (spec.name, can_f, eth_n)
         if pair_key in loaded_pairs: continue
         
-        can_path = os.path.join(engineered_dir, can_f)
+        can_path = resolve_can_csv(args.data_dir, can_f, prefer_raw=True)
         eth_npy_path = os.path.join(args.data_dir, eth_n)
+        eth_csv_path = resolve_eth_packet_csv(args.data_dir, eth_n)
         
-        # Robust ETH CSV search
-        base_c = eth_c.replace(".csv", "")
-        candidates = [
-            os.path.join(args.data_dir, "replica_eth_smoke", f"{base_c}_replica_packets.csv"),
-            os.path.join(args.data_dir, f"{base_c}_replica_packets.csv"),
-            os.path.join(args.data_dir, f"{base_c}_preprocessed.csv"),
-            os.path.join(args.data_dir, eth_c)
-        ]
-        
-        eth_csv_path = None
-        for cand in candidates:
-            if os.path.exists(cand):
-                eth_csv_path = cand
-                break
-        
-        if os.path.exists(can_path) and os.path.exists(eth_npy_path) and eth_csv_path:
-            print(f"Loading pair: {can_f} + {eth_n}")
+        if can_path and os.path.exists(can_path) and eth_csv_path:
+            print(f"Loading pair: {spec.name} [{spec.group}] -> {can_f} + {eth_n}")
             try:
                 ds = CorrelatedHybridVehicleDataset(
                     can_csv_path=can_path,
@@ -286,6 +297,13 @@ def train_light_model(args):
                 )
                 if len(ds) > 0:
                     datasets_list.append(ds)
+                    dataset_infos.append({
+                        "name": spec.name,
+                        "group": spec.group,
+                        "samples": len(ds),
+                        "can_file": can_f,
+                        "eth_npy_file": eth_n,
+                    })
                     loaded_pairs.add(pair_key)
                     print(f"  -> Added {len(ds)} samples.")
                 else:
@@ -300,19 +318,43 @@ def train_light_model(args):
         print("No datasets loaded. Exiting.")
         return
 
-    print("Computing class weights from loaded training data...")
+    print("Computing class and curriculum sampling weights from loaded training data...")
     all_labels = _extract_labels_for_concat(datasets_list)
+    all_groups, all_pair_names = _build_sample_groups(dataset_infos)
+
+    if len(all_groups) != len(all_labels) or len(all_pair_names) != len(all_labels):
+        raise ValueError("Curriculum metadata length does not match aligned sample count.")
+
+    split_keys = np.asarray(
+        [f"{pair_name}:{int(label)}" for pair_name, label in zip(all_pair_names, all_labels)],
+        dtype=object,
+    )
+
+    label_counts = Counter(int(label) for label in all_labels.tolist())
+    group_counts = Counter(str(group) for group in all_groups.tolist())
+    pair_counts = Counter(str(pair_name) for pair_name in all_pair_names.tolist())
+
+    class_weight_map = _inverse_frequency_map([int(label) for label in all_labels.tolist()])
+    group_weight_map = _inverse_frequency_map([str(group) for group in all_groups.tolist()])
+    pair_weight_map = _inverse_frequency_map([str(pair_name) for pair_name in all_pair_names.tolist()])
+
+    sample_weight_vector = np.asarray(
+        [
+            class_weight_map[int(label)] * pair_weight_map[str(pair_name)]
+            for label, pair_name in zip(all_labels, all_pair_names)
+        ],
+        dtype=np.float64,
+    )
 
     if len(all_labels) > 0:
-        from collections import Counter
-
-        label_counts = Counter(all_labels.tolist())
         total = sum(label_counts.values())
         num_classes = max(label_counts.keys()) + 1
         class_weights = torch.zeros(num_classes, device=device)
         for cls, count in label_counts.items():
             class_weights[cls] = total / (num_classes * count)
         print(f"  Class distribution: {dict(label_counts)}")
+        print(f"  Group distribution: {dict(group_counts)}")
+        print(f"  Pair distribution: {dict(pair_counts)}")
         print(f"  Class weights: {class_weights.cpu().tolist()}")
         criterion = nn.CrossEntropyLoss(weight=class_weights)
     else:
@@ -325,7 +367,7 @@ def train_light_model(args):
     if args.cv_folds > 1:
         print(f"Running stratified {args.cv_folds}-fold CV...")
         fold_reports = []
-        folds = stratified_kfold_indices(all_labels, n_splits=args.cv_folds, seed=args.seed)
+        folds = stratified_kfold_indices(split_keys, n_splits=args.cv_folds, seed=args.seed)
         for fold_id, (train_idx, val_idx) in enumerate(folds, start=1):
             model = TinyHybridStudent(input_dim=input_dim, hidden_dim=64, num_classes=2).to(device)
             optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=1e-4)
@@ -334,7 +376,8 @@ def train_light_model(args):
 
             train_ds = Subset(full_ds, train_idx)
             val_ds = Subset(full_ds, val_idx)
-            train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True)
+            train_sampler = _make_subset_sampler(sample_weight_vector, train_idx)
+            train_loader = DataLoader(train_ds, batch_size=args.batch_size, sampler=train_sampler)
             val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False)
 
             fold_metrics = train_one_split(
@@ -342,6 +385,8 @@ def train_light_model(args):
                 train_loader, val_loader, args, fold_tag=f"fold-{fold_id}"
             )
             fold_metrics["fold"] = fold_id
+            fold_metrics["train_samples"] = int(len(train_idx))
+            fold_metrics["val_samples"] = int(len(val_idx))
             fold_reports.append(fold_metrics)
 
             # Save per-fold checkpoints for reproducible reporting.
@@ -352,6 +397,16 @@ def train_light_model(args):
         cv_summary = {
             "seed": int(args.seed),
             "cv_folds": int(args.cv_folds),
+            "curriculum_pairs": dataset_infos,
+            "label_distribution": {str(k): int(v) for k, v in label_counts.items()},
+            "group_distribution": {str(k): int(v) for k, v in group_counts.items()},
+            "pair_distribution": {str(k): int(v) for k, v in pair_counts.items()},
+            "sample_weighting": {
+                "strategy": "inverse_class_x_inverse_pair_frequency",
+                "group_weights": {str(k): float(v) for k, v in group_weight_map.items()},
+                "pair_weights": {str(k): float(v) for k, v in pair_weight_map.items()},
+                "class_weights": {str(k): float(v) for k, v in class_weight_map.items()},
+            },
             "folds": fold_reports,
             "f1_mean": float(np.mean([f["f1"] for f in fold_reports])),
             "f1_std": float(np.std([f["f1"] for f in fold_reports])),
@@ -363,7 +418,7 @@ def train_light_model(args):
             json.dump(cv_summary, f, indent=2)
         print(f"Saved CV report to {cv_path}")
     else:
-        train_idx, val_idx = stratified_train_val_indices(all_labels, val_fraction=0.2, seed=args.seed)
+        train_idx, val_idx = stratified_train_val_indices(split_keys, val_fraction=0.2, seed=args.seed)
         train_ds = Subset(full_ds, train_idx)
         val_ds = Subset(full_ds, val_idx)
 
@@ -372,12 +427,28 @@ def train_light_model(args):
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.5, patience=2)
         criterion = nn.CrossEntropyLoss(weight=class_weights) if class_weights is not None else nn.CrossEntropyLoss()
 
-        train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True)
+        train_sampler = _make_subset_sampler(sample_weight_vector, train_idx)
+        train_loader = DataLoader(train_ds, batch_size=args.batch_size, sampler=train_sampler)
         val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False)
         metrics = train_one_split(
             model, criterion, optimizer, scheduler,
             train_loader, val_loader, args, fold_tag="single"
         )
+        metrics.update({
+            "seed": int(args.seed),
+            "train_samples": int(len(train_idx)),
+            "val_samples": int(len(val_idx)),
+            "curriculum_pairs": dataset_infos,
+            "label_distribution": {str(k): int(v) for k, v in label_counts.items()},
+            "group_distribution": {str(k): int(v) for k, v in group_counts.items()},
+            "pair_distribution": {str(k): int(v) for k, v in pair_counts.items()},
+            "sample_weighting": {
+                "strategy": "inverse_class_x_inverse_pair_frequency",
+                "group_weights": {str(k): float(v) for k, v in group_weight_map.items()},
+                "pair_weights": {str(k): float(v) for k, v in pair_weight_map.items()},
+                "class_weights": {str(k): float(v) for k, v in class_weight_map.items()},
+            },
+        })
         save_path = os.path.join(args.output_dir, "student_tiny_improved.pth")
         torch.save(model.state_dict(), save_path)
         print(f"Saved best model to {save_path}")

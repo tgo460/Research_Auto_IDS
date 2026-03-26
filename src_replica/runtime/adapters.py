@@ -9,6 +9,15 @@ from typing import Any, Deque, Dict, Optional
 import numpy as np
 import pandas as pd
 
+from src_replica.preprocessing_standard import (
+    BYTE_COLS,
+    STANDARD_CAN_FEATURES_16,
+    encode_eth_frame_dict_to_image,
+    normalize_can_id_series,
+    normalize_dlc_series,
+    normalize_payload_series,
+)
+
 
 class CanIngest(ABC):
     @abstractmethod
@@ -41,7 +50,7 @@ class VirtualCanIngest(CanIngest):
                 "timestamp": msg.timestamp,
                 "can_id": msg.arbitration_id,
                 "dlc": msg.dlc,
-                "data": list(msg.data)
+                "payload": [float(x) / 255.0 for x in msg.data[:8]],
             }
         return None
 
@@ -73,28 +82,30 @@ class HealthMonitor(ABC):
 
 
 class CsvCanIngest(CanIngest):
-    def __init__(self, csv_path: str, timestamp_col: str = "Timestamp"):
+    def __init__(self, csv_path: str, timestamp_col: str = "Timestamp", start_row: int = 0):
         if not os.path.exists(csv_path):
             raise FileNotFoundError(csv_path)
         self._df = pd.read_csv(csv_path)
+        if start_row > 0:
+            self._df = self._df.iloc[int(start_row):].reset_index(drop=True)
         self._idx = 0
         self._timestamp_col = timestamp_col
 
-    _ENGINEERED_COLS = [
-        "can_id_freq_global", "can_id_freq_win", "payload_entropy",
-        "inter_arrival", "inter_arrival_roll_mean", "id_switch_rate_win",
-    ]
+    _ENGINEERED_COLS = STANDARD_CAN_FEATURES_16[10:]
 
     def read_frame(self) -> Optional[Dict[str, Any]]:
         if self._idx >= len(self._df):
             return None
         row = self._df.iloc[self._idx]
         self._idx += 1
-        payload = [float(row.get(f"D{i}", 0.0)) for i in range(8)]
+        payload = [
+            float(normalize_payload_series(pd.Series([row.get(f"D{i}", 0.0)])).iloc[0])
+            for i in range(8)
+        ]
         frame: Dict[str, Any] = {
             "timestamp": float(row.get(self._timestamp_col, self._idx)),
-            "can_id": int(row.get("CAN_ID", 0)),
-            "dlc": int(row.get("DLC", 8)),
+            "can_id": float(normalize_can_id_series(pd.Series([row.get("CAN_ID", 0.0)])).iloc[0]),
+            "dlc": float(normalize_dlc_series(pd.Series([row.get("DLC", 8.0)])).iloc[0]),
             "payload": payload,
             "label": int(row.get("Label", 0)),
         }
@@ -106,10 +117,16 @@ class CsvCanIngest(CanIngest):
 
 
 class CsvEthIngest(EthIngest):
-    def __init__(self, csv_path: str):
+    def __init__(self, csv_path: str, start_row: int = 0):
         if not os.path.exists(csv_path):
             raise FileNotFoundError(csv_path)
         self._df = pd.read_csv(csv_path)
+        if start_row > 0:
+            self._df = self._df.iloc[int(start_row):].reset_index(drop=True)
+        if "Label" not in self._df.columns:
+            raise ValueError(
+                f"ETH replay CSV must contain a 'Label' column for evaluation/replay: {csv_path}"
+            )
         self._idx = 0
 
     def read_frame(self) -> Optional[Dict[str, Any]]:
@@ -148,7 +165,6 @@ class PcapEthIngest(EthIngest):
             "timestamp": float(getattr(pkt, "time", self._idx)),
             "captured_len": plen,
             "original_len": plen,
-            "label": 0,
         }
 
 
@@ -170,9 +186,9 @@ class SocketCanIngest(CanIngest):
             data.append(0)
         return {
             "timestamp": float(msg.timestamp),
-            "can_id": int(msg.arbitration_id),
-            "dlc": int(msg.dlc),
-            "payload": [float(x) / 255.0 for x in data],
+            "can_id": float(normalize_can_id_series(pd.Series([msg.arbitration_id])).iloc[0]),
+            "dlc": float(normalize_dlc_series(pd.Series([msg.dlc])).iloc[0]),
+            "payload": [float(normalize_payload_series(pd.Series([x])).iloc[0]) for x in data],
             "label": 0,
         }
 
@@ -263,28 +279,89 @@ class WatchdogHealthMonitor(HealthMonitor):
         return self._last_reason
 
 
+def _payload_entropy(payload: np.ndarray) -> float:
+    payload_i = np.clip(payload * 255.0, 0, 255).astype(np.int32)
+    hist, _ = np.histogram(payload_i, bins=16, range=(0, 256), density=False)
+    total = hist.sum()
+    if total <= 0:
+        return 0.0
+    probs = hist[hist > 0] / total
+    entropy = float(-np.sum(probs * np.log2(probs)))
+    max_entropy = float(np.log2(min(len(payload_i), 16))) if len(payload_i) > 1 else 1.0
+    return 0.0 if max_entropy <= 0 else float(entropy / max_entropy)
+
+
+def _compute_engineered_can_features(
+    frames: Deque[Dict[str, Any]],
+    rolling_window: int = 200,
+) -> np.ndarray:
+    win = list(frames)
+    n = len(win)
+    can_ids = [round(float(fr.get("can_id", 0.0)), 6) for fr in win]
+    timestamps = [float(fr.get("timestamp", idx)) for idx, fr in enumerate(win)]
+    payloads = [
+        np.asarray(fr.get("payload", [0.0] * 8), dtype=np.float32)[:8]
+        for fr in win
+    ]
+
+    inter_arrival_raw = np.zeros(n, dtype=np.float32)
+    for i in range(1, n):
+        inter_arrival_raw[i] = max(0.0, timestamps[i] - timestamps[i - 1])
+
+    inter_arrival = np.zeros(n, dtype=np.float32)
+    max_so_far = 0.0
+    for i, delta in enumerate(inter_arrival_raw):
+        max_so_far = max(max_so_far, float(delta))
+        scale = max(max_so_far, 1e-9)
+        inter_arrival[i] = float(delta / scale)
+
+    switches = np.zeros(n, dtype=np.float32)
+    for i in range(1, n):
+        switches[i] = 1.0 if abs(can_ids[i] - can_ids[i - 1]) > 1e-6 else 0.0
+
+    counts: Dict[float, int] = {}
+    out = np.zeros((n, 6), dtype=np.float32)
+
+    for i, can_id in enumerate(can_ids):
+        counts[can_id] = counts.get(can_id, 0) + 1
+        start = max(0, i - rolling_window + 1)
+        prefix_ids = can_ids[start : i + 1]
+        prefix_len = max(len(prefix_ids), 1)
+        freq_global = counts[can_id] / float(i + 1)
+        freq_win = prefix_ids.count(can_id) / float(prefix_len)
+        entropy = _payload_entropy(payloads[i])
+        ia_roll = float(np.mean(inter_arrival[start : i + 1]))
+        switch_rate = float(np.mean(switches[start : i + 1]))
+        out[i] = np.asarray(
+            [freq_global, freq_win, entropy, inter_arrival[i], ia_roll, switch_rate],
+            dtype=np.float32,
+        )
+
+    return out
+
+
 def to_can_window(frames: Deque[Dict[str, Any]], expected_size: int) -> np.ndarray:
     if len(frames) < expected_size:
         raise ValueError("insufficient CAN frames")
     win = list(frames)[-expected_size:]
+    has_engineered = all("engineered" in fr for fr in win)
+    engineered = None if has_engineered else _compute_engineered_can_features(deque(win))
     out = []
-    for fr in win:
+    for idx, fr in enumerate(win):
         row = [
             float(fr.get("can_id", 0.0)),
             float(fr.get("dlc", 0.0)),
             *[float(x) for x in fr.get("payload", [0.0] * 8)],
         ]
-        # Append engineered features when available (16-feature model)
-        if "engineered" in fr:
+        # Use replay-provided engineered features when available; otherwise compute
+        # causal window-local features so live inputs do not degrade to zero padding.
+        if has_engineered:
             row.extend(fr["engineered"])
+        else:
+            row.extend(engineered[idx].tolist())
         out.append(row)
     return np.asarray(out, dtype=np.float32)
 
 
 def to_eth_image(frame: Dict[str, Any], size: int = 32) -> np.ndarray:
-    # Deterministic lightweight encoding for runtime fallback when packet images are absent.
-    captured = float(frame.get("captured_len", 0.0))
-    original = float(frame.get("original_len", 1.0))
-    ratio = 0.0 if original <= 0 else min(captured / original, 1.5)
-    base = np.full((1, size, size), ratio, dtype=np.float32)
-    return base
+    return np.expand_dims(encode_eth_frame_dict_to_image(frame, image_size=size), axis=0)

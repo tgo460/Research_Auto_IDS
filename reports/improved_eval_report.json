@@ -1,55 +1,868 @@
 {
-  "accuracy": 0.5,
-  "f1": 0.6666666666666666,
-  "precision": 0.5,
-  "recall": 1.0,
-  "mcc": 0.0,
-  "fpr": 1.0,
-  "fnr": 0.0,
-  "specificity": 0.0,
-  "npv": 0.0,
+  "samples": 39449,
+  "accuracy": 0.9368298309209359,
+  "f1": 0.9375094036812277,
+  "precision": 0.9631098974702458,
+  "recall": 0.9132346475157556,
+  "mcc": 0.8749987856143783,
+  "fpr": 0.03772391991570074,
+  "fnr": 0.08676535248424447,
+  "specificity": 0.9622760800842992,
+  "npv": 0.911377245508982,
   "confusion_matrix": [
     [
-      0,
-      10
+      18264,
+      716
     ],
     [
-      0,
-      10
+      1776,
+      18693
     ]
   ],
   "f1_ci95": [
-    0.46153846153846156,
-    0.8243697478991598
+    0.9350329731095076,
+    0.939823727192819
   ],
   "mcc_ci95": [
-    0.0,
-    0.0
+    0.8702134240605135,
+    0.8794293901202844
   ],
   "fpr_ci95": [
-    1.0,
-    1.0
+    0.03503356890542224,
+    0.040639696802453426
   ],
   "fnr_ci95": [
-    0.0,
-    0.0
+    0.08297588538442506,
+    0.0904240810642178
   ],
-  "per_attack": {
-    "DoS": {
-      "samples": 5,
-      "note": "single class in this subset; binary metrics not fully defined"
+  "per_pair": {
+    "baseline_driving_01": {
+      "samples": 794,
+      "accuracy": 0.8526448362720404,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "mcc": 0.0,
+      "fpr": 0.1473551637279597,
+      "fnr": 0.0,
+      "specificity": 0.8526448362720404,
+      "npv": 1.0,
+      "confusion_matrix": [
+        [
+          677,
+          117
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.12342569269521411,
+        0.17380352644836272
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ],
+      "group": "baseline",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_driving_01_original_images-006.npy"
     },
-    "Fuzzy": {
-      "samples": 5,
-      "note": "single class in this subset; binary metrics not fully defined"
+    "baseline_indoors_01": {
+      "samples": 10593,
+      "accuracy": 0.972529028603795,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "mcc": 0.0,
+      "fpr": 0.02747097139620504,
+      "fnr": 0.0,
+      "specificity": 0.972529028603795,
+      "npv": 1.0,
+      "confusion_matrix": [
+        [
+          10302,
+          291
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.02416690267157557,
+        0.030494194279241004
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ],
+      "group": "baseline",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_indoors_01_original_images.npy"
     },
-    "Gear": {
-      "samples": 5,
-      "note": "single class in this subset; binary metrics not fully defined"
+    "can_only_dos_driving_01": {
+      "samples": 78,
+      "accuracy": 0.8333333333333334,
+      "f1": 0.7936507936507936,
+      "precision": 0.6578947368421053,
+      "recall": 1.0,
+      "mcc": 0.7046448252078169,
+      "fpr": 0.24528301886792453,
+      "fnr": 0.0,
+      "specificity": 0.7547169811320755,
+      "npv": 1.0,
+      "confusion_matrix": [
+        [
+          40,
+          13
+        ],
+        [
+          0,
+          25
+        ]
+      ],
+      "f1_ci95": [
+        0.6561702806122449,
+        0.8837590545177277
+      ],
+      "mcc_ci95": [
+        0.5701974007721375,
+        0.8141383385465588
+      ],
+      "fpr_ci95": [
+        0.14545454545454545,
+        0.36846978557504867
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ],
+      "group": "can_only",
+      "can_file": "can_dos_train.csv",
+      "eth_npy_file": "eth_driving_01_original_images-006.npy"
     },
-    "RPM": {
-      "samples": 5,
-      "note": "single class in this subset; binary metrics not fully defined"
+    "can_only_fuzzy_driving_02": {
+      "samples": 382,
+      "accuracy": 0.6858638743455497,
+      "f1": 0.4230769230769231,
+      "precision": 0.26993865030674846,
+      "recall": 0.9777777777777777,
+      "mcc": 0.4071462793058609,
+      "fpr": 0.35311572700296734,
+      "fnr": 0.022222222222222223,
+      "specificity": 0.6468842729970327,
+      "npv": 0.9954337899543378,
+      "confusion_matrix": [
+        [
+          218,
+          119
+        ],
+        [
+          1,
+          44
+        ]
+      ],
+      "f1_ci95": [
+        0.3225472171151596,
+        0.49762195121951214
+      ],
+      "mcc_ci95": [
+        0.31906941991760135,
+        0.4728037205596029
+      ],
+      "fpr_ci95": [
+        0.3035647254397254,
+        0.40526154561203365
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.07547169811320754
+      ],
+      "group": "can_only",
+      "can_file": "can_fuzzy_train.csv",
+      "eth_npy_file": "eth_driving_02_original_images-005.npy"
+    },
+    "can_only_gear_driving_02": {
+      "samples": 382,
+      "accuracy": 0.9345549738219895,
+      "f1": 0.84472049689441,
+      "precision": 0.8,
+      "recall": 0.8947368421052632,
+      "mcc": 0.8054444856730061,
+      "fpr": 0.05555555555555555,
+      "fnr": 0.10526315789473684,
+      "specificity": 0.9444444444444444,
+      "npv": 0.9730639730639731,
+      "confusion_matrix": [
+        [
+          289,
+          17
+        ],
+        [
+          8,
+          68
+        ]
+      ],
+      "f1_ci95": [
+        0.7851758087201125,
+        0.8944181104936254
+      ],
+      "mcc_ci95": [
+        0.7399743330009526,
+        0.8671193172403107
+      ],
+      "fpr_ci95": [
+        0.02999257425742574,
+        0.07976351750905823
+      ],
+      "fnr_ci95": [
+        0.0487328506097561,
+        0.1728395061728395
+      ],
+      "group": "can_only",
+      "can_file": "can_gear_train.csv",
+      "eth_npy_file": "eth_driving_02_original_images-005.npy"
+    },
+    "can_only_rpm_indoors_01": {
+      "samples": 8356,
+      "accuracy": 0.8177357587362374,
+      "f1": 0.11091652072387624,
+      "precision": 0.37401574803149606,
+      "recall": 0.06511309115832763,
+      "mcc": 0.09300575278824799,
+      "fpr": 0.023053501522401043,
+      "fnr": 0.9348869088416724,
+      "specificity": 0.976946498477599,
+      "npv": 0.8316465070353,
+      "confusion_matrix": [
+        [
+          6738,
+          159
+        ],
+        [
+          1364,
+          95
+        ]
+      ],
+      "f1_ci95": [
+        0.09064355538845405,
+        0.13093374630669544
+      ],
+      "mcc_ci95": [
+        0.06622538290575129,
+        0.12142083032438988
+      ],
+      "fpr_ci95": [
+        0.019875607691617246,
+        0.026689719876199967
+      ],
+      "fnr_ci95": [
+        0.9227176695169731,
+        0.9471562129089419
+      ],
+      "group": "can_only",
+      "can_file": "can_rpm_train.csv",
+      "eth_npy_file": "eth_indoors_01_original_images.npy"
+    },
+    "eth_only_driving_01": {
+      "samples": 761,
+      "accuracy": 0.8423127463863338,
+      "f1": 0.9144079885877318,
+      "precision": 1.0,
+      "recall": 0.8423127463863338,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.15768725361366623,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          120,
+          641
+        ]
+      ],
+      "f1_ci95": [
+        0.8986975397973951,
+        0.9281878710687772
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.13400131406044677,
+        0.18396846254927726
+      ],
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_driving_01_injected_images-003.npy"
+    },
+    "eth_only_driving_02": {
+      "samples": 3905,
+      "accuracy": 0.9695262483994879,
+      "f1": 0.9845273696528409,
+      "precision": 1.0,
+      "recall": 0.9695262483994879,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.030473751600512165,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          119,
+          3786
+        ]
+      ],
+      "f1_ci95": [
+        0.9816076499454753,
+        0.9875550946331345
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.024583866837387964,
+        0.0361203585147247
+      ],
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_driving_02_injected_images-008.npy"
+    },
+    "eth_only_indoors_01": {
+      "samples": 7280,
+      "accuracy": 0.9870879120879121,
+      "f1": 0.9935020047006774,
+      "precision": 1.0,
+      "recall": 0.9870879120879121,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.012912087912087911,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          94,
+          7186
+        ]
+      ],
+      "f1_ci95": [
+        0.9921085421569985,
+        0.9947528307097487
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.010439560439560439,
+        0.01565934065934066
+      ],
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_indoors_01_injected_images.npy"
+    },
+    "eth_only_indoors_02": {
+      "samples": 5207,
+      "accuracy": 0.9984636066833109,
+      "f1": 0.9992312127618681,
+      "precision": 1.0,
+      "recall": 0.9984636066833109,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.0015363933166890724,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          8,
+          5199
+        ]
+      ],
+      "f1_ci95": [
+        0.9986538461538461,
+        0.999711843242724
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.0005761474937584022,
+        0.002688688304205877
+      ],
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_indoors_02_injected_images.npy"
+    },
+    "coordinated_dos_driving_01": {
+      "samples": 75,
+      "accuracy": 0.9866666666666667,
+      "f1": 0.9932885906040269,
+      "precision": 1.0,
+      "recall": 0.9866666666666667,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.013333333333333334,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          74
+        ]
+      ],
+      "f1_ci95": [
+        0.9795918367346939,
+        1.0
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.04
+      ],
+      "group": "coordinated",
+      "can_file": "can_dos_train.csv",
+      "eth_npy_file": "eth_driving_01_injected_images-003.npy"
+    },
+    "coordinated_fuzzy_driving_02": {
+      "samples": 390,
+      "accuracy": 0.8666666666666667,
+      "f1": 0.9285714285714286,
+      "precision": 1.0,
+      "recall": 0.8666666666666667,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.13333333333333333,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          52,
+          338
+        ]
+      ],
+      "f1_ci95": [
+        0.9090527119938885,
+        0.9473684210526315
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.1,
+        0.16673076923076915
+      ],
+      "group": "coordinated",
+      "can_file": "can_fuzzy_train.csv",
+      "eth_npy_file": "eth_driving_02_injected_images-008.npy"
+    },
+    "coordinated_gear_indoors_01": {
+      "samples": 726,
+      "accuracy": 0.987603305785124,
+      "f1": 0.9937629937629938,
+      "precision": 1.0,
+      "recall": 0.987603305785124,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.012396694214876033,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          9,
+          717
+        ]
+      ],
+      "f1_ci95": [
+        0.9895615866388309,
+        0.9979296066252588
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.004132231404958678,
+        0.02066115702479339
+      ],
+      "group": "coordinated",
+      "can_file": "can_gear_train.csv",
+      "eth_npy_file": "eth_indoors_01_injected_images.npy"
+    },
+    "coordinated_rpm_indoors_02": {
+      "samples": 520,
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          520
+        ]
+      ],
+      "f1_ci95": [
+        1.0,
+        1.0
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ],
+      "group": "coordinated",
+      "can_file": "can_rpm_train.csv",
+      "eth_npy_file": "eth_indoors_02_injected_images.npy"
     }
-  }
+  },
+  "per_group": {
+    "baseline": {
+      "samples": 11387,
+      "accuracy": 0.9641696671643102,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "mcc": 0.0,
+      "fpr": 0.03583033283568982,
+      "fnr": 0.0,
+      "specificity": 0.9641696671643102,
+      "npv": 1.0,
+      "confusion_matrix": [
+        [
+          10979,
+          408
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.03249099850706947,
+        0.03908623869324668
+      ],
+      "fnr_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "can_only": {
+      "samples": 9198,
+      "accuracy": 0.8172428788867145,
+      "f1": 0.21631701631701633,
+      "precision": 0.42962962962962964,
+      "recall": 0.14454828660436136,
+      "mcc": 0.1678833447195903,
+      "fpr": 0.04056367707098644,
+      "fnr": 0.8554517133956386,
+      "specificity": 0.9594363229290136,
+      "npv": 0.8414183414183414,
+      "confusion_matrix": [
+        [
+          7285,
+          308
+        ],
+        [
+          1373,
+          232
+        ]
+      ],
+      "f1_ci95": [
+        0.19188108627694406,
+        0.23925777673591608
+      ],
+      "mcc_ci95": [
+        0.14037245232657516,
+        0.19399202311320254
+      ],
+      "fpr_ci95": [
+        0.03625128581836863,
+        0.045350439677319256
+      ],
+      "fnr_ci95": [
+        0.8379159363243848,
+        0.8739114288530315
+      ]
+    },
+    "eth_only": {
+      "samples": 17153,
+      "accuracy": 0.9801200956100974,
+      "f1": 0.9899602532018255,
+      "precision": 1.0,
+      "recall": 0.9801200956100974,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.019879904389902642,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          341,
+          16812
+        ]
+      ],
+      "f1_ci95": [
+        0.9888878163656162,
+        0.9910014837362509
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.017836530053051945,
+        0.021980120095610095
+      ]
+    },
+    "coordinated": {
+      "samples": 1711,
+      "accuracy": 0.9637638807714787,
+      "f1": 0.981547619047619,
+      "precision": 1.0,
+      "recall": 0.9637638807714787,
+      "mcc": 0.0,
+      "fpr": 0.0,
+      "fnr": 0.03623611922852133,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "confusion_matrix": [
+        [
+          0,
+          0
+        ],
+        [
+          62,
+          1649
+        ]
+      ],
+      "f1_ci95": [
+        0.9760545762699113,
+        0.9857735625370481
+      ],
+      "mcc_ci95": [
+        0.0,
+        0.0
+      ],
+      "fpr_ci95": [
+        0.0,
+        0.0
+      ],
+      "fnr_ci95": [
+        0.028053769725306838,
+        0.04677089421390998
+      ]
+    }
+  },
+  "curriculum_pairs": [
+    {
+      "name": "baseline_driving_01",
+      "group": "baseline",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_driving_01_original_images-006.npy",
+      "samples": 794
+    },
+    {
+      "name": "baseline_indoors_01",
+      "group": "baseline",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_indoors_01_original_images.npy",
+      "samples": 10593
+    },
+    {
+      "name": "can_only_dos_driving_01",
+      "group": "can_only",
+      "can_file": "can_dos_train.csv",
+      "eth_npy_file": "eth_driving_01_original_images-006.npy",
+      "samples": 78
+    },
+    {
+      "name": "can_only_fuzzy_driving_02",
+      "group": "can_only",
+      "can_file": "can_fuzzy_train.csv",
+      "eth_npy_file": "eth_driving_02_original_images-005.npy",
+      "samples": 382
+    },
+    {
+      "name": "can_only_gear_driving_02",
+      "group": "can_only",
+      "can_file": "can_gear_train.csv",
+      "eth_npy_file": "eth_driving_02_original_images-005.npy",
+      "samples": 382
+    },
+    {
+      "name": "can_only_rpm_indoors_01",
+      "group": "can_only",
+      "can_file": "can_rpm_train.csv",
+      "eth_npy_file": "eth_indoors_01_original_images.npy",
+      "samples": 8356
+    },
+    {
+      "name": "eth_only_driving_01",
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_driving_01_injected_images-003.npy",
+      "samples": 761
+    },
+    {
+      "name": "eth_only_driving_02",
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_driving_02_injected_images-008.npy",
+      "samples": 3905
+    },
+    {
+      "name": "eth_only_indoors_01",
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_indoors_01_injected_images.npy",
+      "samples": 7280
+    },
+    {
+      "name": "eth_only_indoors_02",
+      "group": "eth_only",
+      "can_file": "can_normal_train.csv",
+      "eth_npy_file": "eth_indoors_02_injected_images.npy",
+      "samples": 5207
+    },
+    {
+      "name": "coordinated_dos_driving_01",
+      "group": "coordinated",
+      "can_file": "can_dos_train.csv",
+      "eth_npy_file": "eth_driving_01_injected_images-003.npy",
+      "samples": 75
+    },
+    {
+      "name": "coordinated_fuzzy_driving_02",
+      "group": "coordinated",
+      "can_file": "can_fuzzy_train.csv",
+      "eth_npy_file": "eth_driving_02_injected_images-008.npy",
+      "samples": 390
+    },
+    {
+      "name": "coordinated_gear_indoors_01",
+      "group": "coordinated",
+      "can_file": "can_gear_train.csv",
+      "eth_npy_file": "eth_indoors_01_injected_images.npy",
+      "samples": 726
+    },
+    {
+      "name": "coordinated_rpm_indoors_02",
+      "group": "coordinated",
+      "can_file": "can_rpm_train.csv",
+      "eth_npy_file": "eth_indoors_02_injected_images.npy",
+      "samples": 520
+    }
+  ]
 }

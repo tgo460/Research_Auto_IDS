@@ -1,0 +1,15 @@
+{
+  "timestamp_utc": "2026-03-26T10:53:21.895489+00:00",
+  "report_type": "strict_ablation_eval",
+  "model_path": "models/student_tiny_improved.pth",
+  "split_manifest": "data/splits/split_v3_research_valid.json",
+  "pairing_mode": "label_cartesian",
+  "splits": {
+    "val": {
+      "error": "empty dataset"
+    },
+    "test": {
+      "error": "empty dataset"
+    }
+  }
+}

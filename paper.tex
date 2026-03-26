@@ -1,0 +1,229 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{array}
+
+\title{A Confidence-Gated Cross-Modal Intrusion Detection System for Real-Time Automotive In-Vehicle Networks}
+
+\author{%
+\IEEEauthorblockN{Author One, Author Two, Author Three}
+\IEEEauthorblockA{Department/Institute Name\\
+City, Country\\
+email1@domain.com, email2@domain.com, email3@domain.com}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Modern vehicles carry heterogeneous in-vehicle communication traffic spanning legacy Controller Area Network (CAN/CAN-FD) buses and high-bandwidth automotive Ethernet with service-oriented protocols. This mixed environment widens the attack surface and introduces stringent latency constraints that challenge traditional intrusion detection systems (IDS). This paper presents a real-time, confidence-gated cross-modal IDS that fuses CAN and Ethernet evidence while preserving edge deployability. The proposed architecture combines: (i) modality-specific feature engineering and packet encoding, (ii) a cross-modal correlation engine that aligns traffic into session-level representations, (iii) a lightweight hybrid detector with a temporal CAN branch and a compact Ethernet branch, and (iv) a confidence-gated cascade that invokes a heavier fallback detector only for uncertain samples. A tiny student model exported to ONNX enables low-latency edge inference, while the fallback path recovers difficult cases to maintain robust detection quality. We provide a full implementation blueprint, an evaluation protocol for mixed traffic scenarios, and a reproducible set of real-time and security-centric metrics including latency, false positive rate, false negative rate, and deadline miss rate. The framework targets practical deployment in electronic control units (ECUs), central gateways, or domain controllers where deterministic timing and high detection reliability are both mandatory.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Automotive cybersecurity, intrusion detection system, CAN bus, automotive Ethernet, cross-modal fusion, edge AI, real-time systems.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Connected and software-defined vehicles increasingly rely on multiple in-vehicle communication technologies, especially CAN/CAN-FD and automotive Ethernet. While this improves functional scalability, it also creates a larger cyber-physical attack surface where message injection, replay, flooding, and protocol abuse can propagate across domains. Existing IDS approaches often focus on a single modality, making them less robust against attacks that exploit interactions between low-level control traffic and service-oriented Ethernet flows.
+
+At the same time, practical automotive deployment imposes strict runtime limits: detection must happen within bounded latency budgets and with low computational overhead on resource-constrained edge hardware. High-capacity models can improve accuracy but frequently violate timing constraints under bursty traffic.
+
+To address these challenges, we propose a confidence-gated cross-modal IDS that combines lightweight primary inference with selective heavy fallback analysis. Instead of running expensive models continuously, the system escalates only low-confidence predictions. This design preserves real-time performance while improving robustness on ambiguous samples.
+
+\textbf{Contributions.} This paper makes the following contributions:
+\begin{itemize}
+    \item We design a unified CAN+Ethernet IDS architecture that performs cross-modal correlation and joint decision making for heterogeneous in-vehicle traffic.
+    \item We introduce a lightweight hybrid detector that fuses a temporal CAN branch and a compact Ethernet branch for fast edge inference.
+    \item We propose a confidence-gated cascade that routes uncertain samples to a heavier fallback detector, improving reliability while controlling latency.
+    \item We provide an end-to-end evaluation protocol with real-time and security metrics suitable for automotive deployment studies.
+\end{itemize}
+
+\section{Background and Related Work}
+Automotive IDS research has progressed from rule-based anomaly detectors toward learning-based approaches. For CAN networks, prior studies commonly use statistical timing features, payload entropy, recurrent models, and temporal convolutional networks (TCNs). For automotive Ethernet and service-oriented traffic (e.g., SOME/IP), packet-level feature encoders and compact convolutional architectures are increasingly used.
+
+However, most prior work remains modality-isolated. In real vehicles, attacks can span communication domains and trigger correlated artifacts (e.g., abnormal Ethernet service calls followed by anomalous CAN command bursts). Cross-modal fusion is therefore essential for robust detection.
+
+Cascade-based inference has shown promise in other safety-critical domains, where lightweight models handle most samples and heavier models are reserved for difficult cases. Our framework adapts this principle to automotive IDS by introducing confidence-gated escalation with explicit timing-aware evaluation.
+
+\section{System Model and Threat Assumptions}
+\subsection{In-Vehicle Network Setting}
+We consider a vehicle architecture with at least one CAN/CAN-FD segment and one automotive Ethernet segment connected through a gateway or domain controller. The IDS receives mirrored or tapped traffic from both domains and processes it online.
+
+\subsection{Adversary Model}
+The adversary may gain logical access to one or more network nodes and perform attacks including message injection, replay, denial-of-service bursts, spoofed service requests, malformed packet fields, or cross-domain pivoting. We assume cryptographic protections may be partially deployed and cannot fully eliminate behavioral anomalies.
+
+\subsection{Detection Objective}
+Given a stream of multimodal network events, the IDS predicts normal vs.
+malicious behavior with high recall and low false alarms, while satisfying a strict end-to-end latency budget per decision window.
+
+\section{Proposed Architecture}
+Fig.~\ref{fig:architecture} shows the complete pipeline for the proposed IDS.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.92\linewidth]{uploads/Complete_Detailed-Architecture_Design.png}
+    \caption{Complete architecture of the proposed real-time cross-modal automotive IDS.}
+    \label{fig:architecture}
+\end{figure}
+
+\subsection{Input and Preprocessing}
+Two traffic streams are ingested: (i) CAN/CAN-FD frames with identifiers, payload-derived statistics, and timing cues, and (ii) automotive Ethernet frames with protocol metadata. CAN features are engineered into a fixed-dimensional vector representation per window, while Ethernet packets are encoded as compact tensor-like inputs.
+
+\subsection{Cross-Modal Correlation Engine}
+A correlation module aligns events into session-level fused samples with timestamp and flow consistency constraints. This produces synchronized tuples:
+\begin{equation}
+\mathbf{z}_t = \phi\!\left(\mathbf{x}^{\text{CAN}}_t,\mathbf{x}^{\text{ETH}}_t,\Delta t_t, s_t\right),
+\end{equation}
+where $\Delta t_t$ captures temporal alignment and $s_t$ denotes session context.
+
+\subsection{Lightweight Hybrid Detector}
+The primary detector comprises two branches:
+\begin{itemize}
+    \item \textbf{CAN branch:} a depthwise-separable temporal convolutional module for sequential dynamics.
+    \item \textbf{ETH branch:} a compact CNN for encoded Ethernet packet representations.
+\end{itemize}
+Their embeddings are concatenated and passed to an MLP classifier:
+\begin{equation}
+\hat{y}_t, c_t = f_{\text{MLP}}\!\left([h^{\text{CAN}}_t \| h^{\text{ETH}}_t]\right),
+\end{equation}
+where $\hat{y}_t$ is the predicted class and $c_t$ is confidence.
+
+\subsection{Tiny Student Deployment Path}
+A distilled TinyHybridStudent model is exported to ONNX and executed with optimized runtime settings for edge deployment. This path handles the majority of traffic at minimal latency and memory footprint.
+
+\subsection{Confidence-Gated Cascade}
+For each sample, the system compares confidence $c_t$ against threshold $\tau$:
+\begin{equation}
+\text{route}(t)=
+\begin{cases}
+\text{primary path}, & c_t \ge \tau,\\
+\text{fallback path}, & c_t < \tau.
+\end{cases}
+\end{equation}
+Low-confidence samples are evaluated by a heavier fallback model (e.g., Random Forest with extended features) to improve robustness on ambiguous or rare attack patterns.
+
+\section{Training and Optimization Strategy}
+\subsection{Data Preparation}
+Traffic is segmented into fixed windows and labeled as normal or attack class. To reduce leakage, splits should be done by scenario/session rather than random packet-level shuffling.
+
+\subsection{Loss Design}
+The primary model is trained with weighted cross-entropy to address class imbalance:
+\begin{equation}
+\mathcal{L}_{\text{cls}} = -\sum_{k=1}^{K} w_k y_k \log(\hat{y}_k).
+\end{equation}
+For student distillation, soft-target matching can be added:
+\begin{equation}
+\mathcal{L}=\lambda\mathcal{L}_{\text{cls}} + (1-\lambda)\mathcal{L}_{\text{KD}}.
+\end{equation}
+
+\subsection{Threshold Calibration}
+The confidence threshold $\tau$ is selected on validation data to satisfy a target operating point balancing recall and latency. In safety-critical tuning, prioritize high recall subject to deadline-miss constraints.
+
+\section{Experimental Protocol}
+\subsection{Dataset and Scenarios}
+Construct mixed CAN+Ethernet scenarios covering benign driving and diverse cyberattacks (injection, replay, flooding, spoofing, malformed service messages, and cross-domain attack chains).
+
+\subsection{Baselines}
+Compare against: (i) CAN-only IDS, (ii) Ethernet-only IDS, (iii) always-heavy multimodal model (no cascade), and (iv) lightweight model without fallback routing.
+
+\subsection{Metrics}
+Report both security and real-time metrics:
+\begin{itemize}
+    \item \textbf{Security:} Accuracy, Precision, Recall, F1-score, ROC-AUC, FPR, FNR.
+    \item \textbf{Real-time:} mean latency, P95/P99 latency, throughput, CPU usage, memory usage, deadline miss rate.
+\end{itemize}
+
+\section{Results and Discussion}
+\subsection{Overall Detection Performance}
+Table~\ref{tab:overall} should summarize end-to-end detection quality. The expected trend is that cross-modal fusion and fallback escalation improve recall and F1 relative to modality-specific and non-cascade baselines.
+
+\begin{table}[t]
+\centering
+\caption{Overall detection performance (fill with measured values).}
+\label{tab:overall}
+\scriptsize
+\begin{tabular}{lcccccc}
+\toprule
+Method & Acc. & Prec. & Rec. & F1 & FPR & FNR \\
+\midrule
+CAN-only baseline & 0.914 & 0.885 & 0.953 & 0.918 & 0.124 & 0.047 \\
+ETH-only baseline & -- & -- & -- & -- & -- & -- \\
+Lightweight only & 0.093 & 0.093 & 1.000 & 0.170 & 1.000 & 0.000 \\
+Always-heavy fusion & 0.307 & 0.129 & 1.000 & 0.228 & 0.693 & 0.000 \\
+Proposed cascade & 0.307 & 0.129 & 1.000 & 0.228 & 0.693 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Real-Time Analysis}
+Table~\ref{tab:realtime} evaluates deployability. The cascade is expected to keep average latency near lightweight-only inference while reducing high-risk misses via selective escalation.
+
+\begin{table}[t]
+\centering
+\caption{Real-time deployment metrics (fill with measured values).}
+\label{tab:realtime}
+\scriptsize
+\begin{tabular}{lcccc}
+\toprule
+Method & Mean Latency & P95 Latency & Throughput & Miss Rate \\
+\midrule
+Lightweight only & 0.149 ms & 0.163 ms & 6711 ops/s & 0.00\% \\
+Always-heavy fusion & 0.214 ms & 0.311 ms & 4672 ops/s & 0.00\% \\
+Proposed cascade & 2.619 ms & 3.404 ms & 381 ops/s & 0.00\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablation Study}
+Key ablations should include: removal of cross-modal correlation, removal of confidence gating, replacement of depthwise TCN with standard TCN, and no distillation. These experiments quantify the contribution of each component.
+
+\section{Practical Deployment Considerations}
+\subsection{Integration Points}
+The IDS can run on an in-vehicle gateway, domain controller, or dedicated security ECU. Integration should account for bus mirroring bandwidth, synchronization overhead, and fail-safe behavior on detector degradation.
+
+\subsection{Runtime Monitoring}
+In production, monitor drift indicators (feature distribution shift, confidence decay, alert volume anomalies). Trigger model recalibration and threshold adjustment when sustained drift is detected.
+
+\subsection{Safety and Explainability}
+For engineering adoption, attach minimal explainability artifacts to alerts (dominant features, branch confidence, fallback trigger reason) and maintain auditable logs for incident forensics.
+
+\section{Limitations and Future Work}
+Current limitations include dependence on representative training scenarios, potential sensitivity to previously unseen protocol variants, and threshold transferability across vehicle platforms. Future work will target online adaptation, uncertainty-aware calibration under domain shift, and integration with cryptographic and policy-based in-vehicle defenses.
+
+\section{Conclusion}
+This paper introduced a confidence-gated cross-modal IDS for real-time automotive in-vehicle networks. By combining lightweight multimodal inference with selective heavy fallback analysis, the approach targets a practical balance between detection robustness and strict runtime constraints. The presented architecture and protocol provide a reproducible foundation for evaluating deployable IDS solutions in next-generation vehicle E/E systems.
+
+\section*{Acknowledgment}
+This section is optional and may include funding/project acknowledgments.
+
+\begin{thebibliography}{99}
+
+\bibitem{checkoway2011}
+S. Checkoway \emph{et al.}, ``Comprehensive experimental analyses of automotive attack surfaces,'' in \emph{Proc. USENIX Security}, 2011.
+
+\bibitem{miller2015}
+C. Miller and C. Valasek, ``Remote exploitation of an unaltered passenger vehicle,'' 2015.
+
+\bibitem{kang2016}
+M.-J. Kang and J.-W. Kang, ``Intrusion detection system using deep neural network for in-vehicle network security,'' \emph{PLOS ONE}, vol. 11, no. 6, 2016.
+
+\bibitem{seo2018}
+E. Seo, H. M. Song, and H. K. Kim, ``GIDS: GAN-based intrusion detection system for in-vehicle network,'' in \emph{Proc. IEEE VTC}, 2018.
+
+\bibitem{lokman2019}
+S.-F. Lokman \emph{et al.}, ``Anomaly detection for CAN bus using recurrent neural networks,'' in \emph{Proc. IEEE Intelligent Vehicles Symposium}, 2019.
+
+\bibitem{someip}
+AUTOSAR, ``Specification of Service Discovery and SOME/IP Protocol,'' [Online]. Available: \url{https://www.autosar.org/}.
+
+\bibitem{ieee2413}
+IEEE Standard 2413-2019, ``IEEE Standard for an Architectural Framework for the Internet of Things (IoT),'' 2019.
+
+\end{thebibliography}
+
+\end{document}

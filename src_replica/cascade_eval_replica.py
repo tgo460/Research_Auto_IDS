@@ -18,13 +18,14 @@ if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 from architecture_improved import TinyHybridStudent
+from src_replica.data_resolvers import resolve_can_csv, resolve_eth_packet_csv
 from heavy_infer_replica import HeavyTrainConfig, train_heavy_model, predict_heavy
+from src_replica.preprocessing_standard import STANDARD_CAN_FEATURES_16
 from router_replica import ConfidenceRouter, RouterConfig, tune_threshold_by_quantile
 from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD
+from src_replica.split_manifest_utils import is_attack_split_entry, parse_split_entry
 
-CAN_FEATURES_16 = ['CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7',
-                   'can_id_freq_global', 'can_id_freq_win', 'payload_entropy',
-                   'inter_arrival', 'inter_arrival_roll_mean', 'id_switch_rate_win']
+CAN_FEATURES_16 = STANDARD_CAN_FEATURES_16
 
 # Conditional import for dataset
 try:
@@ -56,125 +57,189 @@ def resolve_decision_threshold_from_report(base_path: str, tcfg: Dict, default_t
             pass
     return default_threshold, 'default'
 
-def build_mixed_dataset(base_path: str, split: str = 'train') -> Optional[ConcatDataset]:
-    # 1. Load Split
-    split_path = os.path.join(base_path, 'data', 'splits', 'split_v1.json')
-    if not os.path.exists(split_path):
+def _resolve_split_manifest(base_path: str, split_manifest: Optional[str]) -> Optional[str]:
+    candidates = []
+    if split_manifest:
+        candidates.append(
+            split_manifest if os.path.isabs(split_manifest) else os.path.join(base_path, split_manifest)
+        )
+    else:
+        candidates.extend(
+            [
+                os.path.join(base_path, "data", "splits", "split_v3_research_valid.json"),
+                os.path.join(base_path, "data", "splits", "split_v2_domain_balanced.json"),
+                os.path.join(base_path, "data", "splits", "split_v1.json"),
+            ]
+        )
+
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            return candidate
+    return candidates[0] if candidates else None
+
+
+def _is_attack_artifact(name: str) -> bool:
+    return is_attack_split_entry(name)
+
+
+def _plan_pairs(
+    eth_files: List[Any],
+    can_files: List[Any],
+    pairing_mode: str,
+) -> Tuple[List[Tuple[Any, Any, int]], List[str]]:
+    attack_eth = sorted([f for f in eth_files if _is_attack_artifact(f)], key=lambda x: parse_split_entry(x).display_name())
+    normal_eth = sorted([f for f in eth_files if not _is_attack_artifact(f)], key=lambda x: parse_split_entry(x).display_name())
+    attack_can = sorted([f for f in can_files if _is_attack_artifact(f)], key=lambda x: parse_split_entry(x).display_name())
+    normal_can = sorted([f for f in can_files if not _is_attack_artifact(f)], key=lambda x: parse_split_entry(x).display_name())
+
+    pair_specs: List[Tuple[Any, Any, int]] = []
+    warnings: List[str] = []
+
+    def _names(entries: List[Any]) -> str:
+        return ", ".join(parse_split_entry(entry).display_name() for entry in entries)
+
+    def add_pairs(eth_subset: List[Any], can_subset: List[Any], label: int, label_name: str) -> None:
+        if not eth_subset:
+            return
+        if not can_subset:
+            warnings.append(
+                f"split is missing within-split {label_name} CAN coverage for ETH files: {_names(eth_subset)}"
+            )
+            return
+
+        if pairing_mode == "single_match":
+            for idx, eth_file in enumerate(eth_subset):
+                pair_specs.append((eth_file, can_subset[idx % len(can_subset)], label))
+            return
+
+        for eth_file in eth_subset:
+            for can_file in can_subset:
+                pair_specs.append((eth_file, can_file, label))
+
+    add_pairs(normal_eth, normal_can, 0, "normal")
+    add_pairs(attack_eth, attack_can, 1, "attack")
+    return pair_specs, warnings
+
+
+def build_mixed_dataset(
+    base_path: str,
+    split: str = 'train',
+    split_manifest: Optional[str] = None,
+    pairing_mode: str = "label_cartesian",
+    require_both_classes: bool = False,
+) -> Optional[ConcatDataset]:
+    split_path = _resolve_split_manifest(base_path, split_manifest)
+    if not split_path or not os.path.exists(split_path):
         print(f"Split file not found at {split_path}")
         return None
 
     try:
-        with open(split_path, 'r') as f:
+        with open(split_path, 'r', encoding='utf-8') as f:
             split_data = json.load(f)
     except Exception as e:
         print(f"Error reading split file: {e}")
         return None
 
-    # 2. Get file lists
-    eth_files = split_data['modalities']['eth'].get(split, [])
-    can_files = split_data['modalities']['can'].get(split, [])
-    
-    if not eth_files:
-        print(f"No ETH files found for split {split}")
+    eth_entries_raw = split_data['modalities']['eth'].get(split, [])
+    can_entries_raw = split_data['modalities']['can'].get(split, [])
+    if not eth_entries_raw or not can_entries_raw:
+        print(f"Missing CAN or ETH files for split {split}")
+        return None
+    try:
+        eth_files = [parse_split_entry(entry) for entry in eth_entries_raw]
+        can_files = [parse_split_entry(entry) for entry in can_entries_raw]
+    except Exception as exc:
+        print(f"Invalid split manifest entry for split {split}: {exc}")
         return None
 
-    # 3. Categorize CAN files
-    benign_can = [f for f in can_files if 'normal' in f]
-    attack_can = [f for f in can_files if 'normal' not in f]
-
-    # Fallback: If no benign CAN in this split (e.g. val), borrow from train
-    if not benign_can:
-        benign_can = [f for f in split_data['modalities']['can']['train'] if 'normal' in f]
-    
-    # Fallback: If no attack CAN in this split but we need it (unlikely for val/test if mixed)
-    if not attack_can:
-        attack_can = [f for f in split_data['modalities']['can']['train'] if 'normal' not in f]
+    pair_specs, warnings = _plan_pairs(eth_files, can_files, pairing_mode=pairing_mode)
+    if not pair_specs:
+        for warning in warnings:
+            print(f"Warning: {warning}")
+        print(f"No valid within-split CAN/ETH pairs for split {split}")
+        return None
 
     datasets = []
-    
-    # 4. Pair Datasets
-    for eth_file in eth_files:
-        # Determine pairing based on ETH type
-        is_attack = 'injected' in eth_file or 'attack' in eth_file
-        target_can_file = None
+    loaded_labels = set()
+    pair_rows = []
+    datasets_dir = os.path.join(base_path, "datasets")
 
-        if is_attack:
-            # Pair with first available attack CAN file (e.g. can_dos)
-            if attack_can:
-                target_can_file = attack_can[0] 
-        else:
-            # Pair with benign CAN file
-            if benign_can:
-                target_can_file = benign_can[0]
-        
-        # Instantiate Dataset if pair found
-        if target_can_file:
-            # Construct paths
-            # Eth CSV matches NPY name usually: eth_..._images...npy -> eth_... .csv
-            # Actually, split lists NPY files like "eth_driving_01_injected_images-003.npy"
-            # The CSV is likely "eth_driving_01_injected.csv"
-            # Strategy: strip "_images.*" and append ".csv"
-            
-            eth_npy_abs = os.path.join(base_path, 'datasets', eth_file)
-            
-            # Heuristic for CSV name
-            # Split lists NPY files like "eth_driving_01_injected_images-003.npy"
-            # We need "eth_driving_01_injected_replica_packets.csv" typically found in replica_eth_smoke/
-            
-            base_name = eth_file.split('_images')[0]
-            if "_images" not in eth_file:
-                 base_name = os.path.splitext(eth_file)[0]
-            
-            # Try specific replica_eth_smoke folder first
-            eth_csv_candidates = [
-                os.path.join(base_path, 'datasets', 'replica_eth_smoke', f"{base_name}_replica_packets.csv"),
-                os.path.join(base_path, 'datasets', f"{base_name}_replica_packets.csv"),
-                os.path.join(base_path, 'datasets', f"{base_name}.csv") # Fallback to root (failed previously)
-            ]
-            
-            eth_csv_abs = None
-            for cand in eth_csv_candidates:
-                if os.path.exists(cand):
-                    eth_csv_abs = cand
-                    break
-            
-            # If still not found, search recursively? No, let's stick to known paths.
-            if not eth_csv_abs:
-                print(f"Could not find ETH CSV for {eth_file} (base: {base_name})")
-                continue
+    for eth_ref, can_ref, expected_label in pair_specs:
+        eth_npy_abs = os.path.join(datasets_dir, eth_ref.path)
+        eth_csv_abs = resolve_eth_packet_csv(datasets_dir, eth_ref.path)
+        can_csv_abs = resolve_can_csv(datasets_dir, can_ref.path, prefer_raw=True)
 
-            can_csv_abs = os.path.join(base_path, 'datasets', target_can_file)
-            eth_npy_abs = os.path.join(base_path, 'datasets', eth_file)
-            
-            if os.path.exists(eth_npy_abs) and os.path.exists(eth_csv_abs) and os.path.exists(can_csv_abs):
+        if not eth_csv_abs or not can_csv_abs:
+            warnings.append(
+                f"skipped pair {eth_ref.display_name()} + {can_ref.display_name()}: missing files "
+                f"(eth_npy={os.path.exists(eth_npy_abs)}, eth_csv={bool(eth_csv_abs)}, can_csv={bool(can_csv_abs)})"
+            )
+            continue
 
-                print(f"Pairing {eth_file} with {target_can_file}")
-                if HAS_DATALOADER:
-                    # Use engineered CAN features if available
-                    engineered_can = os.path.join(base_path, 'datasets', 'replica_can_b1_engineered', target_can_file)
-                    if os.path.exists(engineered_can):
-                        can_csv_abs = engineered_can
-                        active_features = CAN_FEATURES_16
-                    else:
-                        active_features = CAN_FEATURES_16[:10]  # fallback to raw 10
-                    ds = CorrelatedHybridVehicleDataset(
-                        can_csv_path=can_csv_abs,
-                        eth_packet_csv_path=eth_csv_abs,
-                        eth_npy_path=eth_npy_abs,
-                        can_features=active_features,
-                        can_window_size=CAN_WINDOW_SIZE_STANDARD,
-                        eth_window_size=ETH_WINDOW_SIZE_STANDARD,
-                        label_policy='max'
-                    )
-                    datasets.append(ds)
-                else:
-                    print("Dataloader not imported.")
-            else:
-                print(f"Missing files for pair: {eth_npy_abs}, {eth_csv_abs}, {can_csv_abs}")
+        print(f"Pairing {eth_ref.display_name()} with {can_ref.display_name()}")
+        if not HAS_DATALOADER:
+            print("Dataloader not imported.")
+            return None
 
-    if datasets:
-        return ConcatDataset(datasets)
-    return None
+        try:
+            ds = CorrelatedHybridVehicleDataset(
+                can_csv_path=can_csv_abs,
+                eth_packet_csv_path=eth_csv_abs,
+                eth_npy_path=eth_npy_abs,
+                can_features=CAN_FEATURES_16,
+                can_window_size=CAN_WINDOW_SIZE_STANDARD,
+                eth_window_size=ETH_WINDOW_SIZE_STANDARD,
+                can_row_start=can_ref.row_start,
+                can_row_stop=can_ref.row_stop,
+                label_policy='max'
+            )
+        except Exception as exc:
+            warnings.append(f"failed to load pair {eth_ref.display_name()} + {can_ref.display_name()}: {exc}")
+            continue
+
+        if len(ds) == 0:
+            warnings.append(f"empty aligned dataset for pair {eth_ref.display_name()} + {can_ref.display_name()}")
+            continue
+
+        datasets.append(ds)
+        loaded_labels.add(expected_label)
+        pair_rows.append(
+            {
+                "eth_file": eth_ref.path,
+                "can_file": can_ref.path,
+                "eth_display": eth_ref.display_name(),
+                "can_display": can_ref.display_name(),
+                "can_row_start": can_ref.row_start,
+                "can_row_stop": can_ref.row_stop,
+                "expected_label": expected_label,
+                "samples": len(ds),
+            }
+        )
+
+    for warning in warnings:
+        print(f"Warning: {warning}")
+
+    if require_both_classes and len(loaded_labels) < 2:
+        print(
+            f"Split {split} does not contain both classes after strict within-split pairing. "
+            "No train borrowing was used."
+        )
+        return None
+
+    if not datasets:
+        return None
+
+    concat = ConcatDataset(datasets)
+    concat.metadata = {
+        "split": split,
+        "split_manifest": split_path.replace("\\", "/"),
+        "pairing_mode": pairing_mode,
+        "pairs_loaded": len(pair_rows),
+        "labels_present": sorted(loaded_labels),
+        "warnings": warnings,
+        "pairs": pair_rows,
+    }
+    return concat
 
 
 def as_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
@@ -365,6 +430,104 @@ def tune_decision_threshold(y_true: np.ndarray, attack_score: np.ndarray, target
     # But for this replica, a simple linspace is fine as placeholder
     return float(best_thresh), best_metrics
 
+
+def _cascade_outputs_for_threshold(
+    light_probs: np.ndarray,
+    heavy_probs: np.ndarray,
+    confidences: np.ndarray,
+    threshold: float,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    routed = np.asarray(confidences <= threshold, dtype=bool)
+    final_probs = np.asarray(light_probs, dtype=float).copy()
+    if heavy_probs.size > 0:
+        final_probs[routed] = np.asarray(heavy_probs, dtype=float)[routed]
+    final_preds = np.argmax(final_probs, axis=1).astype(int)
+    return final_probs[:, 1], final_preds, routed
+
+
+def calibrate_router_threshold(
+    y_true: np.ndarray,
+    confidences: np.ndarray,
+    light_probs: np.ndarray,
+    heavy_probs: np.ndarray,
+    fpr_budget: float,
+    num_candidates: int = 201,
+) -> Tuple[float, Dict[str, Any]]:
+    y_true = np.asarray(y_true).astype(int)
+    confidences = np.asarray(confidences).astype(float)
+    max_runtime_threshold = float(np.nextafter(1.0, 0.0))
+    if confidences.size == 0:
+        fallback_metrics = as_metrics(y_true, np.zeros_like(y_true))
+        fallback_threshold = min(0.5, max_runtime_threshold)
+        return fallback_threshold, {
+            "selected_threshold": fallback_threshold,
+            "selection_reason": "empty_validation_set",
+            "fpr_budget": float(fpr_budget),
+            "selected_metrics": fallback_metrics,
+            "selected_routed_fraction": 0.0,
+            "budget_feasible": False,
+            "candidates_evaluated": 0,
+        }
+
+    quantiles = np.linspace(0.0, 1.0, max(int(num_candidates), 3))
+    candidates = np.unique(np.quantile(confidences, quantiles).astype(float))
+    candidates = np.clip(candidates, 0.0, max_runtime_threshold)
+    if candidates.size == 0:
+        candidates = np.asarray([min(0.5, max_runtime_threshold)], dtype=float)
+
+    best_budget = None
+    best_any = None
+
+    for threshold in candidates:
+        final_attack_prob, final_preds, routed = _cascade_outputs_for_threshold(
+            light_probs=light_probs,
+            heavy_probs=heavy_probs,
+            confidences=confidences,
+            threshold=float(threshold),
+        )
+        metrics = as_metrics(y_true, final_preds)
+        routed_fraction = float(np.mean(routed)) if routed.size else 0.0
+        candidate = {
+            "threshold": float(threshold),
+            "metrics": metrics,
+            "routed_fraction": routed_fraction,
+            "attack_probability_mean": float(np.mean(final_attack_prob)) if final_attack_prob.size else 0.0,
+        }
+
+        budget_key = (
+            metrics["recall"],
+            metrics["mcc"],
+            -metrics["fpr"],
+            -routed_fraction,
+            -abs(routed_fraction - 0.3),
+        )
+        any_key = (
+            -metrics["fpr"],
+            metrics["mcc"],
+            metrics["recall"],
+            -routed_fraction,
+        )
+        if metrics["fpr"] <= fpr_budget and (
+            best_budget is None or budget_key > best_budget["key"]
+        ):
+            best_budget = {**candidate, "key": budget_key}
+        if best_any is None or any_key > best_any["key"]:
+            best_any = {**candidate, "key": any_key}
+
+    selected = best_budget or best_any
+    assert selected is not None
+    selection_reason = "met_fpr_budget" if best_budget is not None else "fallback_min_fpr"
+    selected_threshold = min(float(selected["threshold"]), max_runtime_threshold)
+    return selected_threshold, {
+        "selected_threshold": selected_threshold,
+        "selection_reason": selection_reason,
+        "fpr_budget": float(fpr_budget),
+        "selected_metrics": selected["metrics"],
+        "selected_routed_fraction": float(selected["routed_fraction"]),
+        "budget_feasible": bool(best_budget is not None),
+        "candidates_evaluated": int(len(candidates)),
+    }
+
 class SyntheticDataset(Dataset):
     def __init__(self, n_samples=1000):
         self.x_c = torch.randn(n_samples, CAN_WINDOW_SIZE_STANDARD, 16)
@@ -383,9 +546,19 @@ def main():
     parser.add_argument("--light_model_path", type=str, required=True, help="Path to light model checkpoint")
     parser.add_argument("--data_dir", type=str, default="data", help="Data directory")
     parser.add_argument("--heavy_backend", type=str, default="rf", choices=["rf", "mlp"], help="Heavy model backend")
+    parser.add_argument("--pretrained_heavy_model", type=str, default=None,
+                        help="Optional path to a pretrained heavy model to use instead of retraining on routed samples.")
     parser.add_argument("--route_fraction", type=float, default=0.3, help="Fraction of data to router to heavy model during evaluation/training")
     parser.add_argument("--output_dir", type=str, default="logs", help="Output directory")
     parser.add_argument("--synthetic", action='store_true', help="Use synthetic data if real data not found")
+    parser.add_argument("--split_manifest", type=str, default=os.path.join("data", "splits", "split_v3_research_valid.json"),
+                        help="Split manifest for real-data evaluation.")
+    parser.add_argument("--pairing_mode", type=str, default="label_cartesian", choices=["label_cartesian", "single_match"],
+                        help="Within-split CAN/ETH pairing policy.")
+    parser.add_argument("--allow_train_val_fallback", action='store_true',
+                        help="Allow fallback to a random train/val split when the validation split is invalid. This is not independent evaluation.")
+    parser.add_argument("--allow_one_class_eval", action='store_true',
+                        help="Allow validation on a split that collapses to a single class after strict pairing.")
     
     # Model parameters
     parser.add_argument("--heavy_n_estimators", type=int, default=100)
@@ -394,6 +567,8 @@ def main():
     parser.add_argument("--bootstrap_resamples", type=int, default=1000)
     parser.add_argument("--calibration_bins", type=int, default=10)
     parser.add_argument("--permutation_resamples", type=int, default=1000)
+    parser.add_argument("--fpr_budget", type=float, default=0.05)
+    parser.add_argument("--router_calibration_points", type=int, default=201)
     
     args = parser.parse_args()
 
@@ -433,25 +608,60 @@ def main():
     # 2. Load Data
     train_ds = None
     val_ds = None
+    train_meta: Dict[str, Any] = {}
+    val_meta: Dict[str, Any] = {}
     
     if not args.synthetic:
         # Try to build real datasets
         print("Attempting to load real datasets...")
         project_root = os.path.dirname(BASE_PATH)
-        train_ds = build_mixed_dataset(project_root, split='train')
+        train_ds = build_mixed_dataset(
+            project_root,
+            split='train',
+            split_manifest=args.split_manifest,
+            pairing_mode=args.pairing_mode,
+            require_both_classes=True,
+        )
         if train_ds:
             print("Train dataset loaded.")
-            # For val, we might want 'val' split, but let's check if it exists
-            val_ds = build_mixed_dataset(project_root, split='val')
+            train_meta = getattr(train_ds, "metadata", {})
+            val_ds = build_mixed_dataset(
+                project_root,
+                split='val',
+                split_manifest=args.split_manifest,
+                pairing_mode=args.pairing_mode,
+                require_both_classes=not args.allow_one_class_eval,
+            )
 
             if not val_ds:
-                 # If val split empty or fails, split train? Or validation on train subset?
-                 print("Validation dataset could not be loaded, using subset of train.")
+                 if not args.allow_train_val_fallback:
+                     print(
+                         "Validation dataset could not be loaded without train borrowing or class collapse. "
+                         "Pass --allow_train_val_fallback or --allow_one_class_eval to override."
+                     )
+                     sys.exit(1)
+                 print("Validation dataset could not be loaded independently, using random subset of train.")
                  train_len = int(0.8 * len(train_ds))
                  val_len = len(train_ds) - train_len
                  train_ds, val_ds = random_split(train_ds, [train_len, val_len])
+                 train_meta = {
+                     **train_meta,
+                     "fallback_used": True,
+                     "fallback_reason": "validation_split_invalid",
+                 }
+                 val_meta = {
+                     "source": "random_split_from_train",
+                     "fallback_used": True,
+                     "independent_validation": False,
+                 }
             else:
                 print("Validation dataset loaded.")
+                val_meta = getattr(val_ds, "metadata", {})
+                if len(val_meta.get("labels_present", [])) < 2:
+                    print(
+                        "Warning: validation split resolves to a single class after strict pairing; "
+                        "FPR/FNR claims will be incomplete."
+                    )
         else:
             print("Failed to load real datasets.")
     
@@ -461,6 +671,8 @@ def main():
         train_size = int(0.8 * len(full_ds))
         val_size = len(full_ds) - train_size
         train_ds, val_ds = random_split(full_ds, [train_size, val_size])
+        train_meta = {"source": "synthetic", "independent_validation": False}
+        val_meta = {"source": "synthetic", "independent_validation": False}
 
     train_loader = DataLoader(train_ds, batch_size=32, shuffle=False)
     
@@ -511,7 +723,15 @@ def main():
     y_heavy_train = train_labels[routed_mask]
     
     heavy_model = None
-    if len(X_heavy_train) > 0:
+    heavy_model_source = "none"
+    if args.pretrained_heavy_model:
+        if not os.path.exists(args.pretrained_heavy_model):
+            print(f"Pretrained heavy model not found at {args.pretrained_heavy_model}")
+            sys.exit(1)
+        heavy_model = joblib.load(args.pretrained_heavy_model)
+        heavy_model_source = args.pretrained_heavy_model
+        print(f"Loaded pretrained heavy model: {args.pretrained_heavy_model}")
+    elif len(X_heavy_train) > 0:
         print(f"Training heavy model on {len(X_heavy_train)} samples...")
         heavy_config = HeavyTrainConfig(
             backend=args.heavy_backend,
@@ -526,22 +746,24 @@ def main():
             heavy_path = os.path.join(os.path.dirname(args.light_model_path), 'heavy_rf.joblib')
             joblib.dump(heavy_model, heavy_path)
             print(f"Saved Heavy Model (RF) to {heavy_path}")
+            heavy_model_source = heavy_path
+        else:
+            heavy_model_source = f"trained:{args.heavy_backend}"
     else:
         print("No samples routed for training. Heavy model will not be used.")
 
     # 6. Evaluate Cascade
     print("Evaluating cascade...")
     val_loader = DataLoader(val_ds, batch_size=32, shuffle=False)
-    
-    val_probs = [] # Prob of class 1
-    val_preds = []
+
     val_labels = []
-    routings = []
-    
+    val_confidences = []
+    val_features = []
+
     # For tracking light-only performance simultaneously
     light_only_preds = []
-    light_only_probs = []
-    
+    light_only_prob_rows = []
+
     with torch.no_grad():
         for batch in val_loader:
             if isinstance(batch, dict):
@@ -553,59 +775,54 @@ def main():
                 xc = xc.to(device)
                 xe = xe.to(device)
                 labels = labels.to(device)
-            
-            # Light inference
+
             logits = light_model(xc, xe)
-
-            confidences = router.confidence_from_logits(logits)
-            should_route = router.route_from_confidence(confidences)
-            
-            # Light probabilities
             probs = torch.softmax(logits, dim=1).cpu().numpy()
-            batch_light_preds = np.argmax(probs, axis=1)
-            
-            # Store light only
-            light_only_preds.append(batch_light_preds)
-            light_only_probs.append(probs[:, 1])
-            
-            # Prepare cascade outputs
-            batch_final_probs = probs.copy() # Start with light probs
-            batch_final_preds = batch_light_preds.copy()
-            
-            # If routing needed
-            if should_route.any() and heavy_model is not None:
-                # Prepare features
-                f_xc = xc.view(xc.size(0), -1).cpu().numpy()
-                f_xe = xe.view(xe.size(0), -1).cpu().numpy()
-                batch_features = np.hstack([f_xc, f_xe])
-                
-                # Identify indices in this batch that need routing
-                # should_route is a tensor of bools
-                route_indices_batch = np.where(should_route.cpu().numpy())[0]
-                
-                if len(route_indices_batch) > 0:
-                    X_routed = batch_features[route_indices_batch]
-                    heavy_res = predict_heavy(heavy_model, X_routed)
-                    
-                    # Update predictions and probabilities
-                    # heavy_res['predictions'] is class 0/1
-                    # heavy_res['probabilities'] is (N, 2)
-                    
-                    batch_final_preds[route_indices_batch] = heavy_res['predictions']
-                    batch_final_probs[route_indices_batch] = heavy_res['probabilities']
-            
-            val_probs.append(batch_final_probs[:, 1]) # Store prob of class 1 (Attack)
-            val_preds.append(batch_final_preds)
-            val_labels.append(labels.numpy())
-            routings.append(should_route.cpu().numpy())
+            confidences = router.confidence_from_logits(logits).cpu().numpy()
 
-    # Concatenate results
-    all_final_probs = np.concatenate(val_probs)
-    all_final_preds = np.concatenate(val_preds)
+            light_only_preds.append(np.argmax(probs, axis=1))
+            light_only_prob_rows.append(probs)
+            val_confidences.append(confidences)
+            val_labels.append(labels.cpu().numpy())
+
+            f_xc = xc.view(xc.size(0), -1).cpu().numpy()
+            f_xe = xe.view(xe.size(0), -1).cpu().numpy()
+            val_features.append(np.hstack([f_xc, f_xe]))
+
     all_labels = np.concatenate(val_labels)
-    all_routed = np.concatenate(routings)
+    all_light_probs_rows = np.concatenate(light_only_prob_rows)
     all_light_preds = np.concatenate(light_only_preds)
-    all_light_probs = np.concatenate(light_only_probs)
+    all_light_probs = all_light_probs_rows[:, 1]
+    all_confidences = np.concatenate(val_confidences)
+    all_val_features = np.vstack(val_features) if val_features else np.zeros((0, 0), dtype=np.float32)
+
+    if heavy_model is not None and all_val_features.size > 0:
+        heavy_res_all = predict_heavy(heavy_model, all_val_features)
+        all_heavy_prob_rows = np.asarray(heavy_res_all['probabilities'], dtype=float)
+    else:
+        all_heavy_prob_rows = all_light_probs_rows.copy()
+
+    calibrated_threshold, threshold_calibration = calibrate_router_threshold(
+        y_true=all_labels,
+        confidences=all_confidences,
+        light_probs=all_light_probs_rows,
+        heavy_probs=all_heavy_prob_rows,
+        fpr_budget=args.fpr_budget,
+        num_candidates=args.router_calibration_points,
+    )
+    router.config.threshold = calibrated_threshold
+    print(
+        f"Calibrated router threshold on validation set: {calibrated_threshold:.6f} "
+        f"(reason={threshold_calibration['selection_reason']}, "
+        f"budget_feasible={threshold_calibration['budget_feasible']})"
+    )
+
+    all_final_probs, all_final_preds, all_routed = _cascade_outputs_for_threshold(
+        light_probs=all_light_probs_rows,
+        heavy_probs=all_heavy_prob_rows,
+        confidences=all_confidences,
+        threshold=calibrated_threshold,
+    )
     
     # Calculate metrics
     cascade_metrics = as_metrics(all_labels, all_final_preds)
@@ -641,6 +858,26 @@ def main():
     cm_light = confusion_matrix(all_labels, all_light_preds, labels=[0, 1])
     
     cascade_metrics['routed_fraction'] = float(np.mean(all_routed))
+    light_path_mask = ~all_routed.astype(bool)
+    heavy_path_mask = all_routed.astype(bool)
+
+    def _subset_metrics(mask: np.ndarray, preds: np.ndarray) -> Dict[str, Any]:
+        subset_labels = all_labels[mask]
+        subset_preds = preds[mask]
+        if subset_labels.size == 0:
+            return {
+                "samples": 0,
+                "metrics": {},
+                "confusion_matrix": [[0, 0], [0, 0]],
+            }
+        return {
+            "samples": int(subset_labels.size),
+            "metrics": as_metrics(subset_labels, subset_preds),
+            "confusion_matrix": confusion_matrix(subset_labels, subset_preds, labels=[0, 1]).tolist(),
+        }
+
+    light_path_stats = _subset_metrics(light_path_mask, all_final_preds)
+    heavy_path_stats = _subset_metrics(heavy_path_mask, all_final_preds)
     
     print("\n--- Results ---")
     print("Light Only Metrics:", light_metrics)
@@ -652,7 +889,18 @@ def main():
     
     report = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-        "fpr_budget": 0.05, # Placeholder or from args
+        "fpr_budget": float(args.fpr_budget),
+        "dataset_build": {
+            "train": train_meta,
+            "validation": val_meta,
+        },
+        "evaluation_policy": {
+            "split_manifest": args.split_manifest,
+            "pairing_mode": args.pairing_mode,
+            "allow_train_val_fallback": bool(args.allow_train_val_fallback),
+            "allow_one_class_eval": bool(args.allow_one_class_eval),
+            "synthetic": bool(args.synthetic),
+        },
         "light_only": {
             **light_metrics,
             **light_ci,
@@ -662,7 +910,8 @@ def main():
             **cascade_metrics,
             **cascade_ci,
             "confusion_matrix": cm_cascade.tolist(),
-            "router_threshold": threshold,
+            "router_threshold": calibrated_threshold,
+            "train_router_threshold": threshold,
             "heavy_decision_threshold": 0.5
         },
         "statistical_validation": {
@@ -674,13 +923,67 @@ def main():
             "light_only": light_cal,
             "cascade": cascade_cal,
         },
+        "threshold_calibration": {
+            **threshold_calibration,
+            "train_router_threshold": float(threshold),
+        },
+        "heavy_model_source": heavy_model_source,
     }
 
-    
-    with open(report_path, 'w') as f:
-        json.dump(report, f, indent=2)
+    router_report = {
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "router": {
+            "threshold": float(calibrated_threshold),
+            "mode": router_config.mode,
+            "route_if_below_or_equal": bool(router_config.route_if_below_or_equal),
+        },
+        "decision_threshold": 0.5,
+        "target_route_fraction": float(args.route_fraction),
+        "actual_routed_fraction": float(np.mean(all_routed)),
+        "samples": {
+            "total": int(len(all_labels)),
+            "light_path": int(light_path_stats["samples"]),
+            "heavy_path": int(heavy_path_stats["samples"]),
+        },
+        "metrics": {
+            "overall": cascade_metrics,
+            "light_path": light_path_stats["metrics"],
+            "heavy_path": heavy_path_stats["metrics"],
+        },
+        "confusion_matrix": {
+            "overall": cm_cascade.tolist(),
+            "light_path": light_path_stats["confusion_matrix"],
+            "heavy_path": heavy_path_stats["confusion_matrix"],
+        },
+        "alignment_context": {
+            "train": train_meta,
+            "validation": val_meta,
+        },
+        "threshold_calibration": {
+            **threshold_calibration,
+            "train_router_threshold": float(threshold),
+        },
+        "heavy_model_source": heavy_model_source,
+        "model_source": args.light_model_path,
+    }
+
+    latest_report_path = os.path.join(args.output_dir, "cascade_eval_report_latest.json")
+    router_report_path = os.path.join(args.output_dir, "router_eval_report_latest.json")
+    calibration_report_path = os.path.join(args.output_dir, "threshold_calibration_report_latest.json")
+
+    for path, payload in (
+        (report_path, report),
+        (latest_report_path, report),
+        (router_report_path, router_report),
+        (calibration_report_path, report["threshold_calibration"]),
+    ):
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(payload, f, indent=2)
     
     print(f"Report saved to {report_path}")
+    print(f"Latest cascade report saved to {latest_report_path}")
+    print(f"Router report saved to {router_report_path}")
+    print(f"Threshold calibration report saved to {calibration_report_path}")
 
 if __name__ == "__main__":
     main()

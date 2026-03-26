@@ -26,6 +26,7 @@ except ImportError:
 
 from architecture_improved import TinyHybridStudent
 from router_replica import ConfidenceRouter, RouterConfig
+from src_replica.preprocessing_standard import STANDARD_CAN_FEATURES_16
 from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD
 try:
     from dataloader_correlated_replica import CorrelatedHybridVehicleDataset
@@ -368,9 +369,7 @@ def main():
             if os.path.exists(can_path) and os.path.exists(eth_csv_path) and os.path.exists(eth_npy_path):
                 # Features
                 if is_improved:
-                    can_features = ['CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7',
-                                    'can_id_freq_global', 'can_id_freq_win', 'payload_entropy', 
-                                    'inter_arrival', 'inter_arrival_roll_mean', 'id_switch_rate_win']
+                    can_features = STANDARD_CAN_FEATURES_16
                 else:
                     can_features=['CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7']
                     

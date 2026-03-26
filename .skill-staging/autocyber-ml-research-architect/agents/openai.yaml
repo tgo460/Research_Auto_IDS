@@ -1,0 +1,4 @@
+interface:
+  display_name: "AutoCyber-ML Research Architect"
+  short_description: "Automotive cybersecurity ML research"
+  default_prompt: "Use $autocyber-ml-research-architect to design a deep learning IDS for automotive CAN traffic under real-time constraints."

@@ -78,6 +78,10 @@ def run_ids(args) -> int:
 
 
 def benchmark_ids(args) -> int:
+    if args.eth_mode == "pcap":
+        raise ValueError(
+            "benchmark_ids requires labeled Ethernet replay data; convert PCAPs to labeled CSVs first."
+        )
     cfg = _load_or_override_config(args)
     svc = _make_service(cfg, args, alert_to_stdout=False)
     y_true, y_pred, lat = svc.run(max_samples=cfg.max_samples)
@@ -130,15 +134,40 @@ def validate_ids(args) -> int:
 
 
 def replay_can_eth(args) -> int:
+    if args.eth_mode == "pcap":
+        raise ValueError(
+            "replay_can_eth requires labeled Ethernet replay data; convert PCAPs to labeled CSVs first."
+        )
     cfg = _load_or_override_config(args)
     svc = _make_service(cfg, args, alert_to_stdout=args.stdout_alerts)
+    
+    start_time = datetime.now()
     y_true, y_pred, lat = svc.run(max_samples=cfg.max_samples)
+    end_time = datetime.now()
+    total_time_secs = (end_time - start_time).total_seconds()
+    
+    throughput = len(y_true) / total_time_secs if total_time_secs > 0 else 0
+    
+    y_true_arr = np.asarray(y_true, dtype=float)
+    y_pred_arr = np.asarray(y_pred, dtype=float)
+    
+    correct = np.sum(y_true_arr == y_pred_arr)
+    total = len(y_true_arr)
+    
     out = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "report_type": "replay_can_eth",
-        "samples": len(y_true),
-        "accuracy": float(np.mean(np.asarray(y_true) == np.asarray(y_pred))) if y_true else 0.0,
+        "samples": total,
+        "true_positives": float(np.sum((y_true_arr == 1) & (y_pred_arr == 1))),
+        "false_positives": float(np.sum((y_true_arr == 0) & (y_pred_arr == 1))),
+        "false_negatives": float(np.sum((y_true_arr == 1) & (y_pred_arr == 0))),
+        "true_negatives": float(np.sum((y_true_arr == 0) & (y_pred_arr == 0))),
+        "accuracy": float(correct / total) if total > 0 else 0.0,
         "mean_latency_ms": float(np.mean(lat)) if lat else 0.0,
+        "p95_latency_ms": float(np.percentile(lat, 95)) if lat else 0.0,
+        "p99_latency_ms": float(np.percentile(lat, 99)) if lat else 0.0,
+        "max_latency_ms": float(np.max(lat)) if lat else 0.0,
+        "throughput_fps": float(throughput),
         "can_csv": cfg.can_source,
         "eth_csv": cfg.eth_source,
     }

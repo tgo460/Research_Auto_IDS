@@ -16,12 +16,25 @@ def test_validate_ids_cli():
 def test_benchmark_ids_schema(tmp_path):
     if not os.path.exists("configs/deployment.example.json"):
         return
+
+    eth_csv = tmp_path / "eth_labeled_replica_packets.csv"
+    eth_csv.write_text(
+        "packet_index,timestamp_sec,timestamp_usec,captured_len,original_len,Label\n"
+        "0,1,0,64,64,1\n",
+        encoding="utf-8",
+    )
+    cfg_path = tmp_path / "deployment.json"
+    cfg = json.loads(open("configs/deployment.example.json", "r", encoding="utf-8").read())
+    cfg["eth_source"] = str(eth_csv)
+    cfg["heavy_model_path"] = "models/heavy_rf_improved.joblib"
+    cfg_path.write_text(json.dumps(cfg), encoding="utf-8")
+
     out = tmp_path / "bench.json"
     cmd = [
         sys.executable,
         "benchmark_ids.py",
         "--config",
-        "configs/deployment.example.json",
+        str(cfg_path),
         "--output",
         str(out),
         "--max_samples",
@@ -46,3 +59,28 @@ def test_benchmark_ids_schema(tmp_path):
         "model_hash",
     ):
         assert key in rep
+
+
+def test_benchmark_ids_rejects_pcap_mode(tmp_path):
+    if not os.path.exists("configs/deployment.example.json"):
+        return
+
+    cfg_path = tmp_path / "deployment.json"
+    with open("configs/deployment.example.json", "r", encoding="utf-8") as f:
+        cfg = json.load(f)
+    cfg["heavy_model_path"] = "models/heavy_rf_improved.joblib"
+    cfg_path.write_text(json.dumps(cfg), encoding="utf-8")
+
+    cmd = [
+        sys.executable,
+        "benchmark_ids.py",
+        "--config",
+        str(cfg_path),
+        "--eth-mode",
+        "pcap",
+        "--max_samples",
+        "1",
+    ]
+    res = subprocess.run(cmd, check=False, capture_output=True, text=True)
+    assert res.returncode != 0
+    assert "requires labeled Ethernet replay data" in (res.stderr + res.stdout)

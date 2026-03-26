@@ -1,0 +1,19 @@
+{
+  "selected_threshold": 0.9999998807907104,
+  "selection_reason": "fallback_min_fpr",
+  "fpr_budget": 0.05,
+  "selected_metrics": {
+    "f1": 0.22840409956076135,
+    "precision": 0.12892561983471074,
+    "recall": 1.0,
+    "fpr": 0.6925098554533509,
+    "fnr": 0.0,
+    "specificity": 0.30749014454664914,
+    "npv": 1.0,
+    "mcc": 0.19910639738275998
+  },
+  "selected_routed_fraction": 0.32800953516090586,
+  "budget_feasible": false,
+  "candidates_evaluated": 33,
+  "train_router_threshold": 1.0
+}

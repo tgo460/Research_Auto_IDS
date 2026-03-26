@@ -1,39 +1,42 @@
-graph TD
-    subgraph Data Sources
-        CAN[CAN Bus Data]
-        ETH[Ethernet Data]
+flowchart TD
+    subgraph S1[Live Inputs and Adapters]
+        CANIn[SocketCAN or CSV CAN ingest]
+        ETHIn[PCAP or CSV Ethernet ingest]
     end
 
-    subgraph Feature Engineering
-        CAN --> |Raw 10 Features| FE[Feature Extractor]
-        FE --> |Engineered 16 Features| CAN_Eng[Engineered CAN Data]
-        ETH --> |Raw Packets| ETH_Prep[Preprocessed ETH Data]
+    subgraph S2[Windowing and Preprocessing]
+        CANIn --> CANWin[CAN window builder<br>100 messages]
+        ETHIn --> ETHWin[Ethernet encoder<br>1 frame to 32x32 image]
+        CANWin --> CANEng[16-D CAN representation<br>Raw bytes + engineered timing and entropy]
+        ETHWin --> ETHImg[1x32x32 ETH tensor]
     end
 
-    subgraph Model Architecture
-        CAN_Eng --> |TCN Branch| LightModel[TinyHybridStudent]
-        ETH_Prep --> |CNN Branch| LightModel
-        
-        CAN --> |Raw 10 Features| HeavyModel[Random Forest]
-        ETH_Prep --> |Flattened| HeavyModel
+    subgraph S3[Hybrid Light Path]
+        CANEng --> TCN[TCN branch<br>Depthwise-separable Conv1D]
+        ETHImg --> CNN[CNN branch<br>Compact Conv2D]
+        TCN --> Fuse[Feature concat + MLP]
+        CNN --> Fuse
+        Fuse --> Light[TinyHybridStudent<br>Primary real-time classifier]
     end
 
-    subgraph Real-Time Inference Engine
-        LightModel --> |Confidence Score| Router{Confidence Router}
-        Router --> |Score > Threshold| FastPred[Fast Prediction]
-        Router --> |Score <= Threshold| HeavyModel
-        HeavyModel --> SlowPred[Heavy Prediction]
+    subgraph S4[Routing and Heavy Fallback]
+        Light --> Router{ConfidenceRouter<br>confidence <= threshold}
+        Router -- False --> FastPred[Emit light-path decision]
+        Router -- True --> HeavyPrep[Flatten aligned CAN + ETH features]
+        HeavyPrep --> Heavy[RandomForestClassifier<br>Heavy fallback classifier]
+        Heavy --> SlowPred[Emit heavy-path decision]
     end
 
-    subgraph Current Status
-        FastPred --> |F1: 0.90, Latency: ~1.3ms| Output[Final Decision]
-        SlowPred --> |Latency: ~19ms| Output
+    subgraph S5[Runtime Service]
+        FastPred --> Service[RuntimeIDSService<br>Health monitor + fail-safe + alert egress]
+        SlowPred --> Service
+        Service --> Output[Final alert, latency metrics,<br>deadline tracking, integrity checks]
     end
 
-    classDef completed fill:#d4edda,stroke:#28a745,stroke-width:2px;
-    classDef inProgress fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
-    classDef future fill:#f8d7da,stroke:#dc3545,stroke-width:2px;
+    classDef stable fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef core fill:#dbeafe,stroke:#2563eb,stroke-width:2px;
+    classDef runtime fill:#fff3cd,stroke:#d97706,stroke-width:2px;
 
-    class FE,CAN_Eng,LightModel,Router,FastPred completed;
-    class HeavyModel,SlowPred inProgress;
-    class Output future;
+    class CANWin,ETHWin,CANEng,ETHImg stable;
+    class TCN,CNN,Fuse,Light,Router,HeavyPrep,Heavy core;
+    class Service,Output runtime;

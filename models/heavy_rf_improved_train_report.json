@@ -1,0 +1,55 @@
+{
+  "model_path": "models\\heavy_rf_improved.joblib",
+  "samples": 39449,
+  "features": 2624,
+  "training_accuracy": 0.9998225557048341,
+  "label_distribution": {
+    "0": 18980,
+    "1": 20469
+  },
+  "group_distribution": {
+    "baseline": 11387,
+    "can_only": 9198,
+    "eth_only": 17153,
+    "coordinated": 1711
+  },
+  "pair_distribution": {
+    "baseline_driving_01": 794,
+    "baseline_indoors_01": 10593,
+    "can_only_dos_driving_01": 78,
+    "can_only_fuzzy_driving_02": 382,
+    "can_only_gear_driving_02": 382,
+    "can_only_rpm_indoors_01": 8356,
+    "eth_only_driving_01": 761,
+    "eth_only_driving_02": 3905,
+    "eth_only_indoors_01": 7280,
+    "eth_only_indoors_02": 5207,
+    "coordinated_dos_driving_01": 75,
+    "coordinated_fuzzy_driving_02": 390,
+    "coordinated_gear_indoors_01": 726,
+    "coordinated_rpm_indoors_02": 520
+  },
+  "sample_weighting": {
+    "strategy": "inverse_class_x_inverse_pair_frequency",
+    "pair_weights": {
+      "baseline_driving_01": 3.548848506657071,
+      "baseline_indoors_01": 0.26600450432226136,
+      "can_only_dos_driving_01": 36.125457875457876,
+      "can_only_fuzzy_driving_02": 7.3764023934181004,
+      "can_only_gear_driving_02": 7.3764023934181004,
+      "can_only_rpm_indoors_01": 0.33721705532380497,
+      "eth_only_driving_01": 3.7027407546461424,
+      "eth_only_driving_02": 0.7215840497530638,
+      "eth_only_indoors_01": 0.38705847723704867,
+      "eth_only_indoors_02": 0.5411533924113144,
+      "coordinated_dos_driving_01": 37.57047619047619,
+      "coordinated_fuzzy_driving_02": 7.225091575091575,
+      "coordinated_gear_indoors_01": 3.881247540338449,
+      "coordinated_rpm_indoors_02": 5.418818681318681
+    },
+    "class_weights": {
+      "0": 1.0392255005268705,
+      "1": 0.9636279251551126
+    }
+  }
+}

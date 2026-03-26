@@ -18,6 +18,9 @@ if ROOT_DIR not in sys.path:
 
 from architecture_improved import TinyHybridStudent
 from dataloader_correlated_replica import CorrelatedHybridVehicleDataset
+from src_replica.data_resolvers import resolve_can_csv, resolve_eth_packet_csv
+from src_replica.hybrid_curriculum import evaluation_pair_specs
+from src_replica.preprocessing_standard import STANDARD_CAN_FEATURES_16
 from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD
 
 
@@ -71,6 +74,7 @@ def compute_metrics(y_true, y_pred):
     y_true = np.asarray(y_true)
     y_pred = np.asarray(y_pred)
     return {
+        "samples": int(len(y_true)),
         "accuracy": float(accuracy_score(y_true, y_pred)),
         "f1": float(f1_score(y_true, y_pred, zero_division=0)),
         "precision": float(precision_score(y_true, y_pred, zero_division=0)),
@@ -83,13 +87,34 @@ def compute_metrics(y_true, y_pred):
         "confusion_matrix": confusion_matrix(y_true, y_pred, labels=[0, 1]).tolist(),
     }
 
+
+def predict_dataset(model, dataset, device, batch_size=32):
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    preds = []
+    labels = []
+    with torch.no_grad():
+        for batch in loader:
+            if isinstance(batch, dict):
+                xc = batch['can'].to(device)
+                xe = batch['eth'].to(device)
+                batch_labels = batch['label'].to(device)
+            else:
+                (xc, xe), batch_labels = batch
+                xc = xc.to(device)
+                xe = xe.to(device)
+                batch_labels = batch_labels.to(device)
+
+            logits = model(xc, xe)
+            batch_preds = torch.argmax(logits, dim=1)
+            preds.extend(batch_preds.cpu().numpy())
+            labels.extend(batch_labels.cpu().numpy())
+    return np.asarray(labels), np.asarray(preds)
+
 def evaluate_improved(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Evaluating Improved Light Model on {device}")
     
-    can_features = ['CAN_ID', 'DLC', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7',
-                    'can_id_freq_global', 'can_id_freq_win', 'payload_entropy', 
-                    'inter_arrival', 'inter_arrival_roll_mean', 'id_switch_rate_win']
+    can_features = STANDARD_CAN_FEATURES_16
     input_dim = len(can_features)
 
     model = TinyHybridStudent(input_dim=input_dim, hidden_dim=64, num_classes=2).to(device)
@@ -98,97 +123,96 @@ def evaluate_improved(args):
         print(f"Model not found: {args.model_path}")
         return
 
-    model.load_state_dict(torch.load(args.model_path, map_location=device))
+    checkpoint = torch.load(args.model_path, map_location=device)
+    if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
+        model.load_state_dict(checkpoint["model_state_dict"])
+    else:
+        model.load_state_dict(checkpoint)
     model.eval()
-    
-    # Load Data (Engineered) - Validation Set (e.g. Fuzzy or Gear)
-    # Using Fuzzy for validation
-    engineered_dir = os.path.join(args.data_dir, "replica_can_b1_engineered")
-    datasets_list = []
-    
-    pairs = [
-        ("DoS", "can_dos_train.csv", "eth_driving_01_injected_images-003.npy", "eth_driving_01_injected.csv"),
-        ("Fuzzy", "can_fuzzy_train.csv", "eth_driving_02_injected_images-008.npy", "eth_driving_02_injected.csv"),
-        ("Gear", "can_gear_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"),
-        ("RPM", "can_rpm_train.csv", "eth_driving_02_original_images-005.npy", "eth_driving_02_original.csv"),
-    ]
-    
-    loaded_files = set()
-    
-    per_attack_datasets = []
 
-    for attack_name, can_f, eth_n, eth_c in pairs:
-        if can_f in loaded_files: continue
-        
-        can_path = os.path.join(engineered_dir, can_f)
-        eth_npy_path = os.path.join(args.data_dir, eth_n)
-        
-        # Robust ETH CSV search
-        base_c = eth_c.replace(".csv", "")
-        candidates = [
-            os.path.join(args.data_dir, "replica_eth_smoke", f"{base_c}_replica_packets.csv"),
-            os.path.join(args.data_dir, f"{base_c}_replica_packets.csv"),
-            os.path.join(args.data_dir, f"{base_c}_preprocessed.csv"),
-            os.path.join(args.data_dir, eth_c)
-        ]
-        
-        eth_csv_path = None
-        for cand in candidates:
-            if os.path.exists(cand):
-                eth_csv_path = cand
-                break
+    subset_bootstrap_resamples = max(200, min(args.bootstrap_resamples, 400))
+    per_pair = {}
+    per_group_buffers = {}
+    overall_labels = []
+    overall_preds = []
+    loaded_specs = []
 
-        if os.path.exists(can_path) and os.path.exists(eth_npy_path) and eth_csv_path:
-            print(f"Loading eval pair: {can_f}")
-            try:
-                ds = CorrelatedHybridVehicleDataset(
-                    can_csv_path=can_path,
-                    eth_packet_csv_path=eth_csv_path,
-                    eth_npy_path=eth_npy_path,
-                    can_features=can_features,
-                    can_window_size=CAN_WINDOW_SIZE_STANDARD,
-                    eth_window_size=ETH_WINDOW_SIZE_STANDARD,
-                    can_max_rows=args.max_rows
-                )
-                if len(ds) > 0:
-                    datasets_list.append(ds)
-                    per_attack_datasets.append((attack_name, ds))
-                    loaded_files.add(can_f)
-            except Exception as e:
-                print(f"Error: {e}")
+    for spec in evaluation_pair_specs():
+        can_path = resolve_can_csv(args.data_dir, spec.can_file, prefer_raw=True)
+        eth_npy_path = os.path.join(args.data_dir, spec.eth_npy_file)
+        eth_csv_path = resolve_eth_packet_csv(args.data_dir, spec.eth_npy_file)
 
-    if not datasets_list:
+        if not (can_path and os.path.exists(can_path) and eth_csv_path):
+            print(f"Skipping eval pair {spec.name}; missing source files.")
+            continue
+
+        print(f"Loading eval pair: {spec.name} [{spec.group}]")
+        try:
+            ds = CorrelatedHybridVehicleDataset(
+                can_csv_path=can_path,
+                eth_packet_csv_path=eth_csv_path,
+                eth_npy_path=eth_npy_path,
+                can_features=can_features,
+                can_window_size=CAN_WINDOW_SIZE_STANDARD,
+                eth_window_size=ETH_WINDOW_SIZE_STANDARD,
+                can_max_rows=args.max_rows
+            )
+        except Exception as e:
+            print(f"Error loading {spec.name}: {e}")
+            continue
+
+        if len(ds) == 0:
+            print(f"Skipping eval pair {spec.name}; aligned dataset is empty.")
+            continue
+
+        labels, preds = predict_dataset(model, ds, device)
+        pair_metrics = compute_metrics(labels, preds)
+        pair_metrics.update(bootstrap_ci(labels, preds, n_resamples=subset_bootstrap_resamples, seed=args.seed))
+        pair_metrics.update({
+            "group": spec.group,
+            "can_file": spec.can_file,
+            "eth_npy_file": spec.eth_npy_file,
+        })
+        per_pair[spec.name] = pair_metrics
+        loaded_specs.append({
+            "name": spec.name,
+            "group": spec.group,
+            "can_file": spec.can_file,
+            "eth_npy_file": spec.eth_npy_file,
+            "samples": int(len(labels)),
+        })
+        overall_labels.extend(labels.tolist())
+        overall_preds.extend(preds.tolist())
+
+        if spec.group not in per_group_buffers:
+            per_group_buffers[spec.group] = {"labels": [], "preds": []}
+        per_group_buffers[spec.group]["labels"].extend(labels.tolist())
+        per_group_buffers[spec.group]["preds"].extend(preds.tolist())
+
+    if not overall_labels:
         print("No evaluation data found.")
         return
 
-    val_loader = DataLoader(ConcatDataset(datasets_list), batch_size=32, shuffle=False)
-    
-    all_preds = []
-    all_labels = []
-    
-    with torch.no_grad():
-        for batch in val_loader:
-            if isinstance(batch, dict):
-                    xc = batch['can'].to(device)
-                    xe = batch['eth'].to(device)
-                    labels = batch['label'].to(device)
-            else:
-                    (xc, xe), labels = batch
-                    xc = xc.to(device)
-                    xe = xe.to(device)
-                    labels = labels.to(device)
-            
-            logits = model(xc, xe)
-            preds = torch.argmax(logits, dim=1)
-            all_preds.extend(preds.cpu().numpy())
-            all_labels.extend(labels.cpu().numpy())
-
-    metrics = compute_metrics(all_labels, all_preds)
-    metrics.update(bootstrap_ci(all_labels, all_preds, n_resamples=args.bootstrap_resamples, seed=args.seed))
+    metrics = compute_metrics(overall_labels, overall_preds)
+    metrics.update(bootstrap_ci(overall_labels, overall_preds, n_resamples=args.bootstrap_resamples, seed=args.seed))
+    metrics["per_pair"] = per_pair
+    metrics["per_group"] = {}
+    for group_name, buffers in per_group_buffers.items():
+        group_metrics = compute_metrics(buffers["labels"], buffers["preds"])
+        group_metrics.update(
+            bootstrap_ci(
+                buffers["labels"],
+                buffers["preds"],
+                n_resamples=subset_bootstrap_resamples,
+                seed=args.seed,
+            )
+        )
+        metrics["per_group"][group_name] = group_metrics
+    metrics["curriculum_pairs"] = loaded_specs
 
     print("\n--- Improved Model Results ---")
     print(f"Accuracy:  {metrics['accuracy']:.4f}")
-    if len(set(all_labels)) > 1:
+    if len(set(overall_labels)) > 1:
         print(f"F1 Score:  {metrics['f1']:.4f}")
         print(f"Precision: {metrics['precision']:.4f}")
         print(f"Recall:    {metrics['recall']:.4f}")
@@ -199,45 +223,23 @@ def evaluate_improved(args):
         cm = np.array(metrics['confusion_matrix'])
         print("Confusion Matrix:")
         print(cm)
-
-        # Per-attack metrics (publication-standard breakdown)
-        per_attack = {}
-        for attack_name, ds in per_attack_datasets:
-            loader = DataLoader(ds, batch_size=32, shuffle=False)
-            a_preds, a_labels = [], []
-            with torch.no_grad():
-                for batch in loader:
-                    if isinstance(batch, dict):
-                        xc = batch['can'].to(device)
-                        xe = batch['eth'].to(device)
-                        labels = batch['label'].to(device)
-                    else:
-                        (xc, xe), labels = batch
-                        xc = xc.to(device)
-                        xe = xe.to(device)
-                        labels = labels.to(device)
-                    logits = model(xc, xe)
-                    preds = torch.argmax(logits, dim=1)
-                    a_preds.extend(preds.cpu().numpy())
-                    a_labels.extend(labels.cpu().numpy())
-
-            if len(a_labels) > 0 and len(np.unique(a_labels)) > 1:
-                per_attack[attack_name] = compute_metrics(a_labels, a_preds)
-            else:
-                per_attack[attack_name] = {
-                    "samples": int(len(a_labels)),
-                    "note": "single class in this subset; binary metrics not fully defined",
-                }
-
-        metrics['per_attack'] = per_attack
-
-        os.makedirs(args.output_dir, exist_ok=True)
-        out_path = os.path.join(args.output_dir, "improved_eval_report.json")
-        with open(out_path, "w", encoding="utf-8") as f:
-            json.dump(metrics, f, indent=2)
-        print(f"Saved evaluation report to {out_path}")
+        print("Per-group summary:")
+        for group_name, group_metrics in metrics["per_group"].items():
+            print(
+                f"  {group_name}: "
+                f"F1={group_metrics['f1']:.4f}, "
+                f"Recall={group_metrics['recall']:.4f}, "
+                f"FPR={group_metrics['fpr']:.4f}, "
+                f"Samples={group_metrics['samples']}"
+            )
     else:
         print("Single class in evaluation set - skipping F1/CM.")
+
+    os.makedirs(args.output_dir, exist_ok=True)
+    out_path = os.path.join(args.output_dir, "improved_eval_report.json")
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(metrics, f, indent=2)
+    print(f"Saved evaluation report to {out_path}")
 
 def main():
     parser = argparse.ArgumentParser()

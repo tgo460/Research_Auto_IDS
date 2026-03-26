@@ -2,9 +2,12 @@ import argparse
 import json
 import os
 from datetime import datetime, timezone
+from itertools import combinations
 from typing import Dict, List
 
 import numpy as np
+
+from src_replica.split_manifest_utils import parse_split_entry, split_entries_overlap
 
 
 def _load_json(path: str) -> Dict:
@@ -28,18 +31,68 @@ def _mcc_from_cm(cm: List[List[int]]) -> float:
     return float(((tp * tn) - (fp * fn)) / denom)
 
 
+def _extract_edge_payload(edge: Dict) -> Dict:
+    return edge.get("benchmark_report", edge)
+
+
+def _extract_edge_latency(edge: Dict) -> Dict:
+    payload = _extract_edge_payload(edge)
+    if "latency" in edge:
+        return edge.get("latency", {})
+    return {
+        "p50_ms": payload.get("latency_p50_ms"),
+        "p95_ms": payload.get("latency_p95_ms"),
+        "max_ms": payload.get("latency_max_ms"),
+        "deadline_miss_rate": payload.get("deadline_miss_rate"),
+    }
+
+
+def _extract_cascade_cm(cascade: Dict, key: str) -> List[List[int]]:
+    if key in cascade and isinstance(cascade.get(key), dict):
+        return cascade.get(key, {}).get("confusion_matrix", [[0, 0], [0, 0]])
+    return cascade.get("confusion_matrix", {}).get(key, [[0, 0], [0, 0]])
+
+
 def _validate_split_manifest(path: str, datasets_dir: str) -> Dict:
     data = _load_json(path)
     errors = []
     stats = {"eth": {}, "can": {}}
     for modality in ("eth", "can"):
+        split_entries = {}
         for split in ("train", "val", "test"):
-            files = data.get("modalities", {}).get(modality, {}).get(split, [])
-            stats[modality][split] = len(files)
-            for rel in files:
-                full = os.path.join(datasets_dir, rel)
+            raw_entries = data.get("modalities", {}).get(modality, {}).get(split, [])
+            stats[modality][split] = len(raw_entries)
+            refs = []
+            for raw in raw_entries:
+                try:
+                    ref = parse_split_entry(raw)
+                except Exception as exc:
+                    errors.append(f"invalid {modality}/{split} entry: {exc}")
+                    continue
+                refs.append(ref)
+                full = os.path.join(datasets_dir, ref.path)
                 if not os.path.exists(full):
-                    errors.append(f"missing {modality}/{split} file: {rel}")
+                    errors.append(f"missing {modality}/{split} file: {ref.display_name()}")
+            split_entries[split] = refs
+
+            duplicates = []
+            for idx, left in enumerate(refs):
+                for right in refs[idx + 1 :]:
+                    if split_entries_overlap(left.to_dict(), right.to_dict()):
+                        duplicates.append(f"{left.display_name()} <-> {right.display_name()}")
+            if duplicates:
+                errors.append(f"overlap within {modality}/{split}: {', '.join(sorted(set(duplicates)))}")
+
+        for split_a, split_b in combinations(("train", "val", "test"), 2):
+            overlap = []
+            for left in split_entries[split_a]:
+                for right in split_entries[split_b]:
+                    if split_entries_overlap(left.to_dict(), right.to_dict()):
+                        overlap.append(f"{left.display_name()} <-> {right.display_name()}")
+            if overlap:
+                errors.append(
+                    f"overlap in {modality} splits {split_a}/{split_b}: {', '.join(sorted(set(overlap)))}"
+                )
     return {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "manifest": path.replace("\\", "/"),
@@ -55,7 +108,7 @@ def main() -> int:
     parser.add_argument("--base-path", default=".")
     parser.add_argument("--out-dir", default="reports")
     parser.add_argument("--strict-split-check", action="store_true")
-    parser.add_argument("--split-manifest", default="data/splits/split_v2_domain_balanced.json")
+    parser.add_argument("--split-manifest", default="data/splits/split_v3_research_valid.json")
     args = parser.parse_args()
 
     base = args.base_path
@@ -73,8 +126,10 @@ def main() -> int:
     cascade = _load_json(cascade_path)
     corr = _load_json(corr_path)
 
-    cm_light = cascade.get("confusion_matrix", {}).get("light_only", [[0, 0], [0, 0]])
-    cm_cascade = cascade.get("confusion_matrix", {}).get("cascade", [[0, 0], [0, 0]])
+    cm_light = _extract_cascade_cm(cascade, "light_only")
+    cm_cascade = _extract_cascade_cm(cascade, "cascade")
+    edge_payload = _extract_edge_payload(edge)
+    edge_latency = _extract_edge_latency(edge)
 
     report = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
@@ -115,13 +170,13 @@ def main() -> int:
             },
         },
         "deployment_metrics": {
-            "model_size_kb": edge.get("model_size_kb"),
-            "torchscript_size_kb": edge.get("torchscript_size_kb"),
-            "latency_ms": edge.get("latency", {}),
+            "model_size_kb": edge.get("model_size_kb", edge_payload.get("model_size_kb")),
+            "torchscript_size_kb": edge.get("torchscript_size_kb", edge_payload.get("torchscript_size_kb")),
+            "latency_ms": edge_latency,
             "throughput_samples_per_sec": edge.get("latency", {}).get(
-                "throughput_samples_per_sec", 0.0
+                "throughput_samples_per_sec", edge_payload.get("throughput_samples_per_sec")
             ),
-            "environment": edge.get("environment", {}),
+            "environment": edge.get("environment", edge_payload.get("environment", {})),
         },
         "artifacts": {
             "plots": {
@@ -136,6 +191,7 @@ def main() -> int:
         },
     }
 
+    split_report = None
     if args.strict_split_check:
         split_report = _validate_split_manifest(
             os.path.join(base, args.split_manifest),
@@ -144,6 +200,7 @@ def main() -> int:
         split_latest = os.path.join(logs_dir, "split_validation_report_latest.json")
         with open(split_latest, "w", encoding="utf-8") as f:
             json.dump(split_report, f, indent=2)
+        report["split_validation"] = split_report
 
     out_latest = os.path.join(out_dir, "final_metrics_latest.json")
     out_plain = os.path.join(out_dir, "final_metrics.json")
@@ -153,6 +210,11 @@ def main() -> int:
 
     print(f"Saved: {out_latest}")
     print(f"Saved: {out_plain}")
+    if args.strict_split_check and split_report and not split_report["ok"]:
+        print("Split manifest validation failed:")
+        for err in split_report["errors"]:
+            print(f" - {err}")
+        return 1
     return 0
 
 

@@ -110,9 +110,10 @@ class RuntimeIDSService:
 
             pred = int(out["prediction"])
             # Window-level label: attack if ANY frame in the window is attack
-            can_label = max(int(f.get("label", 0)) for f in self.can_buf)
-            eth_label = int(self.last_eth.get("label", 0))
-            label = int(max(can_label, eth_label))
+            can_labels = [int(f["label"]) for f in self.can_buf if f.get("label") is not None]
+            eth_labels = [int(self.last_eth["label"])] if self.last_eth.get("label") is not None else []
+            all_labels = can_labels + eth_labels
+            label = int(max(all_labels)) if all_labels else 0
             y_true.append(label)
             y_pred.append(pred)
             latencies.append(float(out["latency_ms"]))

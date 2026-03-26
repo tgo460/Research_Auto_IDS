@@ -28,30 +28,11 @@ def scenario_key_from_image_npy(file_name: str) -> Optional[str]:
     return None
 
 def label_from_key(key: str) -> int:
-    key_l = key.lower()
-    if 'injected' in key_l:
-        return 1
-    # Check disassembly again for exact logic.
-    # 34 'injected' in key_l -> JUMP L1 (return 1)
-    # 'attack' in key_l -> JUMP L2 (return 0), if false fall through presumably?
-    # Wait, the disassembly snippet is:
-    # 34 'injected' in key_l -> if true jump to L1 which returns 1.
-    # 'attack' in key_l -> if false jump to L2 which returns 0.
-    # if true (attack in key), it falls through to L1? NO.
-    # Let's re-read carefully.
-    # ... POP_JUMP_IF_TRUE 6 (to L1)
-    # ... POP_JUMP_IF_FALSE 2 (to L2)
-    # L1: RETURN 1
-    # L2: RETURN 0
-    # So if injected is in key -> 1.
-    # If injected NOT in key, check attack.
-    # If attack IS in key -> fallthrough to L1 -> return 1.
-    # If attack NOT in key -> jump to L2 -> return 0.
-    if 'attack' in key_l:
-        return 1
-    return 0
+    raise RuntimeError("Filename-derived ETH labels are no longer supported; use packet CSV Label values instead.")
 
 def build_protocol_window_features(packet_df: pd.DataFrame, window_size: int, max_windows: Optional[int]) -> pd.DataFrame:
+    if 'Label' not in packet_df.columns:
+        raise ValueError("ETH protocol CSV must contain a 'Label' column.")
     # 42
     ts = packet_df['timestamp_sec'].astype(float) + packet_df['timestamp_usec'].astype(float) / 1000000.0
     # 43
@@ -62,6 +43,7 @@ def build_protocol_window_features(packet_df: pd.DataFrame, window_size: int, ma
     orig_len = packet_df['original_len'].astype(float).replace(0.0, np.nan)
     # 46
     eff = (cap_len / orig_len).fillna(0.0).clip(lower=0.0, upper=1.5)
+    labels = pd.to_numeric(packet_df['Label'], errors='coerce').fillna(0).astype(int)
     
     rows = []
     total = len(packet_df)
@@ -101,9 +83,11 @@ def build_protocol_window_features(packet_df: pd.DataFrame, window_size: int, ma
         # Usually: window_idx, len_mean, len_std, len_min, len_max, len_cov, gap_mean, gap_std...
         
         cov = std_len / mean_len if mean_len > 0 else 0.0
-        
+        window_label = int(labels.iloc[s:e].max()) if e > s else 0
+
         rows.append({
             'window_idx': w,
+            'label': window_label,
             'len_mean': mean_len,
             'len_std': std_len,
             'len_min': float(p_len.min()),
@@ -209,8 +193,6 @@ def build_eth_feature_tables(protocol_dir: str, image_dir: str, window_size: int
     combined_rows = []
     
     for key in shared_keys:
-        label = label_from_key(key)
-        
         p_df_raw = pd.read_csv(protocol_map[key])
         p_feat = build_protocol_window_features(p_df_raw, window_size, max_windows_per_scenario)
         
@@ -222,11 +204,11 @@ def build_eth_feature_tables(protocol_dir: str, image_dir: str, window_size: int
             
         p_feat = p_feat.iloc[:max_common].copy()
         i_feat = i_feat.iloc[:max_common].copy()
+        labels = p_feat['label'].to_numpy(dtype=np.int64)
         
         p_feat['scenario_key'] = key
-        p_feat['label'] = label
         i_feat['scenario_key'] = key
-        i_feat['label'] = label
+        i_feat['label'] = labels
         
         merged = pd.merge(
             p_feat, 

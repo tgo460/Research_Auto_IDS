@@ -128,6 +128,51 @@ def plot_ablation_study(ablation_data, output_dir):
     print(f"Saved ablation study to {save_path}")
     plt.close()
 
+
+def plot_strict_comparison(report_data, output_dir):
+    """Plot strict split comparison across hybrid and unimodal baselines."""
+    if not report_data or "splits" not in report_data:
+        return
+
+    rows = []
+    metric = "f1"
+    name_map = {
+        "hybrid_fused": "Hybrid Fused",
+        "hybrid_can_masked": "Hybrid CAN-Masked",
+        "hybrid_eth_masked": "Hybrid ETH-Masked",
+        "baseline_can_only": "Baseline CAN-Only",
+        "baseline_eth_only": "Baseline ETH-Only",
+    }
+    for split_name, split_data in report_data["splits"].items():
+        for key, label in name_map.items():
+            metrics = split_data.get(key)
+            if isinstance(metrics, dict) and metric in metrics:
+                rows.append(
+                    {
+                        "Split": split_name.upper(),
+                        "Model": label,
+                        "Metric": metric.upper(),
+                        "Score": metrics[metric],
+                    }
+                )
+
+    if not rows:
+        print("Skipping strict comparison plot: no data found.")
+        return
+
+    df = pd.DataFrame(rows)
+    plt.figure(figsize=(12, 6))
+    ax = sns.barplot(data=df, x="Split", y="Score", hue="Model", palette="tab10")
+    plt.title("Strict Split Comparison Across Hybrid and Unimodal Baselines", fontsize=15)
+    plt.ylim(0, 1.1)
+    for container in ax.containers:
+        ax.bar_label(container, fmt="%.2f", fontsize=8)
+    plt.tight_layout()
+    save_path = os.path.join(output_dir, "strict_comparison_f1.png")
+    plt.savefig(save_path)
+    print(f"Saved strict comparison plot to {save_path}")
+    plt.close()
+
 def main():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     logs_dir = os.path.join(base_dir, 'logs')
@@ -154,6 +199,14 @@ def main():
         plot_ablation_study(ablation_data, output_dir)
     else:
         print(f"Skipping Ablation plots. File missing: {ablation_report_path}")
+
+    comparison_report_path = os.path.join(base_dir, 'reports', 'strict_comparison_eval_report.json')
+    comparison_data = load_json(comparison_report_path)
+    if comparison_data:
+        print("Generating Strict Comparison Plots...")
+        plot_strict_comparison(comparison_data, output_dir)
+    else:
+        print(f"Skipping strict comparison plots. File missing: {comparison_report_path}")
 
 if __name__ == "__main__":
     main()

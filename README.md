@@ -105,7 +105,7 @@ Research_Auto_IDS/
 │   ├── eth_*_images*.npy              ← Ethernet image embeddings (32×32)
 │   ├── replica_can_b1_engineered/     ← Engineered CAN features (16 cols)
 │   ├── replica_can_b1_baseline/       ← Raw CAN baseline
-│   ├── replica_eth_smoke/             ← Ethernet with timestamps
+│   ├── replica_eth_smoke/             ← Ethernet replay CSVs with timestamps + labels
 │   ├── replica_correlation/           ← CAN↔ETH alignment test data
 │   ├── Car-Hacking Dataset/           ← Source CAN attack data
 │   └── autoeth-intrusion-dataset/     ← Source Ethernet intrusion data
@@ -153,7 +153,8 @@ Research_Auto_IDS/
 │       └── metrics.py                 ← Latency/deadline tracking
 │
 ├── docs/
-│   └── safety_case.md                 ← ISO 26262 safety case
+│   ├── safety_case.md                 ← ISO 26262 safety case
+│   └── research_validity_audit.md     ← Independent research-validity audit
 │
 └── *.mermaid                          ← Architecture diagrams
 ```
@@ -227,7 +228,9 @@ The CAN feature pipeline (`features_can_replica.py`) produces 16 engineered feat
 
 Pre-engineered CSVs are stored in `datasets/replica_can_b1_engineered/`.
 
-Ethernet data uses 32×32 grayscale image embeddings stored as `.npy` files, with timestamp-aligned CSVs in `datasets/replica_eth_smoke/`.
+Ethernet data uses 32×32 grayscale image embeddings stored as `.npy` files, with timestamp-aligned labeled CSVs in `datasets/replica_eth_smoke/`.
+
+Supervised ETH training, replay, and evaluation now require an explicit `Label` column in the Ethernet CSV source. Filename-derived labels are no longer used.
 
 ---
 
@@ -432,6 +435,7 @@ python setup_datasets.py --skip-download
 ```
 
 **Requires:** Car-Hacking Dataset and AutoETH Intrusion Dataset downloaded to `datasets/`.
+Ethernet replay CSVs used by runtime and evaluation must include `Label`.
 
 ---
 
@@ -722,6 +726,8 @@ Full CLI options for transport modes:
 | `--someip-port` | — | SOME/IP server port |
 | `--stdout-alerts` | `False` | Output alerts to stdout |
 
+For `benchmark_ids` and `replay_can_eth`, use labeled ETH CSV replay files. Raw PCAP mode is reserved for live ingestion, not supervised evaluation.
+
 #### Coordinated Attack Simulation (ETH → CAN)
 
 ```bash
@@ -811,6 +817,7 @@ python reproduce.py --config configs/repro_full_and_v2.json
 | Benchmark Schema | `configs/benchmark_report.schema.json` | Standardized benchmark output format |
 | Traceability Matrix | `compliance_matrix.md` | Maps requirements C01–C18 to artifacts |
 | Safety Case | `docs/safety_case.md` | ISO 26262 functional safety documentation |
+| Research Validity Audit | `docs/research_validity_audit.md` | Independent audit of leakage, split integrity, and claim validity |
 | Gap Checklist | `PLAN.md` | 18-item deployment readiness checklist |
 
 ---
@@ -842,7 +849,7 @@ The export script automatically includes this path.
 ### Low Aligned Pairs Count
 If `CorrelatedHybridVehicleDataset` reports few aligned pairs:
 - Verify ETH CSV has a `timestamp_sec` column
-- Use CSVs from `datasets/replica_eth_smoke/` (pre-processed with timestamps)
+- Use CSVs from `datasets/replica_eth_smoke/` that include `Label`
 - Adjust `tolerance_ms` (default: 100 ms)
 
 ### Heavy Model Feature Mismatch
@@ -897,24 +904,20 @@ This will:
 1. Verify datasets are present
 2. Extract CAN training CSVs from the raw dataset files
 3. Engineer 16 CAN features per row → `datasets/replica_can_b1_engineered/`
-4. Extract Ethernet packet CSVs from PCAPs → `datasets/replica_eth_smoke/` (requires `pip install scapy`)
+4. Extract Ethernet packet CSVs from PCAPs → `datasets/replica_eth_smoke/` with `Label` column (requires `pip install scapy`)
 5. Verify all required files are in place
 
 ### Step 2: Train Models
 
 ```bash
 # Train the light model (TinyHybridStudent — TCN+CNN fusion)
-python src_replica/train_improved_light_model.py \
-    --data_dir datasets --output_dir models --epochs 5 --batch_size 32 --lr 0.001
+python src_replica/train_improved_light_model.py \ --data_dir datasets --output_dir models --epochs 5 --batch_size 32 --lr 0.001
 
 # Train the heavy model (Random Forest — 100 trees, 2624 features)
-python src_replica/train_heavy_model_improved.py \
-    --data_dir datasets --output_dir models
+python src_replica/train_heavy_model_improved.py --data_dir datasets --output_model models\heavy_rf_improved.joblib
 
 # Export light model to ONNX for edge deployment
-python src_replica/export_onnx_replica.py \
-    --model_path models/student_tiny_improved.pth \
-    --output_path models/student_tiny_improved.onnx
+python src_replica/export_onnx_replica.py --model_path models/student_tiny_improved.pth --output_path models/student_tiny_improved.onnx
 ```
 
 ### Step 3: Validate & Benchmark
@@ -924,8 +927,7 @@ python src_replica/export_onnx_replica.py \
 python validate_ids.py --config configs/deployment.example.json
 
 # Run performance benchmark
-python benchmark_ids.py --config configs/deployment.example.json \
-    --output reports/benchmark_ids_report.json
+python benchmark_ids.py --config configs/deployment.example.json  --output reports/benchmark_ids_report.json
 ```
 
 ### Step 4: Evaluate
@@ -935,8 +937,7 @@ python benchmark_ids.py --config configs/deployment.example.json \
 python src_replica/cascade_eval_replica.py --data_dir datasets
 
 # Aggregate final metrics with split validation
-python evaluate.py --base-path . --out-dir reports --strict-split-check \
-    --split-manifest data/splits/split_v2_domain_balanced.json
+python evaluate.py --base-path . --out-dir reports --strict-split-check --split-manifest data/splits/split_v2_domain_balanced.json
 ```
 
 ### Step 5: Run the Full Reproducibility Pipeline (One Command)

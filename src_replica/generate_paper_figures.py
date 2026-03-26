@@ -38,6 +38,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
+from src_replica.data_resolvers import resolve_can_csv
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # ---------------------------------------------------------------------------
@@ -126,8 +127,8 @@ def fig1_roc_curves(output_dir):
     all_scores = []
 
     for idx, (atk_name, can_file) in enumerate(attack_types.items()):
-        can_csv = os.path.join(ROOT_DIR, "datasets", "replica_can_b1_engineered", can_file)
-        if not os.path.exists(can_csv):
+        can_csv = resolve_can_csv(os.path.join(ROOT_DIR, "datasets"), can_file, prefer_raw=True)
+        if not can_csv or not os.path.exists(can_csv):
             continue
         try:
             ds = CorrelatedHybridVehicleDataset(
@@ -343,8 +344,8 @@ def fig4_training_curves(output_dir):
     datasets_list = []
     for can_file in ["can_dos_train.csv", "can_fuzzy_train.csv", "can_gear_train.csv",
                      "can_rpm_train.csv", "can_normal_train.csv"]:
-        can_csv = os.path.join(ROOT_DIR, "datasets", "replica_can_b1_engineered", can_file)
-        if not os.path.exists(can_csv):
+        can_csv = resolve_can_csv(os.path.join(ROOT_DIR, "datasets"), can_file, prefer_raw=True)
+        if not can_csv or not os.path.exists(can_csv):
             continue
         try:
             ds = CorrelatedHybridVehicleDataset(
@@ -736,8 +737,8 @@ def fig9_feature_correlation(output_dir):
     dfs = []
     for can_file in ["can_dos_train.csv", "can_fuzzy_train.csv",
                      "can_gear_train.csv", "can_rpm_train.csv", "can_normal_train.csv"]:
-        path = os.path.join(ROOT_DIR, "datasets", "replica_can_b1_engineered", can_file)
-        if os.path.exists(path):
+        path = resolve_can_csv(os.path.join(ROOT_DIR, "datasets"), can_file, prefer_raw=True)
+        if path and os.path.exists(path):
             df = pd.read_csv(path, nrows=5000)
             avail = [c for c in feature_cols if c in df.columns]
             dfs.append(df[avail])

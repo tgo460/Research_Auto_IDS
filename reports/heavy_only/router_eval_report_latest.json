@@ -1,0 +1,209 @@
+{
+  "timestamp_utc": "2026-03-24T06:46:01.150481+00:00",
+  "router": {
+    "threshold": 0.9999998807907104,
+    "mode": "max_softmax",
+    "route_if_below_or_equal": true
+  },
+  "decision_threshold": 0.5,
+  "target_route_fraction": 1.0,
+  "actual_routed_fraction": 0.32800953516090586,
+  "samples": {
+    "total": 4195,
+    "light_path": 2819,
+    "heavy_path": 1376
+  },
+  "metrics": {
+    "overall": {
+      "f1": 0.22840409956076135,
+      "precision": 0.12892561983471074,
+      "recall": 1.0,
+      "fpr": 0.6925098554533509,
+      "fnr": 0.0,
+      "specificity": 0.30749014454664914,
+      "npv": 1.0,
+      "mcc": 0.19910639738275998,
+      "routed_fraction": 0.32800953516090586
+    },
+    "light_path": {
+      "f1": 0.12254412254412254,
+      "precision": 0.0652713728272437,
+      "recall": 1.0,
+      "fpr": 1.0,
+      "fnr": 0.0,
+      "specificity": 0.0,
+      "npv": 0.0,
+      "mcc": 0.0
+    },
+    "heavy_path": {
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0,
+      "specificity": 1.0,
+      "npv": 1.0,
+      "mcc": 1.0
+    }
+  },
+  "confusion_matrix": {
+    "overall": [
+      [
+        1170,
+        2635
+      ],
+      [
+        0,
+        390
+      ]
+    ],
+    "light_path": [
+      [
+        0,
+        2635
+      ],
+      [
+        0,
+        184
+      ]
+    ],
+    "heavy_path": [
+      [
+        1170,
+        0
+      ],
+      [
+        0,
+        206
+      ]
+    ]
+  },
+  "alignment_context": {
+    "train": {
+      "split": "train",
+      "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+      "pairing_mode": "label_cartesian",
+      "pairs_loaded": 6,
+      "labels_present": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "pairs": [
+        {
+          "eth_file": "eth_driving_01_original_images-006.npy",
+          "can_file": "can_normal_train.csv",
+          "eth_display": "eth_driving_01_original_images-006.npy",
+          "can_display": "can_normal_train.csv[0:593300]",
+          "can_row_start": 0,
+          "can_row_stop": 593300,
+          "expected_label": 0,
+          "samples": 794
+        },
+        {
+          "eth_file": "eth_indoors_01_original_images.npy",
+          "can_file": "can_normal_train.csv",
+          "eth_display": "eth_indoors_01_original_images.npy",
+          "can_display": "can_normal_train.csv[0:593300]",
+          "can_row_start": 0,
+          "can_row_stop": 593300,
+          "expected_label": 0,
+          "samples": 4959
+        },
+        {
+          "eth_file": "eth_driving_01_injected_images-003.npy",
+          "can_file": "can_dos_train.csv",
+          "eth_display": "eth_driving_01_injected_images-003.npy",
+          "can_display": "can_dos_train.csv",
+          "can_row_start": null,
+          "can_row_stop": null,
+          "expected_label": 1,
+          "samples": 75
+        },
+        {
+          "eth_file": "eth_driving_01_injected_images-003.npy",
+          "can_file": "can_fuzzy_train.csv",
+          "eth_display": "eth_driving_01_injected_images-003.npy",
+          "can_display": "can_fuzzy_train.csv",
+          "can_row_start": null,
+          "can_row_stop": null,
+          "expected_label": 1,
+          "samples": 75
+        },
+        {
+          "eth_file": "eth_indoors_01_injected_images.npy",
+          "can_file": "can_dos_train.csv",
+          "eth_display": "eth_indoors_01_injected_images.npy",
+          "can_display": "can_dos_train.csv",
+          "can_row_start": null,
+          "can_row_stop": null,
+          "expected_label": 1,
+          "samples": 726
+        },
+        {
+          "eth_file": "eth_indoors_01_injected_images.npy",
+          "can_file": "can_fuzzy_train.csv",
+          "eth_display": "eth_indoors_01_injected_images.npy",
+          "can_display": "can_fuzzy_train.csv",
+          "can_row_start": null,
+          "can_row_stop": null,
+          "expected_label": 1,
+          "samples": 726
+        }
+      ]
+    },
+    "validation": {
+      "split": "val",
+      "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+      "pairing_mode": "label_cartesian",
+      "pairs_loaded": 2,
+      "labels_present": [
+        0,
+        1
+      ],
+      "warnings": [],
+      "pairs": [
+        {
+          "eth_file": "eth_driving_02_original_images-005.npy",
+          "can_file": "can_normal_train.csv",
+          "eth_display": "eth_driving_02_original_images-005.npy",
+          "can_display": "can_normal_train.csv[593300:791100]",
+          "can_row_start": 593300,
+          "can_row_stop": 791100,
+          "expected_label": 0,
+          "samples": 3805
+        },
+        {
+          "eth_file": "eth_driving_02_injected_images-008.npy",
+          "can_file": "can_rpm_train.csv",
+          "eth_display": "eth_driving_02_injected_images-008.npy",
+          "can_display": "can_rpm_train.csv",
+          "can_row_start": null,
+          "can_row_stop": null,
+          "expected_label": 1,
+          "samples": 390
+        }
+      ]
+    }
+  },
+  "threshold_calibration": {
+    "selected_threshold": 0.9999998807907104,
+    "selection_reason": "fallback_min_fpr",
+    "fpr_budget": 0.05,
+    "selected_metrics": {
+      "f1": 0.22840409956076135,
+      "precision": 0.12892561983471074,
+      "recall": 1.0,
+      "fpr": 0.6925098554533509,
+      "fnr": 0.0,
+      "specificity": 0.30749014454664914,
+      "npv": 1.0,
+      "mcc": 0.19910639738275998
+    },
+    "selected_routed_fraction": 0.32800953516090586,
+    "budget_feasible": false,
+    "candidates_evaluated": 33,
+    "train_router_threshold": 1.0
+  },
+  "model_source": "models/student_tiny_improved.pth"
+}

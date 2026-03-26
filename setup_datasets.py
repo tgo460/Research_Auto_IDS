@@ -11,6 +11,7 @@ Usage:
 """
 
 import argparse
+import csv
 import os
 import sys
 import shutil
@@ -226,8 +227,16 @@ def prepare_eth_preprocessed():
     for scenario in pcap_files:
         csv_dst = os.path.join(ETH_SMOKE_DIR, f"eth_{scenario}_replica_packets.csv")
         if os.path.exists(csv_dst):
-            print(f"  [skip] eth_{scenario}_replica_packets.csv exists")
-            continue
+            try:
+                with open(csv_dst, "r", encoding="utf-8", newline="") as f:
+                    reader = csv.reader(f)
+                    header = next(reader, [])
+            except Exception:
+                header = []
+            if "Label" in header:
+                print(f"  [skip] eth_{scenario}_replica_packets.csv exists with Label column")
+                continue
+            print(f"  [refresh] eth_{scenario}_replica_packets.csv missing Label column; regenerating")
 
         pcap_path = os.path.join(pcap_dir, f"{scenario}.pcap")
         if not os.path.exists(pcap_path):
@@ -237,6 +246,7 @@ def prepare_eth_preprocessed():
         print(f"  Extracting {scenario}.pcap -> CSV...")
         packets = rdpcap(pcap_path)
         rows = []
+        label = 1 if ("injected" in scenario or "attack" in scenario) else 0
         for pkt in packets:
             ts = float(pkt.time)
             ts_sec = int(ts)
@@ -247,6 +257,7 @@ def prepare_eth_preprocessed():
                 "timestamp_usec": ts_usec,
                 "captured_len": len(raw),
                 "original_len": len(raw),
+                "Label": label,
             })
         df = pd.DataFrame(rows)
         df.to_csv(csv_dst, index=False)
@@ -281,6 +292,20 @@ def verify_setup():
         status = "OK" if exists else "MISSING"
         print(f"  [{status:7s}] {label}")
         if not exists:
+            all_ok = False
+
+    eth_smoke_csv = os.path.join(ETH_SMOKE_DIR, "eth_driving_01_injected_replica_packets.csv")
+    if os.path.exists(eth_smoke_csv):
+        try:
+            with open(eth_smoke_csv, "r", encoding="utf-8", newline="") as f:
+                reader = csv.reader(f)
+                header = next(reader, [])
+        except Exception:
+            header = []
+        has_label = "Label" in header
+        print(f"  [{'OK' if has_label else 'WARN':7s}] ETH smoke Label column")
+        if not has_label:
+            print("           Existing Ethernet replay CSVs are unlabeled; rerun setup to regenerate them.")
             all_ok = False
 
     print()

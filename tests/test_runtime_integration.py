@@ -1,6 +1,8 @@
 import json
 import os
 
+import pandas as pd
+
 from src_replica.runtime.adapters import (
     CsvCanIngest,
     CsvEthIngest,
@@ -17,6 +19,20 @@ def test_runtime_replay_generates_alerts(tmp_path):
     if not os.path.exists(onnx):
         return
 
+    eth_csv = tmp_path / "eth_labeled_replica_packets.csv"
+    pd.DataFrame(
+        [
+            {
+                "packet_index": 0,
+                "timestamp_sec": 1,
+                "timestamp_usec": 0,
+                "captured_len": 64,
+                "original_len": 64,
+                "Label": 1,
+            }
+        ]
+    ).to_csv(eth_csv, index=False)
+
     alerts_path = tmp_path / "alerts.jsonl"
     cfg = DeploymentConfig(
         light_model_path="models/student_tiny_improved.pth",
@@ -30,7 +46,7 @@ def test_runtime_replay_generates_alerts(tmp_path):
         fail_safe_mode="degraded",
         model_integrity_sha256=sha256_file(onnx),
         can_source="datasets/can_dos_train.csv",
-        eth_source="datasets/replica_eth_smoke/eth_driving_01_injected_replica_packets.csv",
+        eth_source=str(eth_csv),
         alert_output_path=str(alerts_path),
         use_onnx=True,
         max_samples=2,

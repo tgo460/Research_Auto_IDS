@@ -1,6 +1,11 @@
 import os
 import sys
-sys.path.insert(0, r"C:\onnx_pkg")
+_onnx_pkg_dir = os.environ.get("ONNX_PKG_DIR")
+if _onnx_pkg_dir and os.path.isdir(_onnx_pkg_dir):
+    try:
+        sys.path.insert(0, _onnx_pkg_dir)
+    except OSError:
+        pass
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 if BASE_DIR not in sys.path:

@@ -5,6 +5,8 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
+from src_replica.preprocessing_standard import standardize_eth_packet_dataframe
+
 @dataclass
 class AlignmentResult:
     pair_name: str
@@ -43,12 +45,8 @@ def normalize_can_timestamps(can_df: pd.DataFrame) -> np.ndarray:
     return ts / scale
 
 def normalize_eth_timestamps(eth_df: pd.DataFrame) -> np.ndarray:
-    sec_like = pd.to_numeric(eth_df['timestamp_sec'], errors='coerce').fillna(0.0).to_numpy(dtype=np.float64)
-    usec_like = pd.to_numeric(eth_df.get('timestamp_usec', 0.0), errors='coerce').fillna(0.0).to_numpy(dtype=np.float64)
-    
-    scale = _infer_epoch_scale(sec_like)
-    sec_base = sec_like / scale
-    return sec_base + (usec_like / 1000000.0)
+    standardized = standardize_eth_packet_dataframe(eth_df)
+    return standardized["timestamp"].to_numpy(dtype=np.float64)
 
 def make_window_end_timestamps(ts_seconds: np.ndarray, window_size: int, overlap: int) -> np.ndarray:
     if window_size <= 0:
@@ -174,11 +172,14 @@ def correlate_can_eth(
     eth_window_size: int,
     eth_overlap: int,
     tolerance_ms: float,
-    time_mode: str = 'relative_session'
+    time_mode: str = 'relative_session',
+    can_df: Optional[pd.DataFrame] = None,
+    eth_df: Optional[pd.DataFrame] = None,
 ) -> Tuple[pd.DataFrame, AlignmentResult]:
-    
-    can_df = pd.read_csv(can_csv_path)
-    eth_df = pd.read_csv(eth_csv_path)
+    if can_df is None:
+        can_df = pd.read_csv(can_csv_path)
+    if eth_df is None:
+        eth_df = pd.read_csv(eth_csv_path)
     
     can_ts = normalize_can_timestamps(can_df)
     eth_ts = normalize_eth_timestamps(eth_df)

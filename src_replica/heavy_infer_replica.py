@@ -39,7 +39,7 @@ def train_heavy_model(
         clf = RandomForestClassifier(
             n_estimators=config.n_estimators,
             max_depth=config.max_depth,
-            n_jobs=-1,
+            n_jobs=1,
             class_weight='balanced'
         )
         clf.fit(X_train, y_train, sample_weight=sample_weights)

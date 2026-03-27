@@ -28,10 +28,14 @@ STANDARD_CAN_FEATURES_16 = [
     "id_switch_rate_win",
 ]
 
-STANDARD_ETH_IMAGE_SIZE = 32
+STANDARD_ETH_IMAGE_SIZE = 64  # upgraded from 32 to accommodate DPI payload features
 STANDARD_ETH_REPRESENTATION = "metadata_outer_v1"
 STANDARD_CAN_ENGINEERING_WINDOW = 200
 STANDARD_ETH_ENGINEERING_WINDOW = 32
+# Phase 1 DPI: payload byte columns extracted from PCAP
+STANDARD_ETH_PAYLOAD_BYTES = 16
+STANDARD_ETH_PAYLOAD_COLS = [f"payload_b{i}" for i in range(STANDARD_ETH_PAYLOAD_BYTES)]
+STANDARD_ETH_DPI_COLS = ["eth_type", "ip_proto", "src_port", "dst_port", "payload_len", "payload_entropy"]
 ETH_LABEL_PROVENANCE_COLUMNS = [
     "session_id",
     "attack_type",
@@ -357,6 +361,42 @@ def standardize_eth_packet_dataframe(
         if col in out.columns:
             standardized[col] = out[col].fillna("").astype(str)
 
+    # ── Phase 1 DPI: normalise and carry payload columns forward ──────────────
+    # Payload byte features (payload_b0 … payload_b15) — raw byte values [0,255] -> [0,1]
+    for col in STANDARD_ETH_PAYLOAD_COLS:
+        if col in out.columns:
+            raw_vals = pd.to_numeric(out[col], errors="coerce").fillna(0.0).to_numpy(dtype=np.float32)
+            # Values from DPI are already pre-normalised to [0,1]; if raw bytes remain, divide by 255
+            if raw_vals.max() > 1.5:
+                raw_vals = raw_vals / 255.0
+            standardized[col] = _clip01(raw_vals)
+        else:
+            standardized[col] = np.zeros(len(standardized), dtype=np.float32)
+
+    # Scalar DPI features
+    for col in ["eth_type", "ip_proto", "src_port", "dst_port"]:
+        if col in out.columns:
+            standardized[col] = _clip01(
+                pd.to_numeric(out[col], errors="coerce").fillna(0.0).to_numpy(dtype=np.float32)
+            )
+        else:
+            standardized[col] = np.zeros(len(standardized), dtype=np.float32)
+
+    if "payload_entropy" in out.columns:
+        standardized["payload_entropy"] = _clip01(
+            pd.to_numeric(out["payload_entropy"], errors="coerce").fillna(0.0).to_numpy(dtype=np.float32)
+        )
+    else:
+        standardized["payload_entropy"] = np.zeros(len(standardized), dtype=np.float32)
+
+    if "payload_len" in out.columns:
+        # Normalise by max Ethernet payload (1500 bytes)
+        standardized["payload_len_norm"] = _clip01(
+            pd.to_numeric(out["payload_len"], errors="coerce").fillna(0.0).to_numpy(dtype=np.float32) / 1500.0
+        )
+    else:
+        standardized["payload_len_norm"] = np.zeros(len(standardized), dtype=np.float32)
+
     return standardized
 
 
@@ -369,7 +409,8 @@ def _eth_window_summary(window_df: pd.DataFrame) -> np.ndarray:
     roll_gap = window_df["rolling_gap_mean_norm"].to_numpy(dtype=np.float32)
     delta = window_df["packet_delta_norm"].to_numpy(dtype=np.float32)
 
-    features = np.asarray(
+    # ── Metadata features (10 values — same as before) ───────────────────────
+    meta_features = np.asarray(
         [
             float(cap.mean()),
             float(cap.std(ddof=0)),
@@ -390,6 +431,39 @@ def _eth_window_summary(window_df: pd.DataFrame) -> np.ndarray:
         ],
         dtype=np.float32,
     )
+
+    # ── Phase 1 DPI: payload-derived features (20 values) ────────────────────
+    # 16 payload byte means over the window
+    payload_byte_means = np.zeros(STANDARD_ETH_PAYLOAD_BYTES, dtype=np.float32)
+    for i, col in enumerate(STANDARD_ETH_PAYLOAD_COLS):
+        if col in window_df.columns:
+            payload_byte_means[i] = float(window_df[col].to_numpy(dtype=np.float32).mean())
+
+    # Payload entropy aggregates (mean, std, max)
+    if "payload_entropy" in window_df.columns:
+        ent = window_df["payload_entropy"].to_numpy(dtype=np.float32)
+        payload_entropy_mean = float(ent.mean())
+        payload_entropy_std = float(ent.std(ddof=0))
+        payload_entropy_max = float(ent.max())
+    else:
+        payload_entropy_mean = payload_entropy_std = payload_entropy_max = 0.0
+
+    # Network header features (ip_proto, src_port mean, dst_port mean, payload_len)
+    ip_proto_mean = float(window_df["ip_proto"].mean()) if "ip_proto" in window_df.columns else 0.0
+    dst_port_mean = float(window_df["dst_port"].mean()) if "dst_port" in window_df.columns else 0.0
+
+    dpi_features = np.asarray(
+        [
+            *payload_byte_means.tolist(),      # 16 values
+            payload_entropy_mean,              # 1
+            payload_entropy_std,               # 1
+            payload_entropy_max,               # 1
+            ip_proto_mean,                     # 1
+        ],
+        dtype=np.float32,
+    )  # total: 20 DPI values
+
+    features = np.concatenate([meta_features, dpi_features]).astype(np.float32)  # 16 + 20 = 36 values
     return _clip01(features)
 
 
@@ -397,10 +471,14 @@ def encode_eth_window_to_image(
     window_df: pd.DataFrame,
     image_size: int = STANDARD_ETH_IMAGE_SIZE,
 ) -> np.ndarray:
-    stats = _eth_window_summary(window_df)
-    if image_size != STANDARD_ETH_IMAGE_SIZE:
-        raise ValueError(f"ETH image size must be {STANDARD_ETH_IMAGE_SIZE}, got {image_size}")
-    vector = np.concatenate([stats, 1.0 - stats], axis=0).astype(np.float32)
+    stats = _eth_window_summary(window_df)  # 36-element vector
+    # Pad or truncate to half the image_size so that outer product fills image_size x image_size
+    half = image_size // 2
+    if len(stats) < half:
+        stats = np.pad(stats, (0, half - len(stats)), constant_values=0.0)
+    else:
+        stats = stats[:half]
+    vector = np.concatenate([stats, 1.0 - stats], axis=0).astype(np.float32)  # image_size elements
     image = np.outer(vector, vector).astype(np.float32)
     return _clip01(image)
 

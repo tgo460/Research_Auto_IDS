@@ -8,6 +8,10 @@ Usage:
     python setup_datasets.py              # Full setup (download + engineer)
     python setup_datasets.py --skip-download  # Skip downloads, run engineering only
     python setup_datasets.py --dry-run    # Show what would be done
+
+Phase 1 (DPI): PCAP extraction now includes Ethernet/IP/UDP/TCP header
+fields and the first 16 application-layer payload bytes plus Shannon
+entropy, enabling payload-sensitive intrusion detection.
 """
 
 import argparse
@@ -400,6 +404,91 @@ def apply_eth_label_manifest_to_packet_csvs(
     return updated
 
 
+# ── DPI helper ────────────────────────────────────────────────────────────────
+_ETH_PAYLOAD_BYTES = 16  # Number of application-layer bytes to capture
+_ETH_PAYLOAD_COLS = [f"payload_b{i}" for i in range(_ETH_PAYLOAD_BYTES)]
+
+
+def _extract_dpi_fields(pkt) -> dict:
+    """
+    Extract Deep Packet Inspection (DPI) fields from a scapy packet.
+
+    Returns a dict with:
+        eth_type       : Ethernet EtherType (0–65535, normalised /65535)
+        ip_proto       : IP protocol number (0–255, normalised /255)
+        src_port       : TCP/UDP source port (0–65535, normalised /65535)
+        dst_port       : TCP/UDP destination port (0–65535, normalised /65535)
+        payload_len    : raw application-layer payload length in bytes
+        payload_entropy: Shannon entropy of first 64 payload bytes (0.0–1.0)
+        payload_b0 … payload_b15: first 16 payload bytes normalised to [0,1]
+    """
+    import math
+
+    result: dict = {
+        "eth_type": 0.0,
+        "ip_proto": 0.0,
+        "src_port": 0.0,
+        "dst_port": 0.0,
+        "payload_len": 0,
+        "payload_entropy": 0.0,
+    }
+    for col in _ETH_PAYLOAD_COLS:
+        result[col] = 0.0
+
+    try:
+        from scapy.layers.l2 import Ether
+        from scapy.layers.inet import IP, TCP, UDP
+
+        # Ethernet EtherType
+        if pkt.haslayer(Ether):
+            result["eth_type"] = float(pkt[Ether].type) / 65535.0
+
+        # IP layer
+        if pkt.haslayer(IP):
+            result["ip_proto"] = float(pkt[IP].proto) / 255.0
+
+        # Transport layer ports
+        if pkt.haslayer(TCP):
+            result["src_port"] = float(pkt[TCP].sport) / 65535.0
+            result["dst_port"] = float(pkt[TCP].dport) / 65535.0
+            app_payload = bytes(pkt[TCP].payload)
+        elif pkt.haslayer(UDP):
+            result["src_port"] = float(pkt[UDP].sport) / 65535.0
+            result["dst_port"] = float(pkt[UDP].dport) / 65535.0
+            app_payload = bytes(pkt[UDP].payload)
+        else:
+            # Fallback: everything after IP header
+            if pkt.haslayer(IP):
+                app_payload = bytes(pkt[IP].payload)
+            else:
+                from scapy.layers.l2 import Ether
+                app_payload = bytes(pkt.payload) if pkt.haslayer(Ether) else b""
+
+        result["payload_len"] = len(app_payload)
+
+        # Payload byte features (first _ETH_PAYLOAD_BYTES bytes, normalised)
+        for i in range(_ETH_PAYLOAD_BYTES):
+            result[f"payload_b{i}"] = float(app_payload[i]) / 255.0 if i < len(app_payload) else 0.0
+
+        # Shannon entropy over first 64 bytes
+        sample = app_payload[:64]
+        if sample:
+            from collections import Counter
+            counts = Counter(sample)
+            total = len(sample)
+            entropy = -sum(
+                (c / total) * math.log2(c / total)
+                for c in counts.values() if c > 0
+            )
+            max_entropy = math.log2(min(total, 256)) if total > 1 else 1.0
+            result["payload_entropy"] = float(entropy / max_entropy) if max_entropy > 0 else 0.0
+
+    except Exception:
+        pass  # Non-IP or malformed packets: all fields remain 0
+
+    return result
+
+
 def prepare_eth_preprocessed(manifest_path: str | None = None):
     """
     Extract Ethernet packet CSVs from PCAP files and create image .npy arrays.
@@ -447,18 +536,24 @@ def prepare_eth_preprocessed(manifest_path: str | None = None):
                     header = next(reader, [])
             except Exception:
                 header = []
-            has_required = "Label" in header and all(col in header for col in ETH_PROVENANCE_COLUMNS)
+            # Require label provenance AND new DPI payload columns
+            has_required = (
+                "Label" in header
+                and all(col in header for col in ETH_PROVENANCE_COLUMNS)
+                and "payload_entropy" in header
+                and "payload_b0" in header
+            )
             if has_required:
-                print(f"  [skip] eth_{scenario}_replica_packets.csv exists with label provenance columns")
+                print(f"  [skip] eth_{scenario}_replica_packets.csv exists with label provenance + payload columns")
                 continue
-            print(f"  [refresh] eth_{scenario}_replica_packets.csv missing label provenance columns; regenerating")
+            print(f"  [refresh] eth_{scenario}_replica_packets.csv missing columns; regenerating")
 
         pcap_path = os.path.join(pcap_dir, f"{scenario}.pcap")
         if not os.path.exists(pcap_path):
             print(f"  [warn] PCAP not found: {pcap_path}")
             continue
 
-        print(f"  Extracting {scenario}.pcap -> CSV...")
+        print(f"  Extracting {scenario}.pcap -> CSV (DPI enabled)...")
         packets = rdpcap(pcap_path)
         rows = []
         for pkt in packets:
@@ -471,16 +566,20 @@ def prepare_eth_preprocessed(manifest_path: str | None = None):
                 timestamp_sec=ts,
                 manifest_sessions=manifest_sessions,
             )
+
+            # ── Deep Packet Inspection ─────────────────────────────────────
+            dpi = _extract_dpi_fields(pkt)
             rows.append({
                 "timestamp_sec": ts_sec,
                 "timestamp_usec": ts_usec,
                 "captured_len": len(raw),
                 "original_len": len(raw),
+                **dpi,
                 **label_info,
             })
         df = pd.DataFrame(rows)
         df.to_csv(csv_dst, index=False)
-        print(f"    -> {len(df):,} packets extracted")
+        print(f"    -> {len(df):,} packets extracted (with DPI payload features)")
 
 
 def verify_setup():

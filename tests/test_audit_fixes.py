@@ -413,7 +413,7 @@ def test_build_eth_image_windows_from_packet_csv(tmp_path):
     )
 
     windows = build_eth_image_windows(str(packet_csv), eth_window_size=1, eth_overlap=0)
-    assert windows.shape == (3, 32, 32)
+    assert windows.shape == (3, 64, 64)
     assert float(windows[0].sum()) > 0.0
     assert not np.allclose(windows[0], windows[2])
 
@@ -483,7 +483,7 @@ def test_correlated_dataset_supports_metadata_eth_representation_without_npy(tmp
     assert len(ds) > 0
     sample = ds[0]
     assert tuple(sample["can"].shape) == (2, 16)
-    assert tuple(sample["eth"].shape) == (1, 1, 32, 32)
+    assert tuple(sample["eth"].shape) == (1, 1, 64, 64)
 
 
 def test_correlate_can_eth_uses_provided_can_dataframe_timestamps(tmp_path):

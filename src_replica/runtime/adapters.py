@@ -16,6 +16,7 @@ from src_replica.preprocessing_standard import (
     normalize_can_id_series,
     normalize_dlc_series,
     normalize_payload_series,
+    validate_eth_label_dataframe,
 )
 
 
@@ -123,10 +124,12 @@ class CsvEthIngest(EthIngest):
         self._df = pd.read_csv(csv_path)
         if start_row > 0:
             self._df = self._df.iloc[int(start_row):].reset_index(drop=True)
-        if "Label" not in self._df.columns:
-            raise ValueError(
-                f"ETH replay CSV must contain a 'Label' column for evaluation/replay: {csv_path}"
-            )
+        validate_eth_label_dataframe(
+            self._df,
+            context=f"ETH replay CSV {csv_path}",
+            require_label=True,
+            require_provenance=True,
+        )
         self._idx = 0
 
     def read_frame(self) -> Optional[Dict[str, Any]]:
@@ -141,6 +144,10 @@ class CsvEthIngest(EthIngest):
             "captured_len": float(row.get("captured_len", 0.0)),
             "original_len": float(row.get("original_len", 0.0)),
             "label": int(row.get("Label", 0)),
+            "session_id": str(row.get("session_id", "")),
+            "attack_type": str(row.get("attack_type", "")),
+            "label_source": str(row.get("label_source", "")),
+            "label_granularity": str(row.get("label_granularity", "")),
         }
 
 

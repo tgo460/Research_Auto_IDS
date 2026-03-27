@@ -19,8 +19,8 @@ def test_benchmark_ids_schema(tmp_path):
 
     eth_csv = tmp_path / "eth_labeled_replica_packets.csv"
     eth_csv.write_text(
-        "packet_index,timestamp_sec,timestamp_usec,captured_len,original_len,Label\n"
-        "0,1,0,64,64,1\n",
+        "packet_index,timestamp_sec,timestamp_usec,captured_len,original_len,Label,session_id,attack_type,label_source,label_granularity\n"
+        "0,1,0,64,64,1,sess_demo,avtp_injection,packet_ground_truth,packet\n",
         encoding="utf-8",
     )
     cfg_path = tmp_path / "deployment.json"

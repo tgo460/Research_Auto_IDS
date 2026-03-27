@@ -10,7 +10,9 @@ from src_replica.preprocessing_standard import (
     STANDARD_ETH_IMAGE_SIZE,
     STANDARD_ETH_REPRESENTATION,
     build_eth_image_windows,
+    extract_eth_label_provenance,
     standardize_can_dataframe,
+    validate_eth_label_dataframe,
 )
 
 
@@ -92,7 +94,7 @@ def _load_eth_labels(
     eth_packet_csv_path: str,
     eth_npy_path: str,
     eth_label_csv_path: Optional[str] = None,
-) -> Tuple[np.ndarray, str]:
+) -> Tuple[np.ndarray, str, dict]:
     searched = _candidate_eth_label_csvs(
         eth_packet_csv_path=eth_packet_csv_path,
         eth_npy_path=eth_npy_path,
@@ -107,16 +109,23 @@ def _load_eth_labels(
             eth_df = pd.read_csv(candidate)
         except Exception:
             continue
-        if "Label" not in eth_df.columns:
+        try:
+            validate_eth_label_dataframe(
+                eth_df,
+                context=f"ETH label CSV {os.path.basename(candidate)}",
+                require_label=True,
+                require_provenance=True,
+            )
+        except ValueError:
             continue
         labels = pd.to_numeric(eth_df["Label"], errors="coerce").fillna(0).astype(int).to_numpy()
         if labels.size > 0:
-            return labels, candidate
+            return labels, candidate, extract_eth_label_provenance(eth_df)
 
     searched_display = ", ".join(os.path.basename(path) for path in searched) if searched else "(no candidate files found)"
     raise ValueError(
-        "ETH labels are required for supervised loading; no candidate ETH label CSV contained a "
-        f"'Label' column. Searched: {searched_display}"
+        "ETH labels with provenance are required for supervised loading; no candidate ETH label CSV contained "
+        f"Label plus session_id, attack_type, label_source, and label_granularity. Searched: {searched_display}"
     )
 
 class CorrelatedHybridVehicleDataset(Dataset):
@@ -210,7 +219,7 @@ class CorrelatedHybridVehicleDataset(Dataset):
             else:
                 self.eth_images = eth_npy
 
-        self.eth_labels, self.eth_label_source = _load_eth_labels(
+        self.eth_labels, self.eth_label_source, self.eth_label_provenance = _load_eth_labels(
             eth_packet_csv_path=eth_packet_csv_path,
             eth_npy_path=eth_npy_path or eth_packet_csv_path,
             eth_label_csv_path=eth_label_csv_path,
@@ -253,6 +262,8 @@ class CorrelatedHybridVehicleDataset(Dataset):
              print(f"Matched rate (CAN): {self.alignment_report.matched_rate_can:.4f}")
         print(f"CAN timestamp source: {os.path.basename(self.can_timestamp_source)}")
         print(f"ETH label source: {os.path.basename(self.eth_label_source)}")
+        if self.eth_label_provenance:
+             print(f"ETH label provenance: {self.eth_label_provenance}")
         print(f"ETH representation: {self.eth_representation}")
         # Assuming alignment_report object attributes based on usage in disassembly
         if hasattr(self.alignment_report, 'median_delta_ms'):

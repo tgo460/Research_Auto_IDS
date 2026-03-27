@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
+from src_replica.preprocessing_standard import validate_eth_label_dataframe
 
 CSV_PATTERN = re.compile(r'^eth_(.+?)_replica_packets\.csv$')
 NPY_PATTERN = re.compile(r'^eth_(.+?)_images(?:[-_].+)?\.npy$')
@@ -31,8 +32,12 @@ def label_from_key(key: str) -> int:
     raise RuntimeError("Filename-derived ETH labels are no longer supported; use packet CSV Label values instead.")
 
 def build_protocol_window_features(packet_df: pd.DataFrame, window_size: int, max_windows: Optional[int]) -> pd.DataFrame:
-    if 'Label' not in packet_df.columns:
-        raise ValueError("ETH protocol CSV must contain a 'Label' column.")
+    validate_eth_label_dataframe(
+        packet_df,
+        context="ETH protocol CSV",
+        require_label=True,
+        require_provenance=True,
+    )
     # 42
     ts = packet_df['timestamp_sec'].astype(float) + packet_df['timestamp_usec'].astype(float) / 1000000.0
     # 43

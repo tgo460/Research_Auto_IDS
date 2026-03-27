@@ -12,6 +12,7 @@ Usage:
 
 import argparse
 import csv
+import json
 import os
 import sys
 import shutil
@@ -22,6 +23,16 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASETS_DIR = os.path.join(BASE_DIR, "datasets")
 ENGINEERED_DIR = os.path.join(DATASETS_DIR, "replica_can_b1_engineered")
 ETH_SMOKE_DIR = os.path.join(DATASETS_DIR, "replica_eth_smoke")
+ETH_PROVENANCE_COLUMNS = [
+    "session_id",
+    "attack_type",
+    "label_source",
+    "label_granularity",
+]
+DEFAULT_ETH_LABEL_MANIFEST_CANDIDATES = [
+    os.path.join(DATASETS_DIR, "autoeth-intrusion-dataset", "eth_label_manifest.json"),
+    os.path.join(BASE_DIR, "data", "manifests", "autoeth_label_manifest.json"),
+]
 
 
 # ── Dataset sources ──────────────────────────────────────────────────────────
@@ -192,7 +203,204 @@ def run_can_feature_engineering():
         print(f"    -> {len(df_eng):,} rows with 16 features")
 
 
-def prepare_eth_preprocessed():
+def _resolve_eth_label_manifest_path(manifest_path: str | None) -> str | None:
+    candidates = []
+    if manifest_path:
+        candidates.append(manifest_path if os.path.isabs(manifest_path) else os.path.join(BASE_DIR, manifest_path))
+    candidates.extend(DEFAULT_ETH_LABEL_MANIFEST_CANDIDATES)
+    seen = set()
+    for candidate in candidates:
+        norm = os.path.normpath(candidate)
+        if norm in seen:
+            continue
+        seen.add(norm)
+        if os.path.exists(candidate):
+            return candidate
+    return None
+
+
+def load_eth_label_manifest(manifest_path: str | None) -> dict:
+    resolved = _resolve_eth_label_manifest_path(manifest_path)
+    if not resolved:
+        return {}
+    with open(resolved, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    sessions = {}
+    for session in data.get("sessions", []):
+        scenario = str(session.get("scenario") or session.get("session_id") or "").strip()
+        if not scenario:
+            continue
+        sessions[scenario] = session
+    return sessions
+
+
+def label_eth_packet_from_manifest(
+    scenario: str,
+    timestamp_sec: float,
+    manifest_sessions: dict,
+) -> dict:
+    session = manifest_sessions.get(scenario)
+    if not session:
+        label = 1 if ("injected" in scenario or "attack" in scenario) else 0
+        return {
+            "Label": label,
+            "session_id": f"autoeth::{scenario}",
+            "attack_type": "avtp_injection" if label == 1 else "benign",
+            "label_source": "scenario_placeholder",
+            "label_granularity": "scenario",
+        }
+
+    session_id = str(session.get("session_id") or f"autoeth::{scenario}")
+    default_label = int(session.get("default_label", 0))
+    default_attack_type = str(session.get("default_attack_type") or ("benign" if default_label == 0 else "unknown_attack"))
+    default_label_source = str(session.get("default_label_source") or "session_default")
+    default_label_granularity = str(session.get("default_label_granularity") or "session")
+
+    for interval in session.get("intervals", []):
+        start_ts = interval.get("start_ts")
+        end_ts = interval.get("end_ts")
+        if start_ts is None:
+            continue
+        start_ts = float(start_ts)
+        end_ok = True if end_ts is None else float(timestamp_sec) < float(end_ts)
+        if float(timestamp_sec) >= start_ts and end_ok:
+            label = int(interval.get("label", 1))
+            return {
+                "Label": label,
+                "session_id": session_id,
+                "attack_type": str(interval.get("attack_type") or default_attack_type),
+                "label_source": str(interval.get("label_source") or "packet_ground_truth"),
+                "label_granularity": str(interval.get("label_granularity") or "packet"),
+            }
+
+    return {
+        "Label": default_label,
+        "session_id": session_id,
+        "attack_type": default_attack_type,
+        "label_source": default_label_source,
+        "label_granularity": default_label_granularity,
+    }
+
+
+def bootstrap_eth_label_manifest(
+    output_path: str,
+    packet_csv_dir: str | None = None,
+) -> str:
+    import pandas as pd
+
+    packet_csv_dir = packet_csv_dir or ETH_SMOKE_DIR
+    sessions = []
+    if not os.path.isdir(packet_csv_dir):
+        raise FileNotFoundError(f"ETH packet CSV directory not found: {packet_csv_dir}")
+
+    for name in sorted(os.listdir(packet_csv_dir)):
+        if not name.startswith("eth_") or not name.endswith("_replica_packets.csv"):
+            continue
+        csv_path = os.path.join(packet_csv_dir, name)
+        try:
+            df = pd.read_csv(csv_path, usecols=["timestamp_sec", "timestamp_usec"])
+        except Exception:
+            continue
+        if df.empty:
+            continue
+        ts = pd.to_numeric(df["timestamp_sec"], errors="coerce").fillna(0.0).to_numpy(dtype=float)
+        usec = pd.to_numeric(df["timestamp_usec"], errors="coerce").fillna(0.0).to_numpy(dtype=float)
+        timestamp = ts + usec / 1_000_000.0
+        scenario = name[len("eth_"):-len("_replica_packets.csv")]
+        is_injected = ("injected" in scenario) or ("attack" in scenario)
+        session = {
+            "scenario": scenario,
+            "session_id": f"autoeth::{scenario}",
+            "observed_start_ts": float(timestamp.min()),
+            "observed_end_ts": float(timestamp.max()),
+            "default_label": 0,
+            "default_attack_type": "benign",
+            "default_label_source": "manual_pending",
+            "default_label_granularity": "packet",
+            "annotation_status": "needs_review",
+            "intervals": [],
+        }
+        if is_injected:
+            session["intervals"].append(
+                {
+                    "start_ts": float(timestamp.min()),
+                    "end_ts": float(timestamp.max()) + 1e-9,
+                    "label": 1,
+                    "attack_type": "avtp_injection",
+                    "label_source": "inferred_full_session",
+                    "label_granularity": "session",
+                    "annotation_status": "needs_review",
+                }
+            )
+        sessions.append(session)
+
+    manifest = {
+        "version": 1,
+        "description": "Bootstrapped AutoETH manifest from packet CSV time bounds. Intervals marked inferred_full_session are not research-grade ground truth and require review.",
+        "sessions": sessions,
+    }
+    os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2)
+    return output_path
+
+
+def _scenario_from_eth_packet_csv_name(name: str) -> str | None:
+    prefix = "eth_"
+    suffix = "_replica_packets.csv"
+    if not name.startswith(prefix) or not name.endswith(suffix):
+        return None
+    return name[len(prefix):-len(suffix)]
+
+
+def apply_eth_label_manifest_to_packet_csvs(
+    manifest_path: str,
+    packet_csv_dir: str | None = None,
+) -> int:
+    import pandas as pd
+
+    packet_csv_dir = packet_csv_dir or ETH_SMOKE_DIR
+    manifest_sessions = load_eth_label_manifest(manifest_path)
+    if not manifest_sessions:
+        raise ValueError(f"No sessions found in ETH label manifest: {manifest_path}")
+    if not os.path.isdir(packet_csv_dir):
+        raise FileNotFoundError(f"ETH packet CSV directory not found: {packet_csv_dir}")
+
+    updated = 0
+    for name in sorted(os.listdir(packet_csv_dir)):
+        scenario = _scenario_from_eth_packet_csv_name(name)
+        if not scenario:
+            continue
+        csv_path = os.path.join(packet_csv_dir, name)
+        df = pd.read_csv(csv_path)
+        if "timestamp_sec" not in df.columns:
+            continue
+        sec = pd.to_numeric(df["timestamp_sec"], errors="coerce").fillna(0.0).to_numpy(dtype=float)
+        usec = pd.to_numeric(df.get("timestamp_usec", 0.0), errors="coerce").fillna(0.0).to_numpy(dtype=float)
+        timestamp = sec + usec / 1_000_000.0
+        labels = []
+        session_ids = []
+        attack_types = []
+        label_sources = []
+        label_granularities = []
+        for ts in timestamp.tolist():
+            info = label_eth_packet_from_manifest(scenario, ts, manifest_sessions)
+            labels.append(int(info["Label"]))
+            session_ids.append(str(info["session_id"]))
+            attack_types.append(str(info["attack_type"]))
+            label_sources.append(str(info["label_source"]))
+            label_granularities.append(str(info["label_granularity"]))
+        df["Label"] = labels
+        df["session_id"] = session_ids
+        df["attack_type"] = attack_types
+        df["label_source"] = label_sources
+        df["label_granularity"] = label_granularities
+        df.to_csv(csv_path, index=False)
+        updated += 1
+    return updated
+
+
+def prepare_eth_preprocessed(manifest_path: str | None = None):
     """
     Extract Ethernet packet CSVs from PCAP files and create image .npy arrays.
 
@@ -212,6 +420,12 @@ def prepare_eth_preprocessed():
 
     pcap_dir = os.path.join(DATASETS_DIR, "autoeth-intrusion-dataset")
     os.makedirs(ETH_SMOKE_DIR, exist_ok=True)
+    manifest_sessions = load_eth_label_manifest(manifest_path)
+    resolved_manifest = _resolve_eth_label_manifest_path(manifest_path)
+    if resolved_manifest:
+        print(f"  Using ETH label manifest: {resolved_manifest}")
+    else:
+        print("  No ETH label manifest found; falling back to scenario-level placeholder labels.")
 
     pcap_files = [
         "driving_01_injected",
@@ -233,10 +447,11 @@ def prepare_eth_preprocessed():
                     header = next(reader, [])
             except Exception:
                 header = []
-            if "Label" in header:
-                print(f"  [skip] eth_{scenario}_replica_packets.csv exists with Label column")
+            has_required = "Label" in header and all(col in header for col in ETH_PROVENANCE_COLUMNS)
+            if has_required:
+                print(f"  [skip] eth_{scenario}_replica_packets.csv exists with label provenance columns")
                 continue
-            print(f"  [refresh] eth_{scenario}_replica_packets.csv missing Label column; regenerating")
+            print(f"  [refresh] eth_{scenario}_replica_packets.csv missing label provenance columns; regenerating")
 
         pcap_path = os.path.join(pcap_dir, f"{scenario}.pcap")
         if not os.path.exists(pcap_path):
@@ -246,18 +461,22 @@ def prepare_eth_preprocessed():
         print(f"  Extracting {scenario}.pcap -> CSV...")
         packets = rdpcap(pcap_path)
         rows = []
-        label = 1 if ("injected" in scenario or "attack" in scenario) else 0
         for pkt in packets:
             ts = float(pkt.time)
             ts_sec = int(ts)
             ts_usec = int((ts - ts_sec) * 1_000_000)
             raw = bytes(pkt)
+            label_info = label_eth_packet_from_manifest(
+                scenario=scenario,
+                timestamp_sec=ts,
+                manifest_sessions=manifest_sessions,
+            )
             rows.append({
                 "timestamp_sec": ts_sec,
                 "timestamp_usec": ts_usec,
                 "captured_len": len(raw),
                 "original_len": len(raw),
-                "Label": label,
+                **label_info,
             })
         df = pd.DataFrame(rows)
         df.to_csv(csv_dst, index=False)
@@ -302,10 +521,10 @@ def verify_setup():
                 header = next(reader, [])
         except Exception:
             header = []
-        has_label = "Label" in header
-        print(f"  [{'OK' if has_label else 'WARN':7s}] ETH smoke Label column")
-        if not has_label:
-            print("           Existing Ethernet replay CSVs are unlabeled; rerun setup to regenerate them.")
+        has_required = "Label" in header and all(col in header for col in ETH_PROVENANCE_COLUMNS)
+        print(f"  [{'OK' if has_required else 'WARN':7s}] ETH smoke label provenance columns")
+        if not has_required:
+            print("           Existing Ethernet replay CSVs are missing label provenance; rerun setup to regenerate them.")
             all_ok = False
 
     print()
@@ -328,6 +547,18 @@ def main():
     parser.add_argument(
         "--dry-run", action="store_true",
         help="Show what would be done without executing."
+    )
+    parser.add_argument(
+        "--eth-label-manifest", type=str, default=None,
+        help="Optional JSON manifest with timestamp-based ETH labels."
+    )
+    parser.add_argument(
+        "--bootstrap-eth-label-manifest-out", type=str, default=None,
+        help="Write a draft AutoETH label manifest from existing ETH packet CSVs."
+    )
+    parser.add_argument(
+        "--apply-eth-label-manifest", type=str, default=None,
+        help="Apply an ETH label manifest to existing ETH packet CSVs in replica_eth_smoke."
     )
     args = parser.parse_args()
 
@@ -371,6 +602,23 @@ def main():
         print("  4. Verify all files present")
         return 0
 
+    if args.bootstrap_eth_label_manifest_out:
+        out_path = (
+            args.bootstrap_eth_label_manifest_out
+            if os.path.isabs(args.bootstrap_eth_label_manifest_out)
+            else os.path.join(BASE_DIR, args.bootstrap_eth_label_manifest_out)
+        )
+        written = bootstrap_eth_label_manifest(out_path)
+        print(f"Bootstrapped ETH label manifest to {written}")
+    if args.apply_eth_label_manifest:
+        manifest_path = (
+            args.apply_eth_label_manifest
+            if os.path.isabs(args.apply_eth_label_manifest)
+            else os.path.join(BASE_DIR, args.apply_eth_label_manifest)
+        )
+        updated = apply_eth_label_manifest_to_packet_csvs(manifest_path)
+        print(f"Applied ETH label manifest to {updated} packet CSVs")
+
     # Step 2: Prepare CAN training CSVs
     print()
     print("[Step 2] Preparing CAN training CSVs...")
@@ -384,7 +632,7 @@ def main():
     # Step 4: ETH PCAP extraction
     print()
     print("[Step 4] Preparing Ethernet packet data...")
-    prepare_eth_preprocessed()
+    prepare_eth_preprocessed(manifest_path=args.eth_label_manifest)
 
     # Step 5: Verification
     print()

@@ -26,13 +26,24 @@ def _build_comparison(ablation_report: Dict, baseline_report: Dict) -> Dict:
         "report_type": "strict_comparison_eval",
         "split_manifest": ablation_report.get("split_manifest") or baseline_report.get("split_manifest"),
         "pairing_mode": ablation_report.get("pairing_mode") or baseline_report.get("pairing_mode"),
+        "validity_summary": {
+            "num_splits": 0,
+            "invalid_splits": [],
+            "research_claim_supported": True,
+        },
         "splits": {},
     }
 
     for split in split_names:
         ablation_split = ablation_report.get("splits", {}).get(split, {})
         modes = ablation_split.get("modes", {})
+        label_summary = ablation_split.get("label_summary")
+        validity_warnings = list(ablation_split.get("validity_warnings", []))
+        is_valid = bool(ablation_split.get("is_valid_for_detection_claims", not bool(label_summary and label_summary.get("is_single_class"))))
         split_row = {
+            "label_summary": label_summary,
+            "validity_warnings": validity_warnings,
+            "is_valid_for_detection_claims": is_valid,
             "hybrid_fused": modes.get("fused"),
             "hybrid_can_masked": modes.get("can_only"),
             "hybrid_eth_masked": modes.get("eth_only"),
@@ -40,6 +51,10 @@ def _build_comparison(ablation_report: Dict, baseline_report: Dict) -> Dict:
             "baseline_eth_only": baseline_report.get("modes", {}).get("eth_only", {}).get("eval", {}).get(split, {}).get("metrics"),
         }
         comparison["splits"][split] = split_row
+        comparison["validity_summary"]["num_splits"] += 1
+        if not is_valid:
+            comparison["validity_summary"]["invalid_splits"].append(split)
+            comparison["validity_summary"]["research_claim_supported"] = False
 
     return comparison
 
@@ -52,6 +67,8 @@ def evaluate_comparison(args):
         splits=args.eval_splits,
         modes=["fused", "can_only", "eth_only"],
         batch_size=args.batch_size,
+        max_rows=args.max_rows,
+        max_frames=args.max_frames,
         bootstrap_resamples=args.bootstrap_resamples,
         seed=args.seed,
         output_dir=args.output_dir,
@@ -63,6 +80,8 @@ def evaluate_comparison(args):
         pairing_mode=args.pairing_mode,
         modes=["can_only", "eth_only"],
         eval_splits=args.eval_splits,
+        max_rows=args.max_rows,
+        max_frames=args.max_frames,
         bootstrap_resamples=args.bootstrap_resamples,
         seed=args.seed,
         output_dir=args.output_dir,
@@ -72,6 +91,12 @@ def evaluate_comparison(args):
     ablation_path = os.path.join(args.output_dir, "strict_ablation_eval_report.json")
     baseline_path = os.path.join(args.output_dir, "unimodal_baseline_eval_report.json")
     comparison = _build_comparison(_load_json(ablation_path), _load_json(baseline_path))
+    invalid_splits = comparison.get("validity_summary", {}).get("invalid_splits", [])
+    if invalid_splits:
+        print(
+            "Warning: strict comparison contains degenerate evaluation labels for split(s): "
+            + ", ".join(invalid_splits)
+        )
 
     out_path = os.path.join(args.output_dir, "strict_comparison_eval_report.json")
     with open(out_path, "w", encoding="utf-8") as f:
@@ -90,6 +115,8 @@ def main():
     parser.add_argument("--pairing_mode", type=str, default="label_cartesian", choices=["label_cartesian", "single_match"])
     parser.add_argument("--eval_splits", type=_csv_arg, default=["val", "test"])
     parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--max_rows", type=int, default=None)
+    parser.add_argument("--max_frames", type=int, default=None)
     parser.add_argument("--bootstrap_resamples", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="reports")

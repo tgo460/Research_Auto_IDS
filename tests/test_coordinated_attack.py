@@ -38,6 +38,7 @@ def test_coordinated_attack_replay_report(tmp_path):
 
     def write_eth(path, label):
         rows = []
+        attack_type = "avtp_injection" if label else "benign"
         for idx in range(20):
             rows.append(
                 {
@@ -47,6 +48,10 @@ def test_coordinated_attack_replay_report(tmp_path):
                     "captured_len": 64 + idx,
                     "original_len": 64 + idx,
                     "Label": label,
+                    "session_id": f"sess::{path.stem}",
+                    "attack_type": attack_type,
+                    "label_source": "packet_ground_truth",
+                    "label_granularity": "packet",
                 }
             )
         pd.DataFrame(rows).to_csv(path, index=False)

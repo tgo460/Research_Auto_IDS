@@ -32,11 +32,19 @@ def _binary_fnr(y_true, y_pred):
 def _metrics(y_true, y_pred):
     y_true = np.asarray(y_true)
     y_pred = np.asarray(y_pred)
+    positives = int(np.sum(y_true == 1))
+    negatives = int(np.sum(y_true == 0))
+    classes_present = [int(v) for v in sorted(np.unique(y_true).tolist())]
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[0, 1]).ravel()
     specificity = float(tn / (tn + fp)) if (tn + fp) > 0 else 0.0
     npv = float(tn / (tn + fn)) if (tn + fn) > 0 else 0.0
     return {
         "samples": int(len(y_true)),
+        "positives": positives,
+        "negatives": negatives,
+        "positive_rate": float(positives / max(len(y_true), 1)),
+        "classes_present": classes_present,
+        "is_single_class": bool(len(classes_present) < 2),
         "accuracy": float(accuracy_score(y_true, y_pred)),
         "f1": float(f1_score(y_true, y_pred, zero_division=0)),
         "precision": float(precision_score(y_true, y_pred, zero_division=0)),
@@ -47,6 +55,33 @@ def _metrics(y_true, y_pred):
         "specificity": float(specificity),
         "npv": float(npv),
     }
+
+
+def _label_validity_warnings(metrics: Dict[str, object]) -> List[str]:
+    warnings: List[str] = []
+    if bool(metrics.get("is_single_class")):
+        positives = int(metrics.get("positives", 0))
+        negatives = int(metrics.get("negatives", 0))
+        if positives == 0:
+            warnings.append("evaluation labels contain only the negative class")
+        elif negatives == 0:
+            warnings.append("evaluation labels contain only the positive class")
+        else:
+            warnings.append("evaluation labels contain only one class")
+    return warnings
+
+
+def _metadata_validity_warnings(metadata: Dict[str, object]) -> List[str]:
+    warnings: List[str] = []
+    if bool(metadata.get("uses_untrusted_eth_labels")):
+        sources = metadata.get("untrusted_eth_label_sources") or []
+        if isinstance(sources, list) and sources:
+            warnings.append(
+                "evaluation uses untrusted ETH labels: " + ", ".join(str(x) for x in sources)
+            )
+        else:
+            warnings.append("evaluation uses untrusted ETH labels")
+    return warnings
 
 
 def _bootstrap_ci(y_true, y_pred, n_resamples=1000, seed=42):
@@ -120,13 +155,21 @@ def _csv_arg(value: str) -> List[str]:
     return [token.strip() for token in value.split(",") if token.strip()]
 
 
-def _load_split_dataset(split: str, split_manifest: str, pairing_mode: str):
+def _load_split_dataset(
+    split: str,
+    split_manifest: str,
+    pairing_mode: str,
+    max_rows: int | None,
+    max_frames: int | None,
+):
     return build_mixed_dataset(
         base_path=ROOT_DIR,
         split=split,
         split_manifest=split_manifest,
         pairing_mode=pairing_mode,
         require_both_classes=True,
+        can_max_rows=max_rows,
+        eth_max_frames=max_frames,
     )
 
 
@@ -139,7 +182,7 @@ def evaluate_baselines(args):
         "modes": {},
     }
 
-    train_ds = _load_split_dataset("train", args.split_manifest, args.pairing_mode)
+    train_ds = _load_split_dataset("train", args.split_manifest, args.pairing_mode, args.max_rows, args.max_frames)
     if train_ds is None or len(train_ds) == 0:
         raise RuntimeError("Strict train split is empty; cannot train unimodal baselines.")
 
@@ -169,9 +212,18 @@ def evaluate_baselines(args):
         train_metrics = _metrics(y_train, train_pred)
         train_metrics.update(_bootstrap_ci(y_train, train_pred, n_resamples=min(args.bootstrap_resamples, 400), seed=args.seed))
         mode_report["train"]["metrics"] = train_metrics
+        mode_report["train"]["label_summary"] = {
+            "samples": int(train_metrics["samples"]),
+            "positives": int(train_metrics["positives"]),
+            "negatives": int(train_metrics["negatives"]),
+            "positive_rate": float(train_metrics["positive_rate"]),
+            "classes_present": list(train_metrics["classes_present"]),
+            "is_single_class": bool(train_metrics["is_single_class"]),
+        }
+        mode_report["train"]["validity_warnings"] = _metadata_validity_warnings(train_meta) + _label_validity_warnings(train_metrics)
 
         for split in args.eval_splits:
-            ds = _load_split_dataset(split, args.split_manifest, args.pairing_mode)
+            ds = _load_split_dataset(split, args.split_manifest, args.pairing_mode, args.max_rows, args.max_frames)
             if ds is None or len(ds) == 0:
                 mode_report["eval"][split] = {"error": "empty dataset"}
                 continue
@@ -186,6 +238,15 @@ def evaluate_baselines(args):
                     "metadata": getattr(ds, "metadata", {}),
                     "feature_dim": int(X_eval.shape[1]),
                 },
+                "label_summary": {
+                    "samples": int(metrics["samples"]),
+                    "positives": int(metrics["positives"]),
+                    "negatives": int(metrics["negatives"]),
+                    "positive_rate": float(metrics["positive_rate"]),
+                    "classes_present": list(metrics["classes_present"]),
+                    "is_single_class": bool(metrics["is_single_class"]),
+                },
+                "validity_warnings": _metadata_validity_warnings(getattr(ds, "metadata", {})) + _label_validity_warnings(metrics),
                 "metrics": metrics,
             }
 
@@ -204,6 +265,8 @@ def main():
     parser.add_argument("--pairing_mode", type=str, default="label_cartesian", choices=["label_cartesian", "single_match"])
     parser.add_argument("--modes", type=_csv_arg, default=["can_only", "eth_only"])
     parser.add_argument("--eval_splits", type=_csv_arg, default=["val", "test"])
+    parser.add_argument("--max_rows", type=int, default=None)
+    parser.add_argument("--max_frames", type=int, default=None)
     parser.add_argument("--bootstrap_resamples", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="reports")

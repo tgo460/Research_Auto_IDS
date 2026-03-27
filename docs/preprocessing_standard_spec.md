@@ -41,7 +41,9 @@ training, validation, and testing.
   - `timestamp_sec`, `timestamp_usec`, `captured_len`, `original_len`
 - Supervision contract:
   - replay, training, and evaluation CSVs must include `Label`
+  - supervised ETH CSVs must also include `session_id`, `attack_type`, `label_source`, and `label_granularity`
   - filename-derived ETH labels are not allowed
+  - `label_source="scenario_placeholder"` is allowed only as a temporary preprocessing fallback and should not support research-grade evaluation claims
 - Fallback packet fields:
   - `Packet_Length`
   - timestamps are synthesized if absent

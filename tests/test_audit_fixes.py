@@ -5,6 +5,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from setup_datasets import (
+    apply_eth_label_manifest_to_packet_csvs,
+    bootstrap_eth_label_manifest,
+    label_eth_packet_from_manifest,
+    load_eth_label_manifest,
+)
 from evaluate import _validate_split_manifest
 from src_replica.cascade_eval_replica import _plan_pairs
 from src_replica.correlation_replica import correlate_can_eth
@@ -15,8 +21,13 @@ from src_replica.preprocessing_standard import (
     STANDARD_CAN_FEATURES_16,
     build_eth_image_windows,
     standardize_can_dataframe,
+    standardize_eth_packet_dataframe,
 )
 from src_replica.runtime.adapters import CsvCanIngest, CsvEthIngest, to_can_window
+
+
+ETH_PROVENANCE_HEADER = "session_id,attack_type,label_source,label_granularity"
+ETH_PROVENANCE_ROW = "sess_demo,avtp_injection,packet_ground_truth,packet"
 
 
 def test_csv_eth_ingest_requires_label_column(tmp_path):
@@ -30,17 +41,30 @@ def test_csv_eth_ingest_requires_label_column(tmp_path):
         CsvEthIngest(str(csv_path))
 
 
-def test_csv_eth_ingest_uses_explicit_label_column(tmp_path):
-    csv_path = tmp_path / "eth_demo_replica_packets.csv"
+def test_csv_eth_ingest_requires_label_provenance_columns(tmp_path):
+    csv_path = tmp_path / "eth_demo_injected_replica_packets.csv"
     csv_path.write_text(
         "packet_index,timestamp_sec,timestamp_usec,captured_len,original_len,Label\n"
         "0,1,0,64,64,1\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="session_id"):
+        CsvEthIngest(str(csv_path))
+
+
+def test_csv_eth_ingest_uses_explicit_label_column(tmp_path):
+    csv_path = tmp_path / "eth_demo_replica_packets.csv"
+    csv_path.write_text(
+        "packet_index,timestamp_sec,timestamp_usec,captured_len,original_len,Label,"
+        + ETH_PROVENANCE_HEADER + "\n"
+        "0,1,0,64,64,1," + ETH_PROVENANCE_ROW + "\n",
         encoding="utf-8",
     )
     ingest = CsvEthIngest(str(csv_path))
     frame = ingest.read_frame()
     assert frame is not None
     assert frame["label"] == 1
+    assert frame["session_id"] == "sess_demo"
 
 
 def test_csv_can_ingest_respects_start_row(tmp_path):
@@ -125,6 +149,120 @@ def test_validate_split_manifest_accepts_disjoint_row_ranges(tmp_path):
     assert report["errors"] == []
 
 
+def test_load_eth_label_manifest_and_interval_labeling(tmp_path):
+    manifest_path = tmp_path / "eth_label_manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "sessions": [
+                    {
+                        "scenario": "demo_injected",
+                        "session_id": "sess_demo",
+                        "default_label": 0,
+                        "default_attack_type": "benign",
+                        "default_label_source": "packet_ground_truth",
+                        "default_label_granularity": "packet",
+                        "intervals": [
+                            {
+                                "start_ts": 10.0,
+                                "end_ts": 12.0,
+                                "label": 1,
+                                "attack_type": "avtp_injection",
+                                "label_source": "packet_ground_truth",
+                                "label_granularity": "packet",
+                            }
+                        ],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    manifest = load_eth_label_manifest(str(manifest_path))
+    benign = label_eth_packet_from_manifest("demo_injected", 9.5, manifest)
+    attack = label_eth_packet_from_manifest("demo_injected", 10.5, manifest)
+    fallback = label_eth_packet_from_manifest("unknown_session", 10.5, manifest)
+
+    assert benign["Label"] == 0
+    assert benign["label_source"] == "packet_ground_truth"
+    assert attack["Label"] == 1
+    assert attack["attack_type"] == "avtp_injection"
+    assert fallback["label_source"] == "scenario_placeholder"
+
+
+def test_bootstrap_eth_label_manifest_from_packet_csvs(tmp_path):
+    eth_dir = tmp_path / "replica_eth_smoke"
+    eth_dir.mkdir(parents=True)
+    (eth_dir / "eth_driving_01_injected_replica_packets.csv").write_text(
+        "timestamp_sec,timestamp_usec,captured_len,original_len,Label,session_id,attack_type,label_source,label_granularity\n"
+        "10,0,64,64,1,s1,avtp_injection,packet_ground_truth,packet\n"
+        "12,500000,64,64,1,s1,avtp_injection,packet_ground_truth,packet\n",
+        encoding="utf-8",
+    )
+    (eth_dir / "eth_driving_01_original_replica_packets.csv").write_text(
+        "timestamp_sec,timestamp_usec,captured_len,original_len,Label,session_id,attack_type,label_source,label_granularity\n"
+        "20,0,64,64,0,s2,benign,packet_ground_truth,packet\n"
+        "21,0,64,64,0,s2,benign,packet_ground_truth,packet\n",
+        encoding="utf-8",
+    )
+
+    out = tmp_path / "autoeth_label_manifest.json"
+    written = bootstrap_eth_label_manifest(str(out), packet_csv_dir=str(eth_dir))
+    assert written == str(out)
+    manifest = json.loads(out.read_text(encoding="utf-8"))
+    assert len(manifest["sessions"]) == 2
+    injected = next(s for s in manifest["sessions"] if s["scenario"] == "driving_01_injected")
+    assert injected["intervals"]
+    assert injected["intervals"][0]["label_source"] == "inferred_full_session"
+
+
+def test_apply_eth_label_manifest_to_packet_csvs(tmp_path):
+    eth_dir = tmp_path / "replica_eth_smoke"
+    eth_dir.mkdir(parents=True)
+    csv_path = eth_dir / "eth_driving_01_injected_replica_packets.csv"
+    csv_path.write_text(
+        "timestamp_sec,timestamp_usec,captured_len,original_len\n"
+        "10,0,64,64\n"
+        "11,0,64,64\n",
+        encoding="utf-8",
+    )
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "sessions": [
+                    {
+                        "scenario": "driving_01_injected",
+                        "session_id": "sess_demo",
+                        "default_label": 0,
+                        "default_attack_type": "benign",
+                        "default_label_source": "manual_pending",
+                        "default_label_granularity": "packet",
+                        "intervals": [
+                            {
+                                "start_ts": 10.5,
+                                "end_ts": 11.5,
+                                "label": 1,
+                                "attack_type": "avtp_injection",
+                                "label_source": "attack_log_interval",
+                                "label_granularity": "packet",
+                            }
+                        ],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    updated = apply_eth_label_manifest_to_packet_csvs(str(manifest_path), packet_csv_dir=str(eth_dir))
+    assert updated == 1
+    relabeled = pd.read_csv(csv_path)
+    assert relabeled["Label"].tolist() == [0, 1]
+    assert relabeled["label_source"].tolist() == ["manual_pending", "attack_log_interval"]
+
+
 def test_add_can_engineered_features_preserves_normalized_can_id_distinctions():
     df = pd.DataFrame(
         {
@@ -156,13 +294,18 @@ def test_load_eth_labels_prefers_label_csv_when_packet_csv_is_unlabeled(tmp_path
         encoding="utf-8",
     )
     label_csv = datasets_dir / "eth_demo_original.csv"
-    label_csv.write_text("Label\n1\n", encoding="utf-8")
+    label_csv.write_text(
+        "Label,session_id,attack_type,label_source,label_granularity\n"
+        "1,sess_demo,avtp_injection,packet_ground_truth,packet\n",
+        encoding="utf-8",
+    )
     npy_path = datasets_dir / "eth_demo_original_images.npy"
     np.save(str(npy_path), np.zeros((1, 32, 32), dtype=np.uint8))
 
-    labels, source = _load_eth_labels(str(packet_csv), str(npy_path))
+    labels, source, provenance = _load_eth_labels(str(packet_csv), str(npy_path))
     assert labels.tolist() == [1]
     assert source.endswith("eth_demo_original.csv")
+    assert provenance["label_source"] == "packet_ground_truth"
 
 
 def test_load_eth_labels_prefers_canonical_csv_over_preprocessed_csv(tmp_path):
@@ -177,15 +320,24 @@ def test_load_eth_labels_prefers_canonical_csv_over_preprocessed_csv(tmp_path):
         encoding="utf-8",
     )
     canonical_csv = datasets_dir / "eth_demo_original.csv"
-    canonical_csv.write_text("Label\n0\n", encoding="utf-8")
+    canonical_csv.write_text(
+        "Label,session_id,attack_type,label_source,label_granularity\n"
+        "0,sess_demo,benign,packet_ground_truth,packet\n",
+        encoding="utf-8",
+    )
     preprocessed_csv = datasets_dir / "eth_demo_original_preprocessed.csv"
-    preprocessed_csv.write_text("Label\n1\n", encoding="utf-8")
+    preprocessed_csv.write_text(
+        "Label,session_id,attack_type,label_source,label_granularity\n"
+        "1,sess_demo,avtp_injection,packet_ground_truth,packet\n",
+        encoding="utf-8",
+    )
     npy_path = datasets_dir / "eth_demo_original_images.npy"
     np.save(str(npy_path), np.zeros((1, 32, 32), dtype=np.uint8))
 
-    labels, source = _load_eth_labels(str(packet_csv), str(npy_path))
+    labels, source, provenance = _load_eth_labels(str(packet_csv), str(npy_path))
     assert labels.tolist() == [0]
     assert source.endswith("eth_demo_original.csv")
+    assert provenance["attack_type"] == "benign"
 
 
 def test_load_eth_labels_requires_explicit_label_source(tmp_path):
@@ -198,7 +350,7 @@ def test_load_eth_labels_requires_explicit_label_source(tmp_path):
     npy_path = tmp_path / "eth_demo_images.npy"
     np.save(str(npy_path), np.zeros((1, 32, 32), dtype=np.uint8))
 
-    with pytest.raises(ValueError, match="ETH labels are required"):
+    with pytest.raises(ValueError, match="ETH labels with provenance are required"):
         _load_eth_labels(str(packet_csv), str(npy_path))
 
 
@@ -215,8 +367,8 @@ def test_resolve_eth_packet_csv_prefers_labeled_candidate(tmp_path):
     )
     labeled = data_dir / "eth_demo_original.csv"
     labeled.write_text(
-        "timestamp_sec,timestamp_usec,captured_len,original_len,Label\n"
-        "1,0,64,64,0\n",
+        "timestamp_sec,timestamp_usec,captured_len,original_len,Label,session_id,attack_type,label_source,label_granularity\n"
+        "1,0,64,64,0,sess_demo,benign,packet_ground_truth,packet\n",
         encoding="utf-8",
     )
 
@@ -266,6 +418,26 @@ def test_build_eth_image_windows_from_packet_csv(tmp_path):
     assert not np.allclose(windows[0], windows[2])
 
 
+def test_standardize_eth_packet_dataframe_handles_missing_optional_columns():
+    df = pd.DataFrame(
+        {
+            "timestamp_sec": [1, 1, 1],
+            "captured_len": [64, 128, 256],
+            "Label": [0, 1, 1],
+            "session_id": ["s1", "s1", "s1"],
+            "attack_type": ["benign", "avtp_injection", "avtp_injection"],
+            "label_source": ["packet_ground_truth", "packet_ground_truth", "packet_ground_truth"],
+            "label_granularity": ["packet", "packet", "packet"],
+        }
+    )
+
+    standardized = standardize_eth_packet_dataframe(df)
+    assert standardized["captured_len"].tolist() == [64.0, 128.0, 256.0]
+    assert standardized["original_len"].tolist() == [64.0, 128.0, 256.0]
+    assert standardized["Label"].tolist() == [0, 1, 1]
+    assert standardized["session_id"].tolist() == ["s1", "s1", "s1"]
+
+
 def test_correlated_dataset_supports_metadata_eth_representation_without_npy(tmp_path):
     can_csv = tmp_path / "can.csv"
     can_csv.write_text(
@@ -286,7 +458,14 @@ def test_correlated_dataset_supports_metadata_eth_representation_without_npy(tmp
         encoding="utf-8",
     )
     eth_label_csv = tmp_path / "eth_demo.csv"
-    eth_label_csv.write_text("Label\n0\n0\n1\n1\n", encoding="utf-8")
+    eth_label_csv.write_text(
+        "Label,session_id,attack_type,label_source,label_granularity\n"
+        "0,sess_demo,benign,packet_ground_truth,packet\n"
+        "0,sess_demo,benign,packet_ground_truth,packet\n"
+        "1,sess_demo,avtp_injection,packet_ground_truth,packet\n"
+        "1,sess_demo,avtp_injection,packet_ground_truth,packet\n",
+        encoding="utf-8",
+    )
 
     ds = CorrelatedHybridVehicleDataset(
         can_csv_path=str(can_csv),

@@ -230,7 +230,9 @@ Pre-engineered CSVs are stored in `datasets/replica_can_b1_engineered/`.
 
 Ethernet data uses 32×32 grayscale image embeddings stored as `.npy` files, with timestamp-aligned labeled CSVs in `datasets/replica_eth_smoke/`.
 
-Supervised ETH training, replay, and evaluation now require an explicit `Label` column in the Ethernet CSV source. Filename-derived labels are no longer used.
+Supervised ETH training, replay, and evaluation now require explicit label provenance in the Ethernet CSV source:
+`Label`, `session_id`, `attack_type`, `label_source`, and `label_granularity`. Filename-derived labels are no longer used.
+For timestamp-based packet labels, `setup_datasets.py` can consume an optional ETH label manifest via `--eth-label-manifest`.
 
 ---
 
@@ -426,6 +428,9 @@ This section documents **every runnable command** in the project, organized by w
 ```bash
 # Automated dataset preparation: verify downloads, CAN feature engineering, ETH extraction
 python setup_datasets.py
+
+# Optional: apply timestamp-based ETH labels from a manifest
+python setup_datasets.py --eth-label-manifest data/manifests/autoeth_label_manifest.json
 
 # Dry-run (preview what would be done)
 python setup_datasets.py --dry-run
@@ -849,7 +854,7 @@ The export script automatically includes this path.
 ### Low Aligned Pairs Count
 If `CorrelatedHybridVehicleDataset` reports few aligned pairs:
 - Verify ETH CSV has a `timestamp_sec` column
-- Use CSVs from `datasets/replica_eth_smoke/` that include `Label`
+- Use CSVs from `datasets/replica_eth_smoke/` that include `Label`, `session_id`, `attack_type`, `label_source`, and `label_granularity`
 - Adjust `tolerance_ms` (default: 100 ms)
 
 ### Heavy Model Feature Mismatch
@@ -904,7 +909,8 @@ This will:
 1. Verify datasets are present
 2. Extract CAN training CSVs from the raw dataset files
 3. Engineer 16 CAN features per row → `datasets/replica_can_b1_engineered/`
-4. Extract Ethernet packet CSVs from PCAPs → `datasets/replica_eth_smoke/` with `Label` column (requires `pip install scapy`)
+4. Extract Ethernet packet CSVs from PCAPs → `datasets/replica_eth_smoke/` with label provenance columns (requires `pip install scapy`)
+5. If an ETH label manifest is provided, assign packet labels by timestamp interval; otherwise use `scenario_placeholder` provenance only
 5. Verify all required files are in place
 
 ### Step 2: Train Models

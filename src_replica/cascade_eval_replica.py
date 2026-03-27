@@ -20,7 +20,7 @@ if ROOT_DIR not in sys.path:
 from architecture_improved import TinyHybridStudent
 from src_replica.data_resolvers import resolve_can_csv, resolve_eth_packet_csv
 from heavy_infer_replica import HeavyTrainConfig, train_heavy_model, predict_heavy
-from src_replica.preprocessing_standard import STANDARD_CAN_FEATURES_16
+from src_replica.preprocessing_standard import STANDARD_CAN_FEATURES_16, is_trustworthy_eth_label_provenance
 from router_replica import ConfidenceRouter, RouterConfig, tune_threshold_by_quantile
 from src_replica.runtime.standards import CAN_WINDOW_SIZE_STANDARD, ETH_WINDOW_SIZE_STANDARD
 from src_replica.split_manifest_utils import is_attack_split_entry, parse_split_entry
@@ -127,6 +127,8 @@ def build_mixed_dataset(
     split_manifest: Optional[str] = None,
     pairing_mode: str = "label_cartesian",
     require_both_classes: bool = False,
+    can_max_rows: Optional[int] = None,
+    eth_max_frames: Optional[int] = None,
 ) -> Optional[ConcatDataset]:
     split_path = _resolve_split_manifest(base_path, split_manifest)
     if not split_path or not os.path.exists(split_path):
@@ -191,6 +193,8 @@ def build_mixed_dataset(
                 eth_window_size=ETH_WINDOW_SIZE_STANDARD,
                 can_row_start=can_ref.row_start,
                 can_row_stop=can_ref.row_stop,
+                can_max_rows=can_max_rows,
+                eth_max_frames=eth_max_frames,
                 label_policy='max'
             )
         except Exception as exc:
@@ -203,6 +207,12 @@ def build_mixed_dataset(
 
         datasets.append(ds)
         loaded_labels.add(expected_label)
+        eth_label_provenance = getattr(ds, "eth_label_provenance", {})
+        if not is_trustworthy_eth_label_provenance(eth_label_provenance):
+            warnings.append(
+                f"pair {eth_ref.display_name()} + {can_ref.display_name()} uses untrusted ETH labels "
+                f"({eth_label_provenance.get('label_source', 'unknown_source')})"
+            )
         pair_rows.append(
             {
                 "eth_file": eth_ref.path,
@@ -213,6 +223,7 @@ def build_mixed_dataset(
                 "can_row_stop": can_ref.row_stop,
                 "expected_label": expected_label,
                 "samples": len(ds),
+                "eth_label_provenance": eth_label_provenance,
             }
         )
 
@@ -236,6 +247,17 @@ def build_mixed_dataset(
         "pairing_mode": pairing_mode,
         "pairs_loaded": len(pair_rows),
         "labels_present": sorted(loaded_labels),
+        "uses_untrusted_eth_labels": any(
+            not is_trustworthy_eth_label_provenance(row.get("eth_label_provenance", {}))
+            for row in pair_rows
+        ),
+        "untrusted_eth_label_sources": sorted(
+            {
+                str(row.get("eth_label_provenance", {}).get("label_source", "unknown_source"))
+                for row in pair_rows
+                if not is_trustworthy_eth_label_provenance(row.get("eth_label_provenance", {}))
+            }
+        ),
         "warnings": warnings,
         "pairs": pair_rows,
     }

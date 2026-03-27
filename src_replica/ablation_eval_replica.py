@@ -33,11 +33,19 @@ def _binary_fnr(y_true, y_pred):
 def _metrics(y_true, y_pred):
     y_true = np.asarray(y_true)
     y_pred = np.asarray(y_pred)
+    positives = int(np.sum(y_true == 1))
+    negatives = int(np.sum(y_true == 0))
+    classes_present = [int(v) for v in sorted(np.unique(y_true).tolist())]
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[0, 1]).ravel()
     specificity = float(tn / (tn + fp)) if (tn + fp) > 0 else 0.0
     npv = float(tn / (tn + fn)) if (tn + fn) > 0 else 0.0
     return {
         "samples": int(len(y_true)),
+        "positives": positives,
+        "negatives": negatives,
+        "positive_rate": float(positives / max(len(y_true), 1)),
+        "classes_present": classes_present,
+        "is_single_class": bool(len(classes_present) < 2),
         "accuracy": float(accuracy_score(y_true, y_pred)),
         "f1": float(f1_score(y_true, y_pred, zero_division=0)),
         "precision": float(precision_score(y_true, y_pred, zero_division=0)),
@@ -48,6 +56,33 @@ def _metrics(y_true, y_pred):
         "specificity": float(specificity),
         "npv": float(npv),
     }
+
+
+def _label_validity_warnings(metrics: Dict[str, object]) -> List[str]:
+    warnings: List[str] = []
+    if bool(metrics.get("is_single_class")):
+        positives = int(metrics.get("positives", 0))
+        negatives = int(metrics.get("negatives", 0))
+        if positives == 0:
+            warnings.append("evaluation labels contain only the negative class")
+        elif negatives == 0:
+            warnings.append("evaluation labels contain only the positive class")
+        else:
+            warnings.append("evaluation labels contain only one class")
+    return warnings
+
+
+def _metadata_validity_warnings(metadata: Dict[str, object]) -> List[str]:
+    warnings: List[str] = []
+    if bool(metadata.get("uses_untrusted_eth_labels")):
+        sources = metadata.get("untrusted_eth_label_sources") or []
+        if isinstance(sources, list) and sources:
+            warnings.append(
+                "evaluation uses untrusted ETH labels: " + ", ".join(str(x) for x in sources)
+            )
+        else:
+            warnings.append("evaluation uses untrusted ETH labels")
+    return warnings
 
 
 def _bootstrap_ci(y_true, y_pred, n_resamples=1000, seed=42):
@@ -148,6 +183,8 @@ def evaluate_ablation(args):
             split_manifest=args.split_manifest,
             pairing_mode=args.pairing_mode,
             require_both_classes=True,
+            can_max_rows=args.max_rows,
+            eth_max_frames=args.max_frames,
         )
         split_row: Dict[str, object] = {}
         if ds is None or len(ds) == 0:
@@ -161,6 +198,7 @@ def evaluate_ablation(args):
             "metadata": metadata,
         }
         split_row["modes"] = {}
+        split_row["validity_warnings"] = _metadata_validity_warnings(metadata)
 
         for mode in args.modes:
             mode_ds = ModalityAblationDataset(ds, mode=mode)
@@ -168,6 +206,17 @@ def evaluate_ablation(args):
             metrics = _metrics(labels, preds)
             metrics.update(_bootstrap_ci(labels, preds, n_resamples=args.bootstrap_resamples, seed=args.seed))
             split_row["modes"][mode] = metrics
+            if "label_summary" not in split_row:
+                split_row["label_summary"] = {
+                    "samples": int(metrics["samples"]),
+                    "positives": int(metrics["positives"]),
+                    "negatives": int(metrics["negatives"]),
+                    "positive_rate": float(metrics["positive_rate"]),
+                    "classes_present": list(metrics["classes_present"]),
+                    "is_single_class": bool(metrics["is_single_class"]),
+                }
+                split_row["validity_warnings"].extend(_label_validity_warnings(metrics))
+        split_row["is_valid_for_detection_claims"] = len(split_row["validity_warnings"]) == 0
 
         report["splits"][split] = split_row
 
@@ -190,6 +239,8 @@ def main():
     parser.add_argument("--splits", type=_csv_arg, default=["val", "test"])
     parser.add_argument("--modes", type=_csv_arg, default=["fused", "can_only", "eth_only"])
     parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--max_rows", type=int, default=None)
+    parser.add_argument("--max_frames", type=int, default=None)
     parser.add_argument("--bootstrap_resamples", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default="reports")

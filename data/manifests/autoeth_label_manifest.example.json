@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "description": "Example ETH label manifest for timestamp-based packet labeling.",
+  "sessions": [
+    {
+      "scenario": "driving_01_injected",
+      "session_id": "autoeth::driving_01_injected",
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "packet_ground_truth",
+      "default_label_granularity": "packet",
+      "intervals": [
+        {
+          "start_ts": 1700000000.250,
+          "end_ts": 1700000002.750,
+          "label": 1,
+          "attack_type": "avtp_injection",
+          "label_source": "packet_ground_truth",
+          "label_granularity": "packet"
+        }
+      ]
+    }
+  ]
+}

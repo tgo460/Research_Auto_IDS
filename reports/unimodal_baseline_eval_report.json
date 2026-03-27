@@ -1,0 +1,806 @@
+{
+  "timestamp_utc": "2026-03-27T07:22:00.421924+00:00",
+  "report_type": "unimodal_baseline_eval",
+  "split_manifest": "data/splits/split_v3_research_valid.json",
+  "pairing_mode": "label_cartesian",
+  "modes": {
+    "can_only": {
+      "train": {
+        "dataset": {
+          "samples": 511,
+          "metadata": {
+            "split": "train",
+            "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+            "pairing_mode": "label_cartesian",
+            "pairs_loaded": 6,
+            "labels_present": [
+              0,
+              1
+            ],
+            "uses_untrusted_eth_labels": true,
+            "untrusted_eth_label_sources": [
+              "inferred_full_session",
+              "manual_pending"
+            ],
+            "warnings": [
+              "pair eth_driving_01_original_images-006.npy + can_normal_train.csv[0:593300] uses untrusted ETH labels (manual_pending)",
+              "pair eth_indoors_01_original_images.npy + can_normal_train.csv[0:593300] uses untrusted ETH labels (manual_pending)",
+              "pair eth_driving_01_injected_images-003.npy + can_dos_train.csv uses untrusted ETH labels (inferred_full_session)",
+              "pair eth_driving_01_injected_images-003.npy + can_fuzzy_train.csv uses untrusted ETH labels (inferred_full_session)",
+              "pair eth_indoors_01_injected_images.npy + can_dos_train.csv uses untrusted ETH labels (inferred_full_session)",
+              "pair eth_indoors_01_injected_images.npy + can_fuzzy_train.csv uses untrusted ETH labels (inferred_full_session)"
+            ],
+            "pairs": [
+              {
+                "eth_file": "eth_driving_01_original_images-006.npy",
+                "can_file": "can_normal_train.csv",
+                "eth_display": "eth_driving_01_original_images-006.npy",
+                "can_display": "can_normal_train.csv[0:593300]",
+                "can_row_start": 0,
+                "can_row_stop": 593300,
+                "expected_label": 0,
+                "samples": 99,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::driving_01_original",
+                  "attack_type": "benign",
+                  "label_source": "manual_pending",
+                  "label_granularity": "packet"
+                }
+              },
+              {
+                "eth_file": "eth_indoors_01_original_images.npy",
+                "can_file": "can_normal_train.csv",
+                "eth_display": "eth_indoors_01_original_images.npy",
+                "can_display": "can_normal_train.csv[0:593300]",
+                "can_row_start": 0,
+                "can_row_stop": 593300,
+                "expected_label": 0,
+                "samples": 99,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::indoors_01_original",
+                  "attack_type": "benign",
+                  "label_source": "manual_pending",
+                  "label_granularity": "packet"
+                }
+              },
+              {
+                "eth_file": "eth_driving_01_injected_images-003.npy",
+                "can_file": "can_dos_train.csv",
+                "eth_display": "eth_driving_01_injected_images-003.npy",
+                "can_display": "can_dos_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 99,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::driving_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              },
+              {
+                "eth_file": "eth_driving_01_injected_images-003.npy",
+                "can_file": "can_fuzzy_train.csv",
+                "eth_display": "eth_driving_01_injected_images-003.npy",
+                "can_display": "can_fuzzy_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 51,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::driving_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              },
+              {
+                "eth_file": "eth_indoors_01_injected_images.npy",
+                "can_file": "can_dos_train.csv",
+                "eth_display": "eth_indoors_01_injected_images.npy",
+                "can_display": "can_dos_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 77,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::indoors_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              },
+              {
+                "eth_file": "eth_indoors_01_injected_images.npy",
+                "can_file": "can_fuzzy_train.csv",
+                "eth_display": "eth_indoors_01_injected_images.npy",
+                "can_display": "can_fuzzy_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 86,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::indoors_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              }
+            ]
+          },
+          "feature_dim": 1600
+        },
+        "metrics": {
+          "samples": 511,
+          "positives": 313,
+          "negatives": 198,
+          "positive_rate": 0.6125244618395304,
+          "classes_present": [
+            0,
+            1
+          ],
+          "is_single_class": false,
+          "accuracy": 1.0,
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "mcc": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "specificity": 1.0,
+          "npv": 1.0,
+          "f1_ci95": [
+            1.0,
+            1.0
+          ],
+          "mcc_ci95": [
+            1.0,
+            1.0
+          ],
+          "fpr_ci95": [
+            0.0,
+            0.0
+          ],
+          "fnr_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "label_summary": {
+          "samples": 511,
+          "positives": 313,
+          "negatives": 198,
+          "positive_rate": 0.6125244618395304,
+          "classes_present": [
+            0,
+            1
+          ],
+          "is_single_class": false
+        },
+        "validity_warnings": [
+          "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+        ]
+      },
+      "eval": {
+        "val": {
+          "dataset": {
+            "samples": 139,
+            "metadata": {
+              "split": "val",
+              "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+              "pairing_mode": "label_cartesian",
+              "pairs_loaded": 2,
+              "labels_present": [
+                0,
+                1
+              ],
+              "uses_untrusted_eth_labels": true,
+              "untrusted_eth_label_sources": [
+                "inferred_full_session",
+                "manual_pending"
+              ],
+              "warnings": [
+                "pair eth_driving_02_original_images-005.npy + can_normal_train.csv[593300:791100] uses untrusted ETH labels (manual_pending)",
+                "pair eth_driving_02_injected_images-008.npy + can_rpm_train.csv uses untrusted ETH labels (inferred_full_session)"
+              ],
+              "pairs": [
+                {
+                  "eth_file": "eth_driving_02_original_images-005.npy",
+                  "can_file": "can_normal_train.csv",
+                  "eth_display": "eth_driving_02_original_images-005.npy",
+                  "can_display": "can_normal_train.csv[593300:791100]",
+                  "can_row_start": 593300,
+                  "can_row_stop": 791100,
+                  "expected_label": 0,
+                  "samples": 63,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::driving_02_original",
+                    "attack_type": "benign",
+                    "label_source": "manual_pending",
+                    "label_granularity": "packet"
+                  }
+                },
+                {
+                  "eth_file": "eth_driving_02_injected_images-008.npy",
+                  "can_file": "can_rpm_train.csv",
+                  "eth_display": "eth_driving_02_injected_images-008.npy",
+                  "can_display": "can_rpm_train.csv",
+                  "can_row_start": null,
+                  "can_row_stop": null,
+                  "expected_label": 1,
+                  "samples": 76,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::driving_02_injected",
+                    "attack_type": "avtp_injection",
+                    "label_source": "inferred_full_session",
+                    "label_granularity": "session"
+                  }
+                }
+              ]
+            },
+            "feature_dim": 1600
+          },
+          "label_summary": {
+            "samples": 139,
+            "positives": 76,
+            "negatives": 63,
+            "positive_rate": 0.5467625899280576,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false
+          },
+          "validity_warnings": [
+            "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+          ],
+          "metrics": {
+            "samples": 139,
+            "positives": 76,
+            "negatives": 63,
+            "positive_rate": 0.5467625899280576,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false,
+            "accuracy": 1.0,
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "mcc": 1.0,
+            "fpr": 0.0,
+            "fnr": 0.0,
+            "specificity": 1.0,
+            "npv": 1.0,
+            "f1_ci95": [
+              1.0,
+              1.0
+            ],
+            "mcc_ci95": [
+              1.0,
+              1.0
+            ],
+            "fpr_ci95": [
+              0.0,
+              0.0
+            ],
+            "fnr_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "test": {
+          "dataset": {
+            "samples": 188,
+            "metadata": {
+              "split": "test",
+              "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+              "pairing_mode": "label_cartesian",
+              "pairs_loaded": 2,
+              "labels_present": [
+                0,
+                1
+              ],
+              "uses_untrusted_eth_labels": true,
+              "untrusted_eth_label_sources": [
+                "inferred_full_session",
+                "manual_pending"
+              ],
+              "warnings": [
+                "pair eth_indoors_02_original_images.npy + can_normal_train.csv[791100:988872] uses untrusted ETH labels (manual_pending)",
+                "pair eth_indoors_02_injected_images.npy + can_gear_train.csv uses untrusted ETH labels (inferred_full_session)"
+              ],
+              "pairs": [
+                {
+                  "eth_file": "eth_indoors_02_original_images.npy",
+                  "can_file": "can_normal_train.csv",
+                  "eth_display": "eth_indoors_02_original_images.npy",
+                  "can_display": "can_normal_train.csv[791100:988872]",
+                  "can_row_start": 791100,
+                  "can_row_stop": 988872,
+                  "expected_label": 0,
+                  "samples": 99,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::indoors_02_original",
+                    "attack_type": "benign",
+                    "label_source": "manual_pending",
+                    "label_granularity": "packet"
+                  }
+                },
+                {
+                  "eth_file": "eth_indoors_02_injected_images.npy",
+                  "can_file": "can_gear_train.csv",
+                  "eth_display": "eth_indoors_02_injected_images.npy",
+                  "can_display": "can_gear_train.csv",
+                  "can_row_start": null,
+                  "can_row_stop": null,
+                  "expected_label": 1,
+                  "samples": 89,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::indoors_02_injected",
+                    "attack_type": "avtp_injection",
+                    "label_source": "inferred_full_session",
+                    "label_granularity": "session"
+                  }
+                }
+              ]
+            },
+            "feature_dim": 1600
+          },
+          "label_summary": {
+            "samples": 188,
+            "positives": 89,
+            "negatives": 99,
+            "positive_rate": 0.4734042553191489,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false
+          },
+          "validity_warnings": [
+            "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+          ],
+          "metrics": {
+            "samples": 188,
+            "positives": 89,
+            "negatives": 99,
+            "positive_rate": 0.4734042553191489,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false,
+            "accuracy": 1.0,
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "mcc": 1.0,
+            "fpr": 0.0,
+            "fnr": 0.0,
+            "specificity": 1.0,
+            "npv": 1.0,
+            "f1_ci95": [
+              1.0,
+              1.0
+            ],
+            "mcc_ci95": [
+              1.0,
+              1.0
+            ],
+            "fpr_ci95": [
+              0.0,
+              0.0
+            ],
+            "fnr_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    },
+    "eth_only": {
+      "train": {
+        "dataset": {
+          "samples": 511,
+          "metadata": {
+            "split": "train",
+            "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+            "pairing_mode": "label_cartesian",
+            "pairs_loaded": 6,
+            "labels_present": [
+              0,
+              1
+            ],
+            "uses_untrusted_eth_labels": true,
+            "untrusted_eth_label_sources": [
+              "inferred_full_session",
+              "manual_pending"
+            ],
+            "warnings": [
+              "pair eth_driving_01_original_images-006.npy + can_normal_train.csv[0:593300] uses untrusted ETH labels (manual_pending)",
+              "pair eth_indoors_01_original_images.npy + can_normal_train.csv[0:593300] uses untrusted ETH labels (manual_pending)",
+              "pair eth_driving_01_injected_images-003.npy + can_dos_train.csv uses untrusted ETH labels (inferred_full_session)",
+              "pair eth_driving_01_injected_images-003.npy + can_fuzzy_train.csv uses untrusted ETH labels (inferred_full_session)",
+              "pair eth_indoors_01_injected_images.npy + can_dos_train.csv uses untrusted ETH labels (inferred_full_session)",
+              "pair eth_indoors_01_injected_images.npy + can_fuzzy_train.csv uses untrusted ETH labels (inferred_full_session)"
+            ],
+            "pairs": [
+              {
+                "eth_file": "eth_driving_01_original_images-006.npy",
+                "can_file": "can_normal_train.csv",
+                "eth_display": "eth_driving_01_original_images-006.npy",
+                "can_display": "can_normal_train.csv[0:593300]",
+                "can_row_start": 0,
+                "can_row_stop": 593300,
+                "expected_label": 0,
+                "samples": 99,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::driving_01_original",
+                  "attack_type": "benign",
+                  "label_source": "manual_pending",
+                  "label_granularity": "packet"
+                }
+              },
+              {
+                "eth_file": "eth_indoors_01_original_images.npy",
+                "can_file": "can_normal_train.csv",
+                "eth_display": "eth_indoors_01_original_images.npy",
+                "can_display": "can_normal_train.csv[0:593300]",
+                "can_row_start": 0,
+                "can_row_stop": 593300,
+                "expected_label": 0,
+                "samples": 99,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::indoors_01_original",
+                  "attack_type": "benign",
+                  "label_source": "manual_pending",
+                  "label_granularity": "packet"
+                }
+              },
+              {
+                "eth_file": "eth_driving_01_injected_images-003.npy",
+                "can_file": "can_dos_train.csv",
+                "eth_display": "eth_driving_01_injected_images-003.npy",
+                "can_display": "can_dos_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 99,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::driving_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              },
+              {
+                "eth_file": "eth_driving_01_injected_images-003.npy",
+                "can_file": "can_fuzzy_train.csv",
+                "eth_display": "eth_driving_01_injected_images-003.npy",
+                "can_display": "can_fuzzy_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 51,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::driving_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              },
+              {
+                "eth_file": "eth_indoors_01_injected_images.npy",
+                "can_file": "can_dos_train.csv",
+                "eth_display": "eth_indoors_01_injected_images.npy",
+                "can_display": "can_dos_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 77,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::indoors_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              },
+              {
+                "eth_file": "eth_indoors_01_injected_images.npy",
+                "can_file": "can_fuzzy_train.csv",
+                "eth_display": "eth_indoors_01_injected_images.npy",
+                "can_display": "can_fuzzy_train.csv",
+                "can_row_start": null,
+                "can_row_stop": null,
+                "expected_label": 1,
+                "samples": 86,
+                "eth_label_provenance": {
+                  "session_id": "autoeth::indoors_01_injected",
+                  "attack_type": "avtp_injection",
+                  "label_source": "inferred_full_session",
+                  "label_granularity": "session"
+                }
+              }
+            ]
+          },
+          "feature_dim": 1024
+        },
+        "metrics": {
+          "samples": 511,
+          "positives": 313,
+          "negatives": 198,
+          "positive_rate": 0.6125244618395304,
+          "classes_present": [
+            0,
+            1
+          ],
+          "is_single_class": false,
+          "accuracy": 0.8590998043052838,
+          "f1": 0.8857142857142857,
+          "precision": 0.8801261829652997,
+          "recall": 0.8913738019169329,
+          "mcc": 0.7021563127242316,
+          "fpr": 0.1919191919191919,
+          "fnr": 0.10862619808306709,
+          "specificity": 0.8080808080808081,
+          "npv": 0.8247422680412371,
+          "f1_ci95": [
+            0.8566525970957886,
+            0.907360495195861
+          ],
+          "mcc_ci95": [
+            0.6398215596636971,
+            0.7585574948808316
+          ],
+          "fpr_ci95": [
+            0.14067028985507246,
+            0.25466163650408297
+          ],
+          "fnr_ci95": [
+            0.07971808986934756,
+            0.14318483482739833
+          ]
+        },
+        "label_summary": {
+          "samples": 511,
+          "positives": 313,
+          "negatives": 198,
+          "positive_rate": 0.6125244618395304,
+          "classes_present": [
+            0,
+            1
+          ],
+          "is_single_class": false
+        },
+        "validity_warnings": [
+          "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+        ]
+      },
+      "eval": {
+        "val": {
+          "dataset": {
+            "samples": 139,
+            "metadata": {
+              "split": "val",
+              "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+              "pairing_mode": "label_cartesian",
+              "pairs_loaded": 2,
+              "labels_present": [
+                0,
+                1
+              ],
+              "uses_untrusted_eth_labels": true,
+              "untrusted_eth_label_sources": [
+                "inferred_full_session",
+                "manual_pending"
+              ],
+              "warnings": [
+                "pair eth_driving_02_original_images-005.npy + can_normal_train.csv[593300:791100] uses untrusted ETH labels (manual_pending)",
+                "pair eth_driving_02_injected_images-008.npy + can_rpm_train.csv uses untrusted ETH labels (inferred_full_session)"
+              ],
+              "pairs": [
+                {
+                  "eth_file": "eth_driving_02_original_images-005.npy",
+                  "can_file": "can_normal_train.csv",
+                  "eth_display": "eth_driving_02_original_images-005.npy",
+                  "can_display": "can_normal_train.csv[593300:791100]",
+                  "can_row_start": 593300,
+                  "can_row_stop": 791100,
+                  "expected_label": 0,
+                  "samples": 63,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::driving_02_original",
+                    "attack_type": "benign",
+                    "label_source": "manual_pending",
+                    "label_granularity": "packet"
+                  }
+                },
+                {
+                  "eth_file": "eth_driving_02_injected_images-008.npy",
+                  "can_file": "can_rpm_train.csv",
+                  "eth_display": "eth_driving_02_injected_images-008.npy",
+                  "can_display": "can_rpm_train.csv",
+                  "can_row_start": null,
+                  "can_row_stop": null,
+                  "expected_label": 1,
+                  "samples": 76,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::driving_02_injected",
+                    "attack_type": "avtp_injection",
+                    "label_source": "inferred_full_session",
+                    "label_granularity": "session"
+                  }
+                }
+              ]
+            },
+            "feature_dim": 1024
+          },
+          "label_summary": {
+            "samples": 139,
+            "positives": 76,
+            "negatives": 63,
+            "positive_rate": 0.5467625899280576,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false
+          },
+          "validity_warnings": [
+            "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+          ],
+          "metrics": {
+            "samples": 139,
+            "positives": 76,
+            "negatives": 63,
+            "positive_rate": 0.5467625899280576,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false,
+            "accuracy": 0.5467625899280576,
+            "f1": 0.7069767441860465,
+            "precision": 0.5467625899280576,
+            "recall": 1.0,
+            "mcc": 0.0,
+            "fpr": 1.0,
+            "fnr": 0.0,
+            "specificity": 0.0,
+            "npv": 0.0,
+            "f1_ci95": [
+              0.6337305611899933,
+              0.7727564227515497
+            ],
+            "mcc_ci95": [
+              0.0,
+              0.0
+            ],
+            "fpr_ci95": [
+              1.0,
+              1.0
+            ],
+            "fnr_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "test": {
+          "dataset": {
+            "samples": 188,
+            "metadata": {
+              "split": "test",
+              "split_manifest": "C:/Users/Admin/Desktop/Research_Auto_IDS/data/splits/split_v3_research_valid.json",
+              "pairing_mode": "label_cartesian",
+              "pairs_loaded": 2,
+              "labels_present": [
+                0,
+                1
+              ],
+              "uses_untrusted_eth_labels": true,
+              "untrusted_eth_label_sources": [
+                "inferred_full_session",
+                "manual_pending"
+              ],
+              "warnings": [
+                "pair eth_indoors_02_original_images.npy + can_normal_train.csv[791100:988872] uses untrusted ETH labels (manual_pending)",
+                "pair eth_indoors_02_injected_images.npy + can_gear_train.csv uses untrusted ETH labels (inferred_full_session)"
+              ],
+              "pairs": [
+                {
+                  "eth_file": "eth_indoors_02_original_images.npy",
+                  "can_file": "can_normal_train.csv",
+                  "eth_display": "eth_indoors_02_original_images.npy",
+                  "can_display": "can_normal_train.csv[791100:988872]",
+                  "can_row_start": 791100,
+                  "can_row_stop": 988872,
+                  "expected_label": 0,
+                  "samples": 99,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::indoors_02_original",
+                    "attack_type": "benign",
+                    "label_source": "manual_pending",
+                    "label_granularity": "packet"
+                  }
+                },
+                {
+                  "eth_file": "eth_indoors_02_injected_images.npy",
+                  "can_file": "can_gear_train.csv",
+                  "eth_display": "eth_indoors_02_injected_images.npy",
+                  "can_display": "can_gear_train.csv",
+                  "can_row_start": null,
+                  "can_row_stop": null,
+                  "expected_label": 1,
+                  "samples": 89,
+                  "eth_label_provenance": {
+                    "session_id": "autoeth::indoors_02_injected",
+                    "attack_type": "avtp_injection",
+                    "label_source": "inferred_full_session",
+                    "label_granularity": "session"
+                  }
+                }
+              ]
+            },
+            "feature_dim": 1024
+          },
+          "label_summary": {
+            "samples": 188,
+            "positives": 89,
+            "negatives": 99,
+            "positive_rate": 0.4734042553191489,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false
+          },
+          "validity_warnings": [
+            "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+          ],
+          "metrics": {
+            "samples": 188,
+            "positives": 89,
+            "negatives": 99,
+            "positive_rate": 0.4734042553191489,
+            "classes_present": [
+              0,
+              1
+            ],
+            "is_single_class": false,
+            "accuracy": 0.9893617021276596,
+            "f1": 0.9886363636363636,
+            "precision": 1.0,
+            "recall": 0.9775280898876404,
+            "mcc": 0.9788621445375632,
+            "fpr": 0.0,
+            "fnr": 0.02247191011235955,
+            "specificity": 1.0,
+            "npv": 0.9801980198019802,
+            "f1_ci95": [
+              0.9726694915254238,
+              1.0
+            ],
+            "mcc_ci95": [
+              0.9480893360216993,
+              1.0
+            ],
+            "fpr_ci95": [
+              0.0,
+              0.0
+            ],
+            "fnr_ci95": [
+              0.0,
+              0.053205128205128176
+            ]
+          }
+        }
+      }
+    }
+  }
+}

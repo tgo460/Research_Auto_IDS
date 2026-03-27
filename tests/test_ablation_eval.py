@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import Dataset
 
-from src_replica.ablation_eval_replica import ModalityAblationDataset
+from src_replica.ablation_eval_replica import ModalityAblationDataset, _metrics
 
 
 class _DummyDataset(Dataset):
@@ -35,3 +35,11 @@ def test_modality_ablation_dataset_preserves_both_for_fused():
     sample = ds[0]
     assert float(sample["can"].sum()) > 0.0
     assert float(sample["eth"].sum()) > 0.0
+
+
+def test_metrics_records_single_class_label_summary():
+    metrics = _metrics([1, 1, 1], [1, 1, 1])
+    assert metrics["positives"] == 3
+    assert metrics["negatives"] == 0
+    assert metrics["classes_present"] == [1]
+    assert metrics["is_single_class"] is True

@@ -32,6 +32,18 @@ STANDARD_ETH_IMAGE_SIZE = 32
 STANDARD_ETH_REPRESENTATION = "metadata_outer_v1"
 STANDARD_CAN_ENGINEERING_WINDOW = 200
 STANDARD_ETH_ENGINEERING_WINDOW = 32
+ETH_LABEL_PROVENANCE_COLUMNS = [
+    "session_id",
+    "attack_type",
+    "label_source",
+    "label_granularity",
+]
+TRUSTED_ETH_LABEL_SOURCES = {
+    "packet_ground_truth",
+    "attack_log_interval",
+    "manual_packet_annotation",
+    "manual_window_annotation",
+}
 
 _CAN_CLASSIC_ID_MAX = 2047.0
 _CAN_EXTENDED_ID_MAX = 536_870_911.0
@@ -44,6 +56,51 @@ _SYNTHETIC_TIMESTAMP_STEP_S = 0.001
 
 def _clip01(values: np.ndarray) -> np.ndarray:
     return np.clip(values, 0.0, 1.0)
+
+
+def _series_from_frame_or_scalar(df: pd.DataFrame, key: str, default: float = 0.0) -> pd.Series:
+    if key in df.columns:
+        value = df[key]
+    else:
+        value = pd.Series([default] * len(df), index=df.index, dtype=np.float32)
+    return pd.to_numeric(value, errors="coerce").fillna(default)
+
+
+def validate_eth_label_dataframe(
+    df: pd.DataFrame,
+    context: str = "ETH dataframe",
+    require_label: bool = True,
+    require_provenance: bool = False,
+) -> None:
+    missing = []
+    if require_label and "Label" not in df.columns:
+        missing.append("Label")
+    if require_provenance:
+        missing.extend(col for col in ETH_LABEL_PROVENANCE_COLUMNS if col not in df.columns)
+    if missing:
+        raise ValueError(
+            f"{context} must contain required columns: {', '.join(missing)}"
+        )
+
+
+def extract_eth_label_provenance(df: pd.DataFrame) -> Dict[str, str]:
+    provenance: Dict[str, str] = {}
+    for col in ETH_LABEL_PROVENANCE_COLUMNS:
+        if col not in df.columns:
+            continue
+        series = df[col].dropna().astype(str)
+        provenance[col] = series.iloc[0] if not series.empty else ""
+    return provenance
+
+
+def is_trustworthy_eth_label_provenance(provenance: Dict[str, str] | None) -> bool:
+    if not provenance:
+        return False
+    source = str(provenance.get("label_source", "")).strip()
+    granularity = str(provenance.get("label_granularity", "")).strip()
+    if source not in TRUSTED_ETH_LABEL_SOURCES:
+        return False
+    return granularity in {"packet", "window"}
 
 
 def _running_max_normalize(values: Sequence[float]) -> np.ndarray:
@@ -208,16 +265,18 @@ def standardize_eth_packet_dataframe(
     out = df_raw.copy()
 
     if "captured_len" in out.columns:
-        captured = pd.to_numeric(out["captured_len"], errors="coerce").fillna(0.0)
-        original = pd.to_numeric(out.get("original_len", out["captured_len"]), errors="coerce").fillna(0.0)
+        captured = _series_from_frame_or_scalar(out, "captured_len", default=0.0)
+        original = _series_from_frame_or_scalar(out, "original_len", default=0.0)
+        if "original_len" not in out.columns:
+            original = captured.copy()
     else:
-        packet_len = pd.to_numeric(out.get("Packet_Length", 0.0), errors="coerce").fillna(0.0)
+        packet_len = _series_from_frame_or_scalar(out, "Packet_Length", default=0.0)
         captured = packet_len
         original = packet_len
 
     if "timestamp_sec" in out.columns:
-        sec = pd.to_numeric(out["timestamp_sec"], errors="coerce").fillna(0.0).to_numpy(dtype=np.float64)
-        usec = pd.to_numeric(out.get("timestamp_usec", 0.0), errors="coerce").fillna(0.0).to_numpy(dtype=np.float64)
+        sec = _series_from_frame_or_scalar(out, "timestamp_sec", default=0.0).to_numpy(dtype=np.float64)
+        usec = _series_from_frame_or_scalar(out, "timestamp_usec", default=0.0).to_numpy(dtype=np.float64)
         finite = sec[np.isfinite(sec)]
         if finite.size > 0:
             med = float(np.median(np.abs(finite)))
@@ -294,6 +353,9 @@ def standardize_eth_packet_dataframe(
 
     if "Label" in out.columns:
         standardized["Label"] = pd.to_numeric(out["Label"], errors="coerce").fillna(0).astype(int)
+    for col in ETH_LABEL_PROVENANCE_COLUMNS:
+        if col in out.columns:
+            standardized[col] = out[col].fillna("").astype(str)
 
     return standardized
 

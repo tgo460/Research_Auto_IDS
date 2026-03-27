@@ -1,0 +1,410 @@
+{
+  "timestamp_utc": "2026-03-27T07:22:35.511497+00:00",
+  "report_type": "strict_comparison_eval",
+  "split_manifest": "data/splits/split_v3_research_valid.json",
+  "pairing_mode": "label_cartesian",
+  "validity_summary": {
+    "num_splits": 2,
+    "invalid_splits": [
+      "test",
+      "val"
+    ],
+    "research_claim_supported": false
+  },
+  "splits": {
+    "test": {
+      "label_summary": {
+        "samples": 188,
+        "positives": 89,
+        "negatives": 99,
+        "positive_rate": 0.4734042553191489,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false
+      },
+      "validity_warnings": [
+        "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+      ],
+      "is_valid_for_detection_claims": false,
+      "hybrid_fused": {
+        "samples": 188,
+        "positives": 89,
+        "negatives": 99,
+        "positive_rate": 0.4734042553191489,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.9414893617021277,
+        "f1": 0.9341317365269461,
+        "precision": 1.0,
+        "recall": 0.8764044943820225,
+        "mcc": 0.8881238905376998,
+        "fpr": 0.0,
+        "fnr": 0.12359550561797752,
+        "specificity": 1.0,
+        "npv": 0.9,
+        "f1_ci95": [
+          0.88125,
+          0.9696237056213017
+        ],
+        "mcc_ci95": [
+          0.8187510976137908,
+          0.9469472306355344
+        ],
+        "fpr_ci95": [
+          0.0,
+          0.0
+        ],
+        "fnr_ci95": [
+          0.05896029258098224,
+          0.2122903629536921
+        ]
+      },
+      "hybrid_can_masked": {
+        "samples": 188,
+        "positives": 89,
+        "negatives": 99,
+        "positive_rate": 0.4734042553191489,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.4734042553191489,
+        "f1": 0.6425992779783394,
+        "precision": 0.4734042553191489,
+        "recall": 1.0,
+        "mcc": 0.0,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "specificity": 0.0,
+        "npv": 0.0,
+        "f1_ci95": [
+          0.5811320754716981,
+          0.7036564049513073
+        ],
+        "mcc_ci95": [
+          0.0,
+          0.0
+        ],
+        "fpr_ci95": [
+          1.0,
+          1.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "hybrid_eth_masked": {
+        "samples": 188,
+        "positives": 89,
+        "negatives": 99,
+        "positive_rate": 0.4734042553191489,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.4734042553191489,
+        "f1": 0.6425992779783394,
+        "precision": 0.4734042553191489,
+        "recall": 1.0,
+        "mcc": 0.0,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "specificity": 0.0,
+        "npv": 0.0,
+        "f1_ci95": [
+          0.5811320754716981,
+          0.7036564049513073
+        ],
+        "mcc_ci95": [
+          0.0,
+          0.0
+        ],
+        "fpr_ci95": [
+          1.0,
+          1.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "baseline_can_only": {
+        "samples": 188,
+        "positives": 89,
+        "negatives": 99,
+        "positive_rate": 0.4734042553191489,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "mcc": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "specificity": 1.0,
+        "npv": 1.0,
+        "f1_ci95": [
+          1.0,
+          1.0
+        ],
+        "mcc_ci95": [
+          1.0,
+          1.0
+        ],
+        "fpr_ci95": [
+          0.0,
+          0.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "baseline_eth_only": {
+        "samples": 188,
+        "positives": 89,
+        "negatives": 99,
+        "positive_rate": 0.4734042553191489,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.9893617021276596,
+        "f1": 0.9886363636363636,
+        "precision": 1.0,
+        "recall": 0.9775280898876404,
+        "mcc": 0.9788621445375632,
+        "fpr": 0.0,
+        "fnr": 0.02247191011235955,
+        "specificity": 1.0,
+        "npv": 0.9801980198019802,
+        "f1_ci95": [
+          0.9726694915254238,
+          1.0
+        ],
+        "mcc_ci95": [
+          0.9480893360216993,
+          1.0
+        ],
+        "fpr_ci95": [
+          0.0,
+          0.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.053205128205128176
+        ]
+      }
+    },
+    "val": {
+      "label_summary": {
+        "samples": 139,
+        "positives": 76,
+        "negatives": 63,
+        "positive_rate": 0.5467625899280576,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false
+      },
+      "validity_warnings": [
+        "evaluation uses untrusted ETH labels: inferred_full_session, manual_pending"
+      ],
+      "is_valid_for_detection_claims": false,
+      "hybrid_fused": {
+        "samples": 139,
+        "positives": 76,
+        "negatives": 63,
+        "positive_rate": 0.5467625899280576,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.539568345323741,
+        "f1": 0.5294117647058824,
+        "precision": 0.6,
+        "recall": 0.47368421052631576,
+        "mcc": 0.09320017512662947,
+        "fpr": 0.38095238095238093,
+        "fnr": 0.5263157894736842,
+        "specificity": 0.6190476190476191,
+        "npv": 0.4936708860759494,
+        "f1_ci95": [
+          0.4426062284672026,
+          0.6308724832214765
+        ],
+        "mcc_ci95": [
+          -0.06652721073825124,
+          0.2675410964290705
+        ],
+        "fpr_ci95": [
+          0.25659722222222225,
+          0.4920289855072464
+        ],
+        "fnr_ci95": [
+          0.40386339662447257,
+          0.6180534055727555
+        ]
+      },
+      "hybrid_can_masked": {
+        "samples": 139,
+        "positives": 76,
+        "negatives": 63,
+        "positive_rate": 0.5467625899280576,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.5467625899280576,
+        "f1": 0.7069767441860465,
+        "precision": 0.5467625899280576,
+        "recall": 1.0,
+        "mcc": 0.0,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "specificity": 0.0,
+        "npv": 0.0,
+        "f1_ci95": [
+          0.6337305611899933,
+          0.7727564227515497
+        ],
+        "mcc_ci95": [
+          0.0,
+          0.0
+        ],
+        "fpr_ci95": [
+          1.0,
+          1.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "hybrid_eth_masked": {
+        "samples": 139,
+        "positives": 76,
+        "negatives": 63,
+        "positive_rate": 0.5467625899280576,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.5467625899280576,
+        "f1": 0.7069767441860465,
+        "precision": 0.5467625899280576,
+        "recall": 1.0,
+        "mcc": 0.0,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "specificity": 0.0,
+        "npv": 0.0,
+        "f1_ci95": [
+          0.6337305611899933,
+          0.7727564227515497
+        ],
+        "mcc_ci95": [
+          0.0,
+          0.0
+        ],
+        "fpr_ci95": [
+          1.0,
+          1.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "baseline_can_only": {
+        "samples": 139,
+        "positives": 76,
+        "negatives": 63,
+        "positive_rate": 0.5467625899280576,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "mcc": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "specificity": 1.0,
+        "npv": 1.0,
+        "f1_ci95": [
+          1.0,
+          1.0
+        ],
+        "mcc_ci95": [
+          1.0,
+          1.0
+        ],
+        "fpr_ci95": [
+          0.0,
+          0.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "baseline_eth_only": {
+        "samples": 139,
+        "positives": 76,
+        "negatives": 63,
+        "positive_rate": 0.5467625899280576,
+        "classes_present": [
+          0,
+          1
+        ],
+        "is_single_class": false,
+        "accuracy": 0.5467625899280576,
+        "f1": 0.7069767441860465,
+        "precision": 0.5467625899280576,
+        "recall": 1.0,
+        "mcc": 0.0,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "specificity": 0.0,
+        "npv": 0.0,
+        "f1_ci95": [
+          0.6337305611899933,
+          0.7727564227515497
+        ],
+        "mcc_ci95": [
+          0.0,
+          0.0
+        ],
+        "fpr_ci95": [
+          1.0,
+          1.0
+        ],
+        "fnr_ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

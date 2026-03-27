@@ -163,7 +163,11 @@ def plot_strict_comparison(report_data, output_dir):
     df = pd.DataFrame(rows)
     plt.figure(figsize=(12, 6))
     ax = sns.barplot(data=df, x="Split", y="Score", hue="Model", palette="tab10")
-    plt.title("Strict Split Comparison Across Hybrid and Unimodal Baselines", fontsize=15)
+    invalid_splits = report_data.get("validity_summary", {}).get("invalid_splits", [])
+    title = "Strict Split Comparison Across Hybrid and Unimodal Baselines"
+    if invalid_splits:
+        title += "\nWarning: degenerate labels in " + ", ".join(str(split).upper() for split in invalid_splits)
+    plt.title(title, fontsize=15)
     plt.ylim(0, 1.1)
     for container in ax.containers:
         ax.bar_label(container, fmt="%.2f", fontsize=8)

@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import Dataset
 
-from src_replica.unimodal_baseline_eval_replica import _extract_features_and_labels
+from src_replica.unimodal_baseline_eval_replica import _extract_features_and_labels, _metrics
 
 
 class _DummyDataset(Dataset):
@@ -29,3 +29,11 @@ def test_extract_features_and_labels_eth_only_shape_and_labels():
     assert X.shape == (2, 16)
     assert y.tolist() == [0, 1]
     assert float(X[1].sum()) > float(X[0].sum())
+
+
+def test_unimodal_metrics_records_balanced_label_summary():
+    metrics = _metrics([0, 1, 1, 0], [0, 1, 0, 0])
+    assert metrics["positives"] == 2
+    assert metrics["negatives"] == 2
+    assert metrics["classes_present"] == [0, 1]
+    assert metrics["is_single_class"] is False

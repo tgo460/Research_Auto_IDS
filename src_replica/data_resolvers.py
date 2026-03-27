@@ -2,6 +2,13 @@ import csv
 import os
 from typing import Optional
 
+ETH_PROVENANCE_COLUMNS = {
+    "session_id",
+    "attack_type",
+    "label_source",
+    "label_granularity",
+}
+
 
 def _eth_base_name(eth_npy_file: str) -> str:
     if "_images" in eth_npy_file:
@@ -40,7 +47,8 @@ def resolve_eth_packet_csv(data_dir: str, eth_npy_file: str) -> Optional[str]:
                 header = next(csv.reader(f), [])
         except Exception:
             header = []
-        if "Label" in header:
+        header_set = set(header)
+        if "Label" in header_set and ETH_PROVENANCE_COLUMNS.issubset(header_set):
             labeled.append(candidate)
     for candidate in labeled:
         return candidate

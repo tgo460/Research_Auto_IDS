@@ -29,6 +29,10 @@ def test_runtime_replay_generates_alerts(tmp_path):
                 "captured_len": 64,
                 "original_len": 64,
                 "Label": 1,
+                "session_id": "sess_demo",
+                "attack_type": "avtp_injection",
+                "label_source": "packet_ground_truth",
+                "label_granularity": "packet",
             }
         ]
     ).to_csv(eth_csv, index=False)

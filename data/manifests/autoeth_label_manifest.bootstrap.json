@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "description": "Bootstrapped AutoETH manifest from packet CSV time bounds. Intervals marked inferred_full_session are not research-grade ground truth and require review.",
+  "sessions": [
+    {
+      "scenario": "driving_01_injected",
+      "session_id": "autoeth::driving_01_injected",
+      "observed_start_ts": 1585276456365.29,
+      "observed_end_ts": 1585276459369.9155,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": [
+        {
+          "start_ts": 1585276456365.29,
+          "end_ts": 1585276459369.9155,
+          "label": 1,
+          "attack_type": "avtp_injection",
+          "label_source": "inferred_full_session",
+          "label_granularity": "session",
+          "annotation_status": "needs_review"
+        }
+      ]
+    },
+    {
+      "scenario": "driving_01_original",
+      "session_id": "autoeth::driving_01_original",
+      "observed_start_ts": 1585225095.058579,
+      "observed_end_ts": 1585225098.934628,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": []
+    },
+    {
+      "scenario": "driving_02_injected",
+      "session_id": "autoeth::driving_02_injected",
+      "observed_start_ts": 1585277903988.7866,
+      "observed_end_ts": 1585277923989.8687,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": [
+        {
+          "start_ts": 1585277903988.7866,
+          "end_ts": 1585277923989.8687,
+          "label": 1,
+          "attack_type": "avtp_injection",
+          "label_source": "inferred_full_session",
+          "label_granularity": "session",
+          "annotation_status": "needs_review"
+        }
+      ]
+    },
+    {
+      "scenario": "driving_02_original",
+      "session_id": "autoeth::driving_02_original",
+      "observed_start_ts": 1585226962.735238,
+      "observed_end_ts": 1585226982.559328,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": []
+    },
+    {
+      "scenario": "indoors_01_injected",
+      "session_id": "autoeth::indoors_01_injected",
+      "observed_start_ts": 1584587630427.4097,
+      "observed_end_ts": 1584587666707.9722,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": [
+        {
+          "start_ts": 1584587630427.4097,
+          "end_ts": 1584587666707.9722,
+          "label": 1,
+          "attack_type": "avtp_injection",
+          "label_source": "inferred_full_session",
+          "label_granularity": "session",
+          "annotation_status": "needs_review"
+        }
+      ]
+    },
+    {
+      "scenario": "indoors_01_original",
+      "session_id": "autoeth::indoors_01_original",
+      "observed_start_ts": 1566559615.27695,
+      "observed_end_ts": 1566560638.45935,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": []
+    },
+    {
+      "scenario": "indoors_02_injected",
+      "session_id": "autoeth::indoors_02_injected",
+      "observed_start_ts": 1584588191188.5713,
+      "observed_end_ts": 1584588217049.8862,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": [
+        {
+          "start_ts": 1584588191188.5713,
+          "end_ts": 1584588217049.8862,
+          "label": 1,
+          "attack_type": "avtp_injection",
+          "label_source": "inferred_full_session",
+          "label_granularity": "session",
+          "annotation_status": "needs_review"
+        }
+      ]
+    },
+    {
+      "scenario": "indoors_02_original",
+      "session_id": "autoeth::indoors_02_original",
+      "observed_start_ts": 1566560415.90335,
+      "observed_end_ts": 1566561433.0953,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": []
+    },
+    {
+      "scenario": "single_mpeg_frame",
+      "session_id": "autoeth::single_mpeg_frame",
+      "observed_start_ts": 1560250853.37865,
+      "observed_end_ts": 1560250865.75455,
+      "default_label": 0,
+      "default_attack_type": "benign",
+      "default_label_source": "manual_pending",
+      "default_label_granularity": "packet",
+      "annotation_status": "needs_review",
+      "intervals": []
+    }
+  ]
+}
